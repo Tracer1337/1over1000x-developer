@@ -2,13 +2,11 @@
 
 This extension cures cancer (source: trust me bro)
 
+[Download](https://github.com/Tracer1337/1over1000x-developer/releases)
+
 ## Features
 
 - None
-
-## Install
-
-[**Chrome** extension]() <!-- TODO: Add chrome extension link inside parenthesis -->
 
 ## Contribution
 
