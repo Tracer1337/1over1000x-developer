@@ -9,17 +9,15 @@
     "48": "icons/icon_48.png",
     "128": "icons/icon_128.png"
   },
-  "background": {
-    "service_worker": "background.js"
-  },
   "action": {
-    "default_title": "Chrome Extension",
-    "default_popup": "popup.html"
+    "default_title": "Chrome Extension"
   },
   "permissions": ["storage"],
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
+      "matches": [
+        "https://gitlab.dzh.hamburg/theraos/app/-/merge_requests/*/pipelines"
+      ],
       "run_at": "document_idle",
       "js": ["contentScript.js"]
     }
