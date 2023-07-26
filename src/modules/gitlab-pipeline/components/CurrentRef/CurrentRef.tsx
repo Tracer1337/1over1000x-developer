@@ -6,7 +6,7 @@ function CurrentRef() {
 
   return (
     <Typography variant="caption" sx={{ opacity: 0.5 }}>
-      Found Branch: {currentRef}
+      {currentRef}
     </Typography>
   );
 }
