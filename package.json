@@ -11,6 +11,7 @@
     "format": "prettier --write --ignore-unknown \"{config,public,src}/**/*.{html,css,js,ts,json}\""
   },
   "devDependencies": {
+    "@types/chrome": "^0.0.242",
     "@types/react": "^18.2.16",
     "@types/react-dom": "^18.2.7",
     "adm-zip": "^0.5.10",
@@ -27,6 +28,10 @@
     "webpack-merge": "^5.9.0"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/lab": "^5.0.0-alpha.137",
+    "@mui/material": "^5.14.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }
