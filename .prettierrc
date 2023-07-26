@@ -1,10 +1,7 @@
 {
   "singleQuote": true,
-  "trailingComma": "es5",
-  "bracketSpacing": true,
-  "bracketSameLine": false,
+  "quoteProps": "consistent",
+  "trailingComma": "all",
   "arrowParens": "always",
-  "htmlWhitespaceSensitivity": "css",
-  "insertPragma": false,
-  "semi": true
+  "htmlWhitespaceSensitivity": "ignore"
 }

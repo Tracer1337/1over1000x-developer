@@ -23,7 +23,7 @@ import './popup.css';
         },
         () => {
           cb();
-        }
+        },
       );
     },
   };
@@ -74,7 +74,7 @@ import './popup.css';
             },
             (response) => {
               console.log('Current count value passed to contentScript file');
-            }
+            },
           );
         });
       });
@@ -107,6 +107,6 @@ import './popup.css';
     },
     (response) => {
       console.log(response.message);
-    }
+    },
   );
 })();
