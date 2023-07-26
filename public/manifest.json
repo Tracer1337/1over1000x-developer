@@ -10,7 +10,8 @@
     "128": "icons/icon_128.png"
   },
   "action": {
-    "default_title": "Chrome Extension"
+    "default_title": "Chrome Extension",
+    "default_popup": "popup.html"
   },
   "permissions": ["storage", "webNavigation"],
   "background": {

@@ -11,6 +11,7 @@ const config = (env, argv) =>
     entry: {
       content: PATHS.src + '/content.ts',
       background: PATHS.src + '/background.ts',
+      popup: PATHS.src + '/popup.tsx',
     },
     devtool: argv.mode === 'production' ? false : 'source-map',
   });
