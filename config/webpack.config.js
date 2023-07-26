@@ -9,7 +9,7 @@ const PATHS = require('./paths');
 const config = (env, argv) =>
   merge(common, {
     entry: {
-      contentScript: PATHS.src + '/contentScript.js',
+      content: PATHS.src + '/content.ts',
     },
     devtool: argv.mode === 'production' ? false : 'source-map',
   });

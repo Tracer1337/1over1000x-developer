@@ -19,7 +19,7 @@
         "https://gitlab.dzh.hamburg/theraos/app/-/merge_requests/*/pipelines"
       ],
       "run_at": "document_idle",
-      "js": ["contentScript.js"]
+      "js": ["content.js"]
     }
   ]
 }

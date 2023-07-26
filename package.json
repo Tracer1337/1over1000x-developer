@@ -11,14 +11,23 @@
     "format": "prettier --write --ignore-unknown \"{config,public,src}/**/*.{html,css,js,ts,json}\""
   },
   "devDependencies": {
+    "@types/react": "^18.2.16",
+    "@types/react-dom": "^18.2.7",
     "adm-zip": "^0.5.10",
     "copy-webpack-plugin": "^10.2.4",
     "css-loader": "^6.8.1",
     "file-loader": "^6.2.0",
     "mini-css-extract-plugin": "^2.7.6",
     "prettier": "^2.8.8",
+    "ts-loader": "^9.4.4",
+    "tsconfig-paths-webpack-plugin": "^4.1.0",
+    "typescript": "^5.1.6",
     "webpack": "^5.88.2",
     "webpack-cli": "^4.10.0",
     "webpack-merge": "^5.9.0"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }

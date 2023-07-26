@@ -2,6 +2,7 @@
 
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 const PATHS = require('./paths');
 
@@ -46,6 +47,11 @@ const common = {
           },
         ],
       },
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      },
     ],
   },
   plugins: [
@@ -63,6 +69,10 @@ const common = {
       filename: '[name].css',
     }),
   ],
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
+    plugins: [new TsconfigPathsPlugin()],
+  },
 };
 
 module.exports = common;
