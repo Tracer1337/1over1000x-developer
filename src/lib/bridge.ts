@@ -12,3 +12,20 @@ export function isEvent(object: unknown): object is Event {
     object.senderId === senderId
   );
 }
+
+type RouteHandler = {
+  path: RegExp;
+  callback: () => void;
+};
+
+const handlers: Array<RouteHandler> = [];
+
+export function registerRouteHandler(handler: RouteHandler) {
+  handlers.push(handler);
+}
+
+export function runRouteHandlers() {
+  handlers
+    .filter(({ path }) => path.test(location.href))
+    .forEach(({ callback }) => callback());
+}

@@ -1,6 +1,6 @@
 import confetti from 'canvas-confetti';
 
-export function setup() {
+export function setupConfetti() {
   document
     .querySelectorAll<HTMLInputElement>('.task-list-item-checkbox')
     .forEach((target) =>

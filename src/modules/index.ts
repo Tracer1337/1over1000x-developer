@@ -1,3 +1,3 @@
-import { modules } from './modules';
+import setupGitlabModule from './gitlab';
 
-export default modules;
+export default [setupGitlabModule];

@@ -1,4 +1,4 @@
-import { isEvent } from 'lib/bridge';
+import { isEvent, runRouteHandlers } from 'lib/bridge';
 import modules from 'modules';
 
 chrome.runtime.onMessage.addListener((message) => {
@@ -7,17 +7,12 @@ chrome.runtime.onMessage.addListener((message) => {
   }
   switch (message.event) {
     case 'navigation-change':
-      setupModules();
+      runRouteHandlers();
   }
 });
 
-function setupModules() {
-  modules
-    .filter(({ path }) => path.test(location.href))
-    .forEach(({ setup }) => setup());
-}
-
-setupModules();
+modules.forEach((setup) => setup());
+runRouteHandlers();
 
 console.info(
   '%cYou are now a 1/1000x Developer🥳',
