@@ -1,5 +1,5 @@
 import { isEvent, runRouteHandlers } from 'lib/bridge';
-import modules from 'modules';
+import setupGitlabModule from 'modules/gitlab';
 
 chrome.runtime.onMessage.addListener((message) => {
   if (!isEvent(message)) {
@@ -11,8 +11,12 @@ chrome.runtime.onMessage.addListener((message) => {
   }
 });
 
-modules.forEach((setup) => setup());
-runRouteHandlers();
+function setup() {
+  setupGitlabModule();
+  runRouteHandlers();
+}
+
+setup();
 
 console.info(
   '%cYou are now a 1/1000x Developer🥳',

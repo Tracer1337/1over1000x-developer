@@ -16,6 +16,7 @@ export function isEvent(object: unknown): object is Event {
 type RouteHandler = {
   path: RegExp;
   callback: () => void;
+  cleanup?: () => void;
 };
 
 const handlers: Array<RouteHandler> = [];
@@ -25,7 +26,7 @@ export function registerRouteHandler(handler: RouteHandler) {
 }
 
 export function runRouteHandlers() {
-  handlers
-    .filter(({ path }) => path.test(location.href))
-    .forEach(({ callback }) => callback());
+  handlers.forEach(({ path, callback, cleanup }) =>
+    path.test(location.href) ? callback() : cleanup?.(),
+  );
 }
