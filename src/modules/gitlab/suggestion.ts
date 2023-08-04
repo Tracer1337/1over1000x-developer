@@ -8,33 +8,20 @@ import {
 import SuggestionButtons from './components/SuggestionButtons';
 import { GlobalStyles } from '@mui/material';
 import { SuggestionHelperState, suggestionHelperStore } from './store';
+import { createRenderLoop } from 'lib/bridge';
 
-let isActive = false;
-
-export async function setupSuggestionHelper() {
-  isActive = true;
-
-  await waitForSelector('.diff-files-holder');
-
+export function setupSuggestionHelper() {
   renderGlobalStyles();
 
   suggestionHelperStore.subscribe((store) => handleStoreUpdate(store));
 
-  const render = () => {
-    if (!isActive) {
-      return;
-    }
-    Array.from(document.querySelectorAll('.diff-grid-row:not(.expansion)'))
-      .filter((row) => shouldHandleElement(row))
-      .forEach((row) => renderSuggestionHelper(row));
-    setTimeout(render, 200);
-  };
-
-  render();
+  return createRenderLoop(render);
 }
 
-export async function destroySuggestionHelper() {
-  isActive = false;
+function render() {
+  Array.from(document.querySelectorAll('.diff-grid-row:not(.expansion)'))
+    .filter((row) => shouldHandleElement(row))
+    .forEach((row) => renderSuggestionHelper(row));
 }
 
 function handleStoreUpdate(store: SuggestionHelperState) {

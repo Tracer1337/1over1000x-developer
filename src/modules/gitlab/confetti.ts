@@ -1,28 +1,17 @@
 import confetti from 'canvas-confetti';
+import { createRenderLoop } from 'lib/bridge';
 import { shouldHandleElement } from 'lib/dom';
 
-let isActive = true;
-
 export function setupConfetti() {
-  const render = () => {
-    if (!isActive) {
-      return;
-    }
-
-    Array.from(
-      document.querySelectorAll<HTMLInputElement>('.task-list-item-checkbox'),
-    )
-      .filter((element) => shouldHandleElement(element))
-      .forEach((element) => applyConfettiHandler(element));
-
-    setTimeout(render, 200);
-  };
-
-  render();
+  return createRenderLoop(render);
 }
 
-export async function destroyConfetti() {
-  isActive = false;
+function render() {
+  Array.from(
+    document.querySelectorAll<HTMLInputElement>('.task-list-item-checkbox'),
+  )
+    .filter((element) => shouldHandleElement(element))
+    .forEach((element) => applyConfettiHandler(element));
 }
 
 function applyConfettiHandler(element: HTMLInputElement) {

@@ -15,18 +15,27 @@ export function isEvent(object: unknown): object is Event {
 
 type RouteHandler = {
   path: RegExp;
-  callback: () => void;
-  cleanup?: () => void;
+  callback: () => void | (() => void);
 };
 
 const handlers: Array<RouteHandler> = [];
+const cleanupHandlers: Array<ReturnType<RouteHandler['callback']>> = [];
 
 export function registerRouteHandler(handler: RouteHandler) {
   handlers.push(handler);
 }
 
 export function runRouteHandlers() {
-  handlers.forEach(({ path, callback, cleanup }) =>
-    path.test(location.href) ? callback() : cleanup?.(),
+  cleanupHandlers.forEach((handler) => handler?.());
+  cleanupHandlers.length = 0;
+  handlers.forEach(
+    ({ path, callback }) =>
+      path.test(location.href) && cleanupHandlers.push(callback()),
   );
+}
+
+export function createRenderLoop(callback: () => void, interval = 200) {
+  const intervalId = setInterval(callback, interval);
+  callback();
+  return () => clearInterval(intervalId);
 }
