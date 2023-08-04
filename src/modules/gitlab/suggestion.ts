@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import {
-  canMountComponent,
+  shouldHandleElement,
   getOrCreateContainer,
   waitForSelector,
 } from 'lib/dom';
@@ -25,7 +25,7 @@ export async function setupSuggestionHelper() {
       return;
     }
     Array.from(document.querySelectorAll('.diff-grid-row:not(.expansion)'))
-      .filter((row) => canMountComponent(row))
+      .filter((row) => shouldHandleElement(row))
       .forEach((row) => renderSuggestionHelper(row));
     setTimeout(render, 200);
   };
@@ -99,7 +99,7 @@ function getLineNumber(row: Element) {
 
 function renderGlobalStyles() {
   const container = getOrCreateContainer('suggestion-helper-global-styles');
-  if (!canMountComponent(container)) {
+  if (!shouldHandleElement(container)) {
     return;
   }
   createRoot(container).render(

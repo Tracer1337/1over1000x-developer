@@ -1,18 +1,39 @@
 import confetti from 'canvas-confetti';
+import { shouldHandleElement } from 'lib/dom';
+
+let isActive = true;
 
 export function setupConfetti() {
-  document
-    .querySelectorAll<HTMLInputElement>('.task-list-item-checkbox')
-    .forEach((target) =>
-      target.addEventListener(
-        'change',
-        () =>
-          target.checked &&
-          confettiAtElement(target, {
-            startVelocity: 20,
-          }),
-      ),
-    );
+  const render = () => {
+    if (!isActive) {
+      return;
+    }
+
+    Array.from(
+      document.querySelectorAll<HTMLInputElement>('.task-list-item-checkbox'),
+    )
+      .filter((element) => shouldHandleElement(element))
+      .forEach((element) => applyConfettiHandler(element));
+
+    setTimeout(render, 200);
+  };
+
+  render();
+}
+
+export async function destroyConfetti() {
+  isActive = false;
+}
+
+function applyConfettiHandler(element: HTMLInputElement) {
+  element.addEventListener(
+    'change',
+    () =>
+      element.checked &&
+      confettiAtElement(element, {
+        startVelocity: 20,
+      }),
+  );
 }
 
 function confettiAtElement(element: Element, config: confetti.Options = {}) {

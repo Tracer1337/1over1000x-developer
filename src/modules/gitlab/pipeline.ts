@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import PipelineEnhancements from './components/PipelineEnhancements';
-import { canMountComponent, waitForSelector } from 'lib/dom';
+import { shouldHandleElement, waitForSelector } from 'lib/dom';
 
 export function setupPipelineEnhancements() {
   getPipelineEnhancementsContainer().then(
@@ -13,7 +13,7 @@ export function setupPipelineEnhancements() {
 
 async function getPipelineEnhancementsContainer() {
   const parent = await waitForSelector('.content-list.pipelines');
-  if (!canMountComponent(parent)) {
+  if (!shouldHandleElement(parent)) {
     return null;
   }
   const element = document.createElement('div');

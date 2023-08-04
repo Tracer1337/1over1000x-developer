@@ -1,6 +1,6 @@
 import { registerRouteHandler } from 'lib/bridge';
 import { setupPipelineEnhancements } from './pipeline';
-import { setupConfetti } from './confetti';
+import { destroyConfetti, setupConfetti } from './confetti';
 import { destroySuggestionHelper, setupSuggestionHelper } from './suggestion';
 
 export function setup() {
@@ -15,6 +15,7 @@ export function setup() {
       'https://gitlab.dzh.hamburg/theraos/app/-/(merge_requests|issues)/\\d+',
     ),
     callback: setupConfetti,
+    cleanup: destroyConfetti,
   });
   registerRouteHandler({
     path: RegExp(

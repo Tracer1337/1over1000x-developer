@@ -14,11 +14,11 @@ export async function waitForSelector<T extends HTMLElement>(
   return result;
 }
 
-export function canMountComponent(element: Element) {
-  if (element.getAttribute('has-component')) {
+export function shouldHandleElement(element: Element) {
+  if (element.getAttribute('is-handled')) {
     return false;
   }
-  element.setAttribute('has-component', '1');
+  element.setAttribute('is-handled', '1');
   return true;
 }
 
