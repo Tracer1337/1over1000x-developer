@@ -1,4 +1,8 @@
 import { Event, isEvent, senderId } from 'shared/bridge';
+import { chatGPTPolyfill } from 'shared/chatgpt';
+import { createTabGroup } from './tab';
+
+chatGPTPolyfill();
 
 chrome.webNavigation.onHistoryStateUpdated.addListener(() => {
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
@@ -21,21 +25,3 @@ chrome.runtime.onMessage.addListener((message, sender) => {
       createTabGroup(message, sender);
   }
 });
-
-async function createTabGroup(
-  event: Extract<Event, { event: 'create-tab-group' }>,
-  sender: chrome.runtime.MessageSender,
-) {
-  const issueTab = sender.tab;
-  if (!issueTab) {
-    return;
-  }
-  const mrTab = event.data.mrUrl
-    ? await chrome.tabs.create({ url: event.data.mrUrl, active: false })
-    : null;
-  const tabIds = [issueTab.id, mrTab?.id].filter(
-    (id): id is number => id !== undefined,
-  );
-  const groupId = await chrome.tabs.group({ tabIds });
-  chrome.tabGroups.update(groupId, { color: 'blue', title: event.data.title });
-}

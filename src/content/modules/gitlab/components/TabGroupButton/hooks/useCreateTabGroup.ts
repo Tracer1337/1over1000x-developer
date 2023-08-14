@@ -11,8 +11,7 @@ export function useCreateTabGroup() {
   };
 
   const getTitle = () => {
-    const titleElement = document.querySelector('h1');
-    return titleElement?.textContent?.slice(0, 10) ?? '';
+    return document.querySelector('h1')?.textContent ?? '';
   };
 
   const getMrUrl = () => {
