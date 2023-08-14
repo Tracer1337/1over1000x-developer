@@ -13,7 +13,7 @@
     "default_title": "Chrome Extension",
     "default_popup": "popup.html"
   },
-  "permissions": ["storage", "webNavigation"],
+  "permissions": ["storage", "webNavigation", "tabGroups"],
   "background": {
     "service_worker": "background.js"
   },

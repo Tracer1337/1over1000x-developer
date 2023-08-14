@@ -1,8 +1,17 @@
 export const senderId = '1/1000x-developer';
 
-export type Event = { senderId: string } & {
-  event: 'navigation-change';
-};
+export type Event = { senderId: string } & (
+  | {
+      event: 'navigation-change';
+    }
+  | {
+      event: 'create-tab-group';
+      data: {
+        title: string;
+        mrUrl?: string;
+      };
+    }
+);
 
 export function isEvent(object: unknown): object is Event {
   return (
