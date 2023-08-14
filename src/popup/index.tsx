@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import { CssBaseline } from '@mui/material';
-import ChatGPTEmbed from 'modules/chatgpt/components/ChatGPTEmbed';
+import ChatGPTEmbed from 'popup/chatgpt/components/ChatGPTEmbed';
 
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';

@@ -4,11 +4,11 @@ import {
   shouldHandleElement,
   getOrCreateContainer,
   waitForSelector,
-} from 'lib/dom';
+} from 'shared/dom';
 import SuggestionButtons from './components/SuggestionButtons';
 import { GlobalStyles } from '@mui/material';
 import { SuggestionHelperState, suggestionHelperStore } from './store';
-import { createRenderLoop } from 'lib/bridge';
+import { createRenderLoop } from 'shared/bridge';
 
 export function setupSuggestionHelper() {
   renderGlobalStyles();

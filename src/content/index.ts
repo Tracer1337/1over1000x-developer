@@ -1,5 +1,5 @@
-import { isEvent, runRouteHandlers } from 'lib/bridge';
-import setupGitlabModule from 'modules/gitlab';
+import { isEvent, runRouteHandlers } from 'shared/bridge';
+import setupGitlabModule from 'content/modules/gitlab';
 
 chrome.runtime.onMessage.addListener((message) => {
   if (!isEvent(message)) {

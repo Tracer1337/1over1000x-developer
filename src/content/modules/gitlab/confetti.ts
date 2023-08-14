@@ -1,6 +1,6 @@
 import confetti from 'canvas-confetti';
-import { createRenderLoop } from 'lib/bridge';
-import { shouldHandleElement } from 'lib/dom';
+import { createRenderLoop } from 'shared/bridge';
+import { shouldHandleElement } from 'shared/dom';
 
 export function setupConfetti() {
   return createRenderLoop(render);

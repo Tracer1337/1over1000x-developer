@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import PipelineEnhancements from './components/PipelineEnhancements';
-import { shouldHandleElement, waitForSelector } from 'lib/dom';
+import { shouldHandleElement, waitForSelector } from 'shared/dom';
 
 export function setupPipelineEnhancements() {
   getPipelineEnhancementsContainer().then(

@@ -1,6 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { shouldHandleElement } from 'lib/dom';
+import { shouldHandleElement } from 'shared/dom';
 import TabGroupButton from './components/TabGroupButton';
 
 export function setupTabHelper() {

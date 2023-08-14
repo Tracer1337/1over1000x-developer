@@ -1,6 +1,6 @@
 import { IconButton } from '@mui/material';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { useSuggestionHelperStore } from 'modules/gitlab/store';
+import { useSuggestionHelperStore } from 'content/modules/gitlab/store';
 
 function SuggestionButtons({ row }: { row: Element }) {
   const { from, setFrom, setTo } = useSuggestionHelperStore();

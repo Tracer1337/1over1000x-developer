@@ -1,4 +1,4 @@
-import { Event, isEvent, senderId } from 'lib/bridge';
+import { Event, isEvent, senderId } from 'shared/bridge';
 
 chrome.webNavigation.onHistoryStateUpdated.addListener(() => {
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {

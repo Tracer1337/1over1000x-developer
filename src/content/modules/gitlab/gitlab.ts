@@ -1,4 +1,4 @@
-import { registerRouteHandler } from 'lib/bridge';
+import { registerRouteHandler } from 'shared/bridge';
 import { setupPipelineEnhancements } from './pipeline';
 import { setupConfetti } from './confetti';
 import { setupSuggestionHelper } from './suggestion';

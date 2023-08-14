@@ -1,4 +1,4 @@
-import { Event, senderId } from 'lib/bridge';
+import { Event, senderId } from 'shared/bridge';
 
 export function useCreateTabGroup() {
   const createTabGroup = () => {

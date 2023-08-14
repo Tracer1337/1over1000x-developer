@@ -1,4 +1,4 @@
-import { getApiHeaders } from 'lib/gitlab';
+import { getApiHeaders } from 'shared/gitlab';
 import { useState } from 'react';
 
 export function useRunPipeline({
