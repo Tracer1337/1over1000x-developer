@@ -1,7 +1,6 @@
 import { Event } from 'shared/bridge';
 import { loadChatGPTClient } from 'shared/chatgpt';
 import { prompts } from 'shared/chatgpt';
-import { StorageKeys } from 'shared/storage';
 
 type CreateTabGroupEvent = Extract<Event, { event: 'create-tab-group' }>;
 
@@ -40,28 +39,23 @@ async function handleTabGroupTitle(
   const cancelLoading = loadingAnimation(render);
   const tabGroupTitle = await loadTabGroupTitle(title);
   cancelLoading();
-  render(tabGroupTitle);
+  if (tabGroupTitle) {
+    render(tabGroupTitle);
+  }
 }
 
 async function loadTabGroupTitle(title: string) {
-  const cacheStorage = (
-    await chrome.storage.local.get(StorageKeys.TAB_GROUP_TITLES)
-  )[StorageKeys.TAB_GROUP_TITLES];
-  const cache = cacheStorage ? JSON.parse(cacheStorage) : {};
-  if (title in cache) {
-    return cache[title];
-  }
   const api = await loadChatGPTClient();
   if (!api) {
     return;
   }
   const prompt = prompts.tapGroupTitle.replace('{0}', title);
-  const res = await api.sendMessage(prompt);
-  cache[title] = res.text;
-  chrome.storage.local.set({
-    [StorageKeys.TAB_GROUP_TITLES]: JSON.stringify(cache),
+  const res = await api.sendMessage(prompt, {
+    completionParams: {
+      temperature: 0,
+    },
   });
-  return cache[title];
+  return res.text;
 }
 
 function loadingAnimation(render: (text: string) => void) {

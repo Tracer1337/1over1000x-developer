@@ -1,7 +1,6 @@
 import { Container, Box } from '@mui/material';
 import Header from '../Header';
 import OptionsForm from '../OptionsForm';
-import { Cache } from '../Cache/Cache';
 
 export function App() {
   return (
@@ -12,7 +11,6 @@ export function App() {
       <Box sx={{ mb: 4 }}>
         <OptionsForm />
       </Box>
-      <Cache />
     </Container>
   );
 }
