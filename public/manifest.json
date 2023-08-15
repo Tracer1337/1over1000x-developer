@@ -20,9 +20,7 @@
   "options_page": "options.html",
   "content_scripts": [
     {
-      "matches": [
-        "https://gitlab.dzh.hamburg/*"
-      ],
+      "matches": ["<all_urls>"],
       "run_at": "document_idle",
       "js": ["content.js"]
     }
