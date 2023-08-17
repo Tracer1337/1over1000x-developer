@@ -12,9 +12,17 @@ export function Spotlight() {
   const [input, setInput] = useState('');
   const [results, setResults] = useState<SpotlightResult[]>([]);
 
-  useSpotlightShortcuts(setIsOpen);
+  const { selectedResult, resetSelection } = useKeyboardSelection(results);
 
-  const selectedResult = useKeyboardSelection(results);
+  const handleClose = () => {
+    setIsOpen(false);
+    resetSelection();
+  };
+
+  useSpotlightShortcuts({
+    open: () => setIsOpen(true),
+    close: handleClose,
+  });
 
   useEffect(() => setResults(generateResults(input)), [input]);
 
@@ -71,7 +79,7 @@ export function Spotlight() {
         <Results
           results={results}
           selectedResult={selectedResult}
-          onClose={() => setIsOpen(false)}
+          onClose={handleClose}
         />
       </Stack>
     </Box>

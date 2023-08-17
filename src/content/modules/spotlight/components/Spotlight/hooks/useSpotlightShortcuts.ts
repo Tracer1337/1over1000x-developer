@@ -1,21 +1,27 @@
 import { useCallback, useEffect } from 'react';
 
-export function useSpotlightShortcuts(setIsOpen: (isOpen: boolean) => void) {
+export function useSpotlightShortcuts({
+  open,
+  close,
+}: {
+  open: () => void;
+  close: () => void;
+}) {
   const handleKeydown = useCallback(
     (event: KeyboardEvent) => {
       if (event.ctrlKey && event.key === 'p') {
         event.preventDefault();
-        setIsOpen(true);
+        open();
       }
       if (event.key === 'Escape') {
-        setIsOpen(false);
+        close();
       }
     },
-    [setIsOpen],
+    [open, close],
   );
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeydown);
     return () => document.removeEventListener('keydown', handleKeydown);
-  }, [setIsOpen]);
+  }, [handleKeydown]);
 }

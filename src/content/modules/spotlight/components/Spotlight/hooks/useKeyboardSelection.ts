@@ -29,5 +29,8 @@ export function useKeyboardSelection(results: SpotlightResult[]) {
     return () => document.removeEventListener('keydown', handleKeydown);
   }, [handleKeydown]);
 
-  return selection === null ? null : results[selection];
+  return {
+    selectedResult: selection === null ? null : results[selection],
+    resetSelection: () => setSelection(null),
+  };
 }
