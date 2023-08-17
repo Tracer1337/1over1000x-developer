@@ -1,24 +1,19 @@
 import { Event, senderId } from 'shared/bridge';
+import { queryIssueMRUrl, queryIssueTitle } from 'shared/query';
 
 export function useCreateTabGroup() {
   const createTabGroup = () => {
+    const title = queryIssueTitle();
+    const mrUrl = queryIssueMRUrl();
+    if (!title || !mrUrl) {
+      return;
+    }
     const event: Event = {
       senderId,
       event: 'create-tab-group',
-      data: { title: getTitle(), mrUrl: getMrUrl() },
+      data: { title, mrUrl },
     };
     chrome.runtime.sendMessage(event);
-  };
-
-  const getTitle = () => {
-    return document.querySelector('h1')?.textContent ?? '';
-  };
-
-  const getMrUrl = () => {
-    const mrLink = document.querySelector(
-      '.js-issue-widgets .card ul.related-items-list li:last-child a',
-    );
-    return mrLink?.getAttribute('href') ?? undefined;
   };
 
   return createTabGroup;

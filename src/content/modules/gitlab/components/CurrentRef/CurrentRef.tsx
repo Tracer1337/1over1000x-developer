@@ -1,12 +1,10 @@
 import { Typography } from '@mui/material';
-import { useCurrentRef } from './hooks/useCurrentRef';
+import { queryCurrentRef } from 'shared/query';
 
 function CurrentRef() {
-  const currentRef = useCurrentRef();
-
   return (
     <Typography variant="caption" sx={{ opacity: 0.5 }}>
-      {currentRef}
+      {queryCurrentRef()}
     </Typography>
   );
 }

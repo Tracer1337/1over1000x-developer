@@ -1,12 +1,11 @@
-import { getApiHeaders } from 'shared/gitlab';
 import { useState } from 'react';
+import { getApiHeaders } from 'shared/gitlab';
+import { queryCurrentRef } from 'shared/query';
 
 export function useRunPipeline({
-  ref,
   onSuccess,
   onError,
 }: {
-  ref: string;
   onSuccess: () => void;
   onError: () => void;
 }) {
@@ -21,7 +20,7 @@ export function useRunPipeline({
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        ref,
+        ref: queryCurrentRef(),
         variables_attributes: [],
       }),
     })

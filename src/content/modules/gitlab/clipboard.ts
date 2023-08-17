@@ -1,19 +1,19 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { shouldHandleElement } from 'shared/dom';
-import TabGroupButton from './components/TabGroupButton';
+import StatusMessageButton from './components/StatusMessageButon';
 
 const menuSelector = '#new-actions-header-dropdown .gl-dropdown-contents';
-const containerId = 'tab-helper';
+const containerId = 'clipboard-helper';
 
-export function setupTabHelper() {
+export function setupClipboardHelper() {
   render();
 }
 
 function render() {
   const container = getContainer();
   if (shouldHandleElement(container)) {
-    createRoot(container).render(React.createElement(TabGroupButton));
+    createRoot(container).render(React.createElement(StatusMessageButton));
   }
 }
 
