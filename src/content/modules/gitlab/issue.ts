@@ -1,19 +1,19 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { shouldHandleElement } from 'shared/dom';
-import TabGroupButton from './components/TabGroupButton';
+import IssueActions from './components/IssueActions';
 
 const menuSelector = '#new-actions-header-dropdown .gl-dropdown-contents';
-const containerId = 'tab-helper';
+const containerId = 'issue-actions';
 
-export function setupTabHelper() {
+export function setupIssueActions() {
   render();
 }
 
 function render() {
   const container = getContainer();
   if (shouldHandleElement(container)) {
-    createRoot(container).render(React.createElement(TabGroupButton));
+    createRoot(container).render(React.createElement(IssueActions));
   }
 }
 
@@ -26,10 +26,8 @@ function getContainer() {
   }
   let container = document.getElementById(containerId);
   if (!container) {
-    container = document.createElement('li');
+    container = document.createElement('div');
     container.setAttribute('id', containerId);
-    container.setAttribute('role', 'presentation');
-    container.classList.add('gl-dropdown-item');
     menu.appendChild(container);
   }
   return container;

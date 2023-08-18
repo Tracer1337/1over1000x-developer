@@ -36,6 +36,12 @@ export function queryIssueMRUrl() {
   );
 }
 
+export function queryIssueMenuButton() {
+  return document.querySelector<HTMLButtonElement>(
+    '#new-actions-header-dropdown__BV_toggle_',
+  );
+}
+
 export function queryCurrentRef() {
   const anchorElement = document.querySelector(
     '.merge-request-details a[title]',

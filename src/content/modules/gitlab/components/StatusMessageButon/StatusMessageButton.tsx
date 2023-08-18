@@ -1,10 +1,6 @@
-import { useState } from 'react';
-import { Alert, Snackbar } from '@mui/material';
 import { useStatusMessage } from './hooks/useStatusMessage';
 
-export function StatusMessageButton() {
-  const [success, setSuccess] = useState(false);
-
+export function StatusMessageButton({ onClick }: { onClick: () => void }) {
   const copyStatusMessage = useStatusMessage();
 
   return (
@@ -13,26 +9,12 @@ export function StatusMessageButton() {
         role="menuitem"
         type="button"
         className="dropdown-item"
-        onClick={() => copyStatusMessage().then(() => setSuccess(true))}
+        onClick={() => copyStatusMessage().then(() => onClick())}
       >
         <div className="gl-dropdown-item-text-wrapper">
           <p className="gl-dropdown-item-text-primary">Copy status message</p>
         </div>
       </button>
-      <Snackbar
-        open={success}
-        autoHideDuration={6000}
-        onClose={() => setSuccess(false)}
-      >
-        <Alert
-          severity="success"
-          variant="filled"
-          sx={{ width: '100%' }}
-          elevation={6}
-        >
-          Message copied
-        </Alert>
-      </Snackbar>
     </>
   );
 }
