@@ -22,12 +22,22 @@ export function shouldHandleElement(element: Element) {
   return true;
 }
 
-export function getOrCreateContainer(id: string) {
+export function getOrCreateContainer(
+  id: string,
+  parentSelector = 'body',
+  method: 'appendChild' | 'prepend' = 'appendChild',
+) {
+  const parent = document.querySelector(parentSelector);
+  if (!parent) {
+    throw new Error(
+      `Element with selector '${parentSelector}' could not be found`,
+    );
+  }
   let container = document.getElementById(id);
   if (!container) {
     container = document.createElement('div');
     container.setAttribute('id', id);
-    document.body.appendChild(container);
+    parent[method](container);
   }
   return container;
 }
