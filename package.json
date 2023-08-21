@@ -13,6 +13,7 @@
   "devDependencies": {
     "@types/canvas-confetti": "^1.6.0",
     "@types/chrome": "^0.0.242",
+    "@types/qs": "^6.9.7",
     "@types/react": "^18.2.16",
     "@types/react-dom": "^18.2.7",
     "adm-zip": "^0.5.10",
@@ -37,6 +38,7 @@
     "@mui/material": "^5.14.2",
     "canvas-confetti": "^1.6.0",
     "chatgpt": "^5.2.5",
+    "qs": "^6.11.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-transition-group": "^4.4.5",

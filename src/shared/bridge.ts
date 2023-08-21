@@ -8,7 +8,8 @@ export type Event = { senderId: string } & (
       event: 'create-tab-group';
       data: {
         title: string;
-        mrUrl?: string;
+        issueId: number;
+        mrUrl: string | null;
       };
     }
 );

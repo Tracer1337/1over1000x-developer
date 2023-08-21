@@ -1,3 +1,4 @@
+import qs from 'qs';
 import { Event } from 'shared/bridge';
 import { loadChatGPTClient } from 'shared/chatgpt';
 import { prompts } from 'shared/chatgpt';
@@ -26,10 +27,24 @@ async function collectTabs(
   }
   const mrTab = event.data.mrUrl
     ? await chrome.tabs.create({ url: event.data.mrUrl, active: false })
-    : null;
+    : await chrome.tabs.create({ url: getCreateMrUrl(event.data.issueId) });
   return [issueTab.id, mrTab?.id].filter(
     (id): id is number => id !== undefined,
   );
+}
+
+function getCreateMrUrl(issueId: number) {
+  const params = {
+    merge_request: {
+      source_project_id: '152',
+      source_branch: issueId,
+      target_project_id: '152',
+      target_branch: 'master',
+    },
+  };
+  return `https://gitlab.dzh.hamburg/theraos/app/-/merge_requests/new?${qs.stringify(
+    params,
+  )}`;
 }
 
 async function handleTabGroupTitle(
