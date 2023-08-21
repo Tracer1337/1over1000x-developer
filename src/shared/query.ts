@@ -50,12 +50,18 @@ const queries = {
     const currentBranchName = anchorElement.getAttribute('title');
     return currentBranchName ? `refs/heads/${currentBranchName}` : null;
   },
+  ['gitlab.mr-diff.file-menu-buttons']: (path: string) => {
+    return document.querySelector<HTMLButtonElement>(
+      `[data-path="${path}"] .dropdown-toggle`,
+    );
+  },
 };
 
 function query<K extends keyof typeof queries>(
   key: K,
+  ...args: Parameters<(typeof queries)[K]>
 ): ReturnType<(typeof queries)[K]> {
-  return queries[key]() as ReturnType<(typeof queries)[K]>;
+  return (queries[key] as any)(...args) as ReturnType<(typeof queries)[K]>;
 }
 
 export default query;

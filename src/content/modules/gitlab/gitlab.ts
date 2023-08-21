@@ -3,6 +3,7 @@ import { setupPipelineEnhancements } from './pipeline';
 import { setupConfetti } from './confetti';
 import { setupSuggestionHelper } from './suggestion';
 import { setupIssueActions } from './issue';
+import { setupFileHelper } from './file';
 
 export function setup() {
   registerRouteHandler({
@@ -22,6 +23,12 @@ export function setup() {
       'https://gitlab.dzh.hamburg/theraos/app/-/merge_requests/[^/]*/diffs',
     ),
     callback: setupSuggestionHelper,
+  });
+  registerRouteHandler({
+    path: RegExp(
+      'https://gitlab.dzh.hamburg/theraos/app/-/merge_requests/[^/]*/diffs',
+    ),
+    callback: setupFileHelper,
   });
   registerRouteHandler({
     path: RegExp('https://gitlab.dzh.hamburg/theraos/app/-/issues/\\d+'),
