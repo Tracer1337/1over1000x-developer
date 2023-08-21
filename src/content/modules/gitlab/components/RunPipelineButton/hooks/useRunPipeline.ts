@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { getApiHeaders } from 'shared/gitlab';
-import { queryCurrentRef } from 'shared/query';
+import query from 'shared/query';
 
 export function useRunPipeline({
   onSuccess,
@@ -20,7 +20,7 @@ export function useRunPipeline({
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        ref: queryCurrentRef(),
+        ref: query('gitlab.mr-pipeline.current-ref'),
         variables_attributes: [],
       }),
     })

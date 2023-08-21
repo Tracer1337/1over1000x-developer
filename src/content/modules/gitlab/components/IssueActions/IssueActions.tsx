@@ -1,9 +1,9 @@
-import { queryIssueMenuButton } from 'shared/query';
+import query from 'shared/query';
 import StatusMessageButton from '../StatusMessageButon';
 import TabGroupButton from '../TabGroupButton';
 
 export function IssueActions() {
-  const closeMenu = () => queryIssueMenuButton()?.click();
+  const closeMenu = () => query('gitlab.issue.menu-button')?.click();
 
   return (
     <>

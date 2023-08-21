@@ -1,8 +1,4 @@
-import {
-  queryIssueNumber,
-  queryIssueStatus,
-  queryIssueTitle,
-} from 'shared/query';
+import query from 'shared/query';
 
 export function useStatusMessage() {
   const copyStatusMessage = async () => {
@@ -14,16 +10,16 @@ export function useStatusMessage() {
   };
 
   const createStatusMessage = () => {
-    const issueNumber = queryIssueNumber();
+    const issueId = query('gitlab.issue.id');
     const issueUrl = location.href;
-    const issueTitle = queryIssueTitle();
-    const issueStatus = queryIssueStatus();
+    const issueTitle = query('gitlab.issue.title');
+    const issueStatus = query('gitlab.issue.status');
 
-    if (!issueNumber || !issueTitle || !issueStatus) {
+    if (!issueId || !issueTitle || !issueStatus) {
       return null;
     }
 
-    return `[#${issueNumber}](${issueUrl}) \`${issueTitle}\` ${issueStatus}`;
+    return `[#${issueId}](${issueUrl}) \`${issueTitle}\` ${issueStatus}`;
   };
 
   return copyStatusMessage;

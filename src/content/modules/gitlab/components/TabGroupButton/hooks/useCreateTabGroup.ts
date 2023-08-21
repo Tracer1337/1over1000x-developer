@@ -1,15 +1,11 @@
 import { Event, senderId } from 'shared/bridge';
-import {
-  queryIssueMRUrl,
-  queryIssueNumber,
-  queryIssueTitle,
-} from 'shared/query';
+import query from 'shared/query';
 
 export function useCreateTabGroup() {
   const createTabGroup = () => {
-    const title = queryIssueTitle();
-    const mrUrl = queryIssueMRUrl();
-    const issueId = queryIssueNumber();
+    const title = query('gitlab.issue.title');
+    const mrUrl = query('gitlab.issue.mr-url');
+    const issueId = query('gitlab.issue.id');
     if (!title || !issueId) {
       return;
     }
