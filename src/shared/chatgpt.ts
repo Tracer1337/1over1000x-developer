@@ -35,7 +35,7 @@ export const prompts = {
   "Letzte Dokumentationen im Doku-Modal integrieren" -> "Doku-Modal"
   "🐛 hatTheveaNeuigkeitenGelesen wird nach Logout weiterhin abgefragt" -> "Nachrichten"
 
-  Deine Antwort darf nur ein einziges Wort beinhalten und darf maximal 18 Zeichen lang sein.
+  Deine Antwort darf nur ein einziges Wort beinhalten und maximal 18 Zeichen lang sein.
 
   Wende das Verfahren auf den folgenden Titel an: {0}
   `,
