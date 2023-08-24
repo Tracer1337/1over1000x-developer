@@ -2,10 +2,10 @@ export const senderId = '1/1000x-developer';
 
 export type Event = { senderId: string } & (
   | {
-      event: 'navigation-change';
+      type: 'navigation.change';
     }
   | {
-      event: 'create-tab-group';
+      type: 'tab-group.create';
       data: {
         title: string;
         issueId: number;

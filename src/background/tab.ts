@@ -3,7 +3,7 @@ import { Event } from 'shared/bridge';
 import { loadChatGPTClient } from 'shared/chatgpt';
 import { prompts } from 'shared/chatgpt';
 
-type CreateTabGroupEvent = Extract<Event, { event: 'create-tab-group' }>;
+type CreateTabGroupEvent = Extract<Event, { type: 'tab-group.create' }>;
 
 export async function createTabGroup(
   event: CreateTabGroupEvent,

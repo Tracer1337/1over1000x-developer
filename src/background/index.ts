@@ -10,7 +10,7 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(() => {
     if (!tabId) {
       return;
     }
-    const event: Event = { senderId, event: 'navigation-change' };
+    const event: Event = { senderId, type: 'navigation.change' };
     chrome.tabs.sendMessage(tabId, event).catch(() => {});
   });
 });
@@ -20,8 +20,8 @@ chrome.runtime.onMessage.addListener((message, sender) => {
     return;
   }
 
-  switch (message.event) {
-    case 'create-tab-group':
+  switch (message.type) {
+    case 'tab-group.create':
       createTabGroup(message, sender);
   }
 });

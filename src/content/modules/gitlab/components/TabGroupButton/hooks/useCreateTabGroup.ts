@@ -11,7 +11,7 @@ export function useCreateTabGroup() {
     }
     const event: Event = {
       senderId,
-      event: 'create-tab-group',
+      type: 'tab-group.create',
       data: { title, mrUrl, issueId },
     };
     chrome.runtime.sendMessage(event);

@@ -6,8 +6,8 @@ chrome.runtime.onMessage.addListener((message) => {
   if (!isEvent(message)) {
     return;
   }
-  switch (message.event) {
-    case 'navigation-change':
+  switch (message.type) {
+    case 'navigation.change':
       runRouteHandlers();
   }
 });
