@@ -1,11 +1,14 @@
 import { createRoot } from 'react-dom/client';
 import { CssBaseline } from '@mui/material';
-import ChatGPTEmbed from 'popup/chatgpt/components/ChatGPTEmbed';
+import { Event, senderId } from 'shared/bridge';
+import App from './components/App';
 
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+
+handleIconClick();
 
 const container = document.getElementById('root');
 if (!container) {
@@ -15,6 +18,14 @@ if (!container) {
 const root = createRoot(container);
 root.render(
   <CssBaseline>
-    <ChatGPTEmbed />
+    <App />
   </CssBaseline>,
 );
+
+function handleIconClick() {
+  const stopCaptureEvent: Event = {
+    senderId,
+    type: 'capture.stop',
+  };
+  chrome.runtime.sendMessage(stopCaptureEvent);
+}

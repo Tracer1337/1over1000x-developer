@@ -1,15 +1,21 @@
 export const senderId = '1/1000x-developer';
 
 export type Event = { senderId: string } & (
-  | {
-      type: 'navigation.change';
-    }
+  | { type: 'navigation.change' }
   | {
       type: 'tab-group.create';
       data: {
         title: string;
         issueId: number;
         mrUrl: string | null;
+      };
+    }
+  | { type: 'capture.start' }
+  | { type: 'capture.stop' }
+  | {
+      type: 'capture.process';
+      data: {
+        progress: number;
       };
     }
 );
@@ -48,4 +54,15 @@ export function createRenderLoop(callback: () => void, interval = 200) {
   const intervalId = setInterval(callback, interval);
   callback();
   return () => clearInterval(intervalId);
+}
+
+export async function resetIcon() {
+  await chrome.action.setIcon({
+    path: {
+      16: 'icons/icon_16.png',
+      32: 'icons/icon_32.png',
+      48: 'icons/icon_48.png',
+      128: 'icons/icon_128.png',
+    },
+  });
 }

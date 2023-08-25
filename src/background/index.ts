@@ -1,6 +1,7 @@
 import { Event, isEvent, senderId } from 'shared/bridge';
 import { chatGPTPolyfill } from 'shared/chatgpt';
 import { createTabGroup } from './tab';
+import { startScreenCapture, stopScreenCapture } from './capture';
 
 chatGPTPolyfill();
 
@@ -22,6 +23,10 @@ chrome.runtime.onMessage.addListener((message, sender) => {
 
   switch (message.type) {
     case 'tab-group.create':
-      createTabGroup(message, sender);
+      return createTabGroup(message, sender);
+    case 'capture.start':
+      return startScreenCapture();
+    case 'capture.stop':
+      return stopScreenCapture?.();
   }
 });
