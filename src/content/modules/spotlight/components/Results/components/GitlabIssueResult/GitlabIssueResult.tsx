@@ -18,7 +18,7 @@ export function GitlabIssueResult({
   return (
     <Paper
       variant="outlined"
-      sx={{ height: 56, p: 2, display: 'flex' }}
+      sx={{ height: 32, p: 2, display: 'flex', alignItems: 'center' }}
       component="a"
       href={href}
       target="_blank"

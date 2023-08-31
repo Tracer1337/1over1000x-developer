@@ -1,3 +1,9 @@
+import React from 'react';
+import createCache from '@emotion/cache';
+import { CacheProvider } from '@emotion/react';
+import { createTheme, ThemeProvider } from '@mui/material';
+import { createPortal } from 'react-dom';
+
 export async function waitForSelector<T extends HTMLElement>(
   selector: string,
   timeout = 5,
@@ -40,4 +46,50 @@ export function getOrCreateContainer(
     parent[method](container);
   }
   return container;
+}
+
+export function withShadowRoot(
+  container: HTMLElement,
+  children: React.ReactNode,
+): React.ReactNode {
+  const shadowContainer = container.attachShadow({ mode: 'open' });
+  const emotionRoot = document.createElement('style');
+  const shadowRootElement = document.createElement('div');
+  shadowContainer.appendChild(emotionRoot);
+  shadowContainer.appendChild(shadowRootElement);
+
+  const cache = createCache({
+    key: 'css',
+    prepend: true,
+    container: emotionRoot,
+  });
+
+  const theme = createTheme({
+    components: {
+      MuiPopover: {
+        defaultProps: {
+          container: shadowRootElement,
+        },
+      },
+      MuiPopper: {
+        defaultProps: {
+          container: shadowRootElement,
+        },
+      },
+      MuiModal: {
+        defaultProps: {
+          container: shadowRootElement,
+        },
+      },
+    },
+  });
+
+  return createPortal(
+    React.createElement(
+      CacheProvider,
+      { value: cache },
+      React.createElement(ThemeProvider, { theme }, children),
+    ),
+    shadowContainer,
+  );
 }

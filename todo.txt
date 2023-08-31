@@ -1,0 +1,3 @@
+Settings über Local-Storage und Config-Page handeln
+Open in VSCode Link auch in MR Threads
+GitLab Icon in lokale Assets verschieben
