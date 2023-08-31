@@ -9,7 +9,7 @@ export function useSpotlightShortcuts({
 }) {
   const handleKeydown = useCallback(
     (event: KeyboardEvent) => {
-      if (event.ctrlKey && event.key === 'p') {
+      if ((event.ctrlKey || event.altKey) && event.key === 'p') {
         event.preventDefault();
         open();
       }
