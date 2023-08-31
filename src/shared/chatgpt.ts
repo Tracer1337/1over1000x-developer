@@ -1,5 +1,5 @@
 import { ChatGPTAPI } from 'chatgpt';
-import { StorageKeys } from './storage';
+import { loadSettings } from './storage';
 
 export function chatGPTPolyfill() {
   self.Buffer = {
@@ -16,11 +16,9 @@ export async function loadChatGPTClient() {
 }
 
 async function getChatGPTApiKey() {
-  const apiKey = (await chrome.storage.local.get(StorageKeys.CHATGPT_TOKEN))[
-    StorageKeys.CHATGPT_TOKEN
-  ];
-  if (apiKey) {
-    return apiKey;
+  const settings = await loadSettings();
+  if (settings.chatGPTApiKey) {
+    return settings.chatGPTApiKey;
   }
   chrome.runtime.openOptionsPage();
 }

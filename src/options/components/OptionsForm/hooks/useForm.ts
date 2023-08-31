@@ -1,14 +1,14 @@
 import { ChangeEventHandler, FormEvent, useEffect, useState } from 'react';
-import { StorageKeys } from 'shared/storage';
+import { loadSettings } from 'shared/storage';
 
 export type OptionsForm = {
   chatGPTApiKey: string;
 };
 
 const loadOptionsForm = async (): Promise<OptionsForm> => {
-  const storage = await chrome.storage.local.get([StorageKeys.CHATGPT_TOKEN]);
+  const settings = await loadSettings();
   return {
-    chatGPTApiKey: storage[StorageKeys.CHATGPT_TOKEN] ?? '',
+    chatGPTApiKey: settings.chatGPTApiKey ?? '',
   };
 };
 

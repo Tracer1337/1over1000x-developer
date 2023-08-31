@@ -1,16 +1,14 @@
 import { OptionsForm } from './useForm';
 import { useState } from 'react';
-import { StorageKeys } from 'shared/storage';
+import { saveSettings } from 'shared/storage';
 
 export function useSubmit() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
 
-  const submit = (form: OptionsForm) => {
+  const submit = async (form: OptionsForm) => {
     setIsLoading(true);
-    chrome.storage.local.set({
-      [StorageKeys.CHATGPT_TOKEN]: form.chatGPTApiKey,
-    });
+    await saveSettings(form);
     setIsSnackbarOpen(true);
     setIsLoading(false);
   };
