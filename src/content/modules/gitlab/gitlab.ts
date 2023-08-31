@@ -26,7 +26,7 @@ export function setup() {
   });
   registerRouteHandler({
     path: RegExp(
-      'https://gitlab.dzh.hamburg/theraos/app/-/merge_requests/[^/]*/diffs',
+      'https://gitlab.dzh.hamburg/theraos/app/-/merge_requests/[^/]*(/diffs)?$',
     ),
     callback: setupFileHelper,
   });

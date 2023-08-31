@@ -4,6 +4,9 @@ const ISSUE_STATUS_LABELS = new Set([
   'ready for merge',
 ]);
 
+/**
+ * Format for query names: host.page.selector
+ */
 const queries = {
   ['gitlab.issue.title']: () => {
     return document.querySelector('h1')?.textContent ?? null;
@@ -38,6 +41,9 @@ const queries = {
       '#new-actions-header-dropdown__BV_toggle_',
     );
   },
+  ['gitlab.mr-overview.thread-file-actions-sibling']: (file: Element) => {
+    return file.querySelector('.more-actions ul li:nth-child(2)');
+  },
   ['gitlab.mr-pipeline.current-ref']: () => {
     const anchorElement = document.querySelector(
       '.merge-request-details a[title]',
@@ -50,10 +56,13 @@ const queries = {
     const currentBranchName = anchorElement.getAttribute('title');
     return currentBranchName ? `refs/heads/${currentBranchName}` : null;
   },
-  ['gitlab.mr-diff.file-menu-buttons']: (path: string) => {
+  ['gitlab.mr-diff.file-menu-button']: (path: string) => {
     return document.querySelector<HTMLButtonElement>(
       `[data-path="${path}"] .dropdown-toggle`,
     );
+  },
+  ['gitlab.mr-diff.file-actions-sibling']: (file: Element) => {
+    return file.querySelector('ul[role="menu"] .gl-dropdown-item:nth-child(3)');
   },
 };
 
