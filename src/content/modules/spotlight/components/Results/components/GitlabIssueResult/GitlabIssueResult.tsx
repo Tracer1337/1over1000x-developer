@@ -25,7 +25,7 @@ export function GitlabIssueResult({
     >
       <Box
         component="img"
-        src="https://about.gitlab.com/images/press/logo/svg/gitlab-logo-500.svg"
+        src={chrome.runtime.getURL('/assets/gitlab-logo.svg')}
         sx={{ width: 48, my: -2, ml: -1, mr: 1 }}
       />
       <Typography>Issue #{result.data.issueId}</Typography>
