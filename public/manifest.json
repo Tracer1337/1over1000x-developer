@@ -17,6 +17,7 @@
   "permissions": [
     "storage",
     "webNavigation",
+    "tabs",
     "tabGroups",
     "tabCapture",
     "offscreen",

@@ -17,7 +17,10 @@ export function App() {
 
   return (
     <Box sx={{ width: 300, height: 400 }}>
-      <Paper square sx={{ p: 3, mb: '50px', height: '100%' }}>
+      <Paper
+        square
+        sx={{ p: 3, pb: '50px', height: '100%', overflowY: 'auto' }}
+      >
         {createElement(views[tab])}
       </Paper>
       <Navigation tab={tab} onChange={setTab} />

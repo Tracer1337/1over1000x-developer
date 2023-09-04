@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 export enum StorageKeys {
   SETTINGS = 'settings',
   POPUP_TAB = 'popup_tab',
+  TAB_GROUPS = 'tab_groups',
 }
 
 export type Settings = {
