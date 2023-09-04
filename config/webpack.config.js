@@ -11,6 +11,7 @@ const config = (env, argv) =>
     entry: {
       content: PATHS.src + '/content/index.ts',
       background: PATHS.src + '/background/index.ts',
+      offscreen: PATHS.src + '/offscreen/index.ts',
       popup: PATHS.src + '/popup/index.tsx',
       options: PATHS.src + '/options/index.tsx',
     },

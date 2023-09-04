@@ -12,7 +12,7 @@
   },
   "devDependencies": {
     "@types/canvas-confetti": "^1.6.0",
-    "@types/chrome": "^0.0.242",
+    "@types/chrome": "^0.0.244",
     "@types/qs": "^6.9.7",
     "@types/react": "^18.2.16",
     "@types/react-dom": "^18.2.7",
@@ -33,6 +33,9 @@
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@ffmpeg/core": "^0.12.3",
+    "@ffmpeg/ffmpeg": "^0.12.6",
+    "@ffmpeg/util": "^0.12.1",
     "@fontsource/roboto": "^5.0.5",
     "@mui/icons-material": "^5.14.1",
     "@mui/lab": "^5.0.0-alpha.137",

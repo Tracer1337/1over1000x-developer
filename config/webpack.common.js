@@ -63,6 +63,9 @@ const common = {
           from: '**/*',
           context: 'public',
         },
+        'node_modules/@ffmpeg/ffmpeg/dist/umd/814.ffmpeg.js',
+        'node_modules/@ffmpeg/core/dist/umd/ffmpeg-core.js',
+        'node_modules/@ffmpeg/core/dist/umd/ffmpeg-core.wasm',
       ],
     }),
     // Extract CSS into separate files

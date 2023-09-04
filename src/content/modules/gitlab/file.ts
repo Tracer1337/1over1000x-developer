@@ -1,10 +1,10 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import { match } from 'ts-pattern';
 import { createRenderLoop } from 'shared/bridge';
 import { shouldHandleElement } from 'shared/dom';
 import query from 'shared/query';
 import FileActions from './components/FileActions';
-import { match } from 'ts-pattern';
 
 export type FileHelperPages = 'mr-overview' | 'mr-diff';
 
@@ -20,16 +20,11 @@ function render() {
 
 function renderFileHelper(file: HTMLElement) {
   const container = getFileActionContainer(file);
-  const path = () =>
-    match(getCurrentPage())
-      .with(
-        'mr-overview',
-        () => (file.firstChild as HTMLElement).dataset.qaFileName,
-      )
-      .with('mr-diff', () => file.dataset.path)
-      .exhaustive() as string;
   createRoot(container).render(
-    React.createElement(FileActions, { path, page: getCurrentPage() }),
+    React.createElement(FileActions, {
+      path: getFilePathQuery(file),
+      page: getCurrentPage(),
+    }),
   );
 }
 
@@ -50,4 +45,15 @@ function getFileActionContainer(file: HTMLElement) {
   }
   sibling.after(container);
   return container;
+}
+
+function getFilePathQuery(file: HTMLElement) {
+  return () =>
+    match(getCurrentPage())
+      .with(
+        'mr-overview',
+        () => (file.firstChild as HTMLElement).dataset.qaFileName,
+      )
+      .with('mr-diff', () => file.dataset.path)
+      .exhaustive() as string;
 }

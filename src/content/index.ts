@@ -8,7 +8,7 @@ chrome.runtime.onMessage.addListener((message) => {
   }
   switch (message.type) {
     case 'navigation.change':
-      runRouteHandlers();
+      return runRouteHandlers();
   }
 });
 

@@ -13,6 +13,19 @@ export type Event = { senderId: string } & (
   | { type: 'capture.start' }
   | { type: 'capture.stop' }
   | {
+      type: 'capture.start-recording';
+      data: {
+        streamId: string;
+      };
+    }
+  | { type: 'capture.stop-recording' }
+  | {
+      type: 'capture.transmit-recording';
+      data: {
+        url: string;
+      };
+    }
+  | {
       type: 'capture.process';
       data: {
         progress: number;
@@ -65,4 +78,16 @@ export async function resetIcon() {
       128: 'icons/icon_128.png',
     },
   });
+}
+
+export async function getCurrentTab() {
+  return new Promise<chrome.tabs.Tab>((resolve, reject) =>
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (!tabs[0]) {
+        reject('Could not find current tab');
+        return;
+      }
+      resolve(tabs[0]);
+    }),
+  );
 }

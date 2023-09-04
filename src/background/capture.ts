@@ -1,68 +1,92 @@
-import { Event, resetIcon, senderId } from 'shared/bridge';
-
-type Video = 0;
+import { Event, getCurrentTab, resetIcon, senderId } from 'shared/bridge';
 
 export let stopScreenCapture: (() => void) | null = null;
+export let transmitScreenCapture: ((url: string) => void) | null = null;
 
 export async function startScreenCapture() {
-  if (stopScreenCapture !== null) {
-    throw new Error('Screen capture is already running');
-  }
+  assertNoRunningScreenCapture();
+  assertNoOffscreenDocument();
 
   await chrome.action.setIcon({ path: '/assets/stop-icon.png' });
 
-  console.log('Start screen capture');
-
-  const video = await runScreenCapture();
-
-  console.log('End screen capture');
+  const videoUrl = await runScreenCapture();
 
   await resetIcon();
 
-  const gif = await processScreenCapture(video);
+  await downloadScreenCapture(videoUrl);
 
-  downloadScreenCapture(gif);
+  await chrome.offscreen.closeDocument();
 }
 
 async function runScreenCapture() {
-  let isRecording = true;
-  let duration = 0;
+  const tab = await getCurrentTab();
 
-  stopScreenCapture = () => {
-    isRecording = false;
+  if (!tab.id) {
+    throw new Error('Tab id is not set');
+  }
+
+  const streamId = await new Promise<string>((resolve) =>
+    chrome.tabCapture.getMediaStreamId({ targetTabId: tab.id }, resolve),
+  );
+
+  await chrome.offscreen.createDocument({
+    url: 'offscreen.html',
+    reasons: [
+      chrome.offscreen.Reason.USER_MEDIA,
+      chrome.offscreen.Reason.BLOBS,
+      chrome.offscreen.Reason.WORKERS,
+    ],
+    justification: 'Recording from chrome.tabCapture API',
+  });
+
+  const event: Event = {
+    senderId,
+    type: 'capture.start-recording',
+    data: { streamId },
   };
 
-  while (isRecording) {
-    await updateActionTimer(duration);
-    duration += 500;
-    await new Promise((resolve) => setTimeout(resolve, 500));
-  }
+  chrome.runtime.sendMessage(event);
 
-  stopScreenCapture = null;
+  const stopTimer = startTimer();
 
-  clearActionTimer();
+  const [videoUrl] = await Promise.all([
+    new Promise<string>((resolve) => {
+      transmitScreenCapture = (url: string) => {
+        resolve(url);
+        transmitScreenCapture = null;
+      };
+    }),
+    new Promise<void>((resolve) => {
+      stopScreenCapture = () => {
+        const event: Event = { senderId, type: 'capture.stop-recording' };
+        chrome.runtime.sendMessage(event);
+        resolve();
+        stopTimer();
+        stopScreenCapture = null;
+      };
+    }),
+  ]);
 
-  return 0 as Video;
+  return videoUrl;
 }
 
-async function processScreenCapture(video: Video) {
-  for (let i = 1; i <= 10; i++) {
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    console.log('Process screen capture', { video, i });
-    const event: Event = {
-      senderId,
-      type: 'capture.process',
-      data: {
-        progress: i / 10,
-      },
-    };
-    chrome.runtime.sendMessage(event);
-  }
-  return new Blob();
+async function downloadScreenCapture(gifUrl: string) {
+  await chrome.downloads.download({
+    url: gifUrl,
+    filename: 'recording.gif',
+  });
 }
 
-function downloadScreenCapture(gif: Blob) {
-  console.log('Download screen capture', { gif });
+function startTimer() {
+  let startTime = Date.now();
+  const interval = setInterval(
+    () => updateActionTimer(Date.now() - startTime),
+    50,
+  );
+  return () => {
+    clearInterval(interval);
+    clearActionTimer();
+  };
 }
 
 async function updateActionTimer(time: number) {
@@ -77,4 +101,23 @@ async function updateActionTimer(time: number) {
 
 async function clearActionTimer() {
   await chrome.action.setBadgeText({ text: '' });
+}
+
+async function assertNoRunningScreenCapture() {
+  if (stopScreenCapture !== null) {
+    throw new Error('Screen capture is already running');
+  }
+}
+
+async function assertNoOffscreenDocument() {
+  // @ts-ignore
+  const existingContexts = await chrome.runtime.getContexts({});
+
+  const offscreenDocument = existingContexts.find(
+    (context: any) => context.contextType === 'OFFSCREEN_DOCUMENT',
+  );
+
+  if (offscreenDocument) {
+    throw new Error('Offscreen Document already exists');
+  }
 }

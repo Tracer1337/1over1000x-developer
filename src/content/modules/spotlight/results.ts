@@ -7,9 +7,7 @@ export type SpotlightResult = {
 };
 
 export function generateResults(input: string) {
-  const results: SpotlightResult[] = [];
-  results.push(...generateGitlabIssueResults(input));
-  return results;
+  return [...generateGitlabIssueResults(input)];
 }
 
 function generateGitlabIssueResults(

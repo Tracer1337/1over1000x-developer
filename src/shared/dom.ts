@@ -48,6 +48,9 @@ export function getOrCreateContainer(
   return container;
 }
 
+/**
+ * TODO: Refactor to HOC
+ */
 export function withShadowRoot(
   container: HTMLElement,
   children: React.ReactNode,
