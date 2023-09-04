@@ -6,7 +6,9 @@ export function ScreenCaptureProcess() {
 
   return (
     <Fade in={progress < 1}>
-      <Typography>Processing... ({Math.floor(progress * 100)}%)</Typography>
+      <Typography variant="subtitle2">
+        Processing... ({Math.floor(progress * 100)}%)
+      </Typography>
     </Fade>
   );
 }

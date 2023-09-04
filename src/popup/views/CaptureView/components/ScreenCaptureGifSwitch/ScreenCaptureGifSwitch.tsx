@@ -1,5 +1,5 @@
 import { FormControlLabel, Switch } from '@mui/material';
-import { useSettings } from './hooks/useSettings';
+import { useSettings } from 'shared/storage';
 
 export function ScreenCaptureGifSwitch() {
   const [settings, setSettings] = useSettings();
