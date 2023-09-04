@@ -2,13 +2,15 @@ export enum StorageKeys {
   SETTINGS = 'settings',
 }
 
-type Settings = {
+export type Settings = {
   chatGPTApiKey: string | null;
+  recordGif: boolean;
 };
 
 function getDefaultSettings(): Settings {
   return {
     chatGPTApiKey: null,
+    recordGif: false,
   };
 }
 

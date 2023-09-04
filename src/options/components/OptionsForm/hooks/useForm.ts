@@ -1,13 +1,14 @@
 import { ChangeEventHandler, FormEvent, useEffect, useState } from 'react';
-import { loadSettings } from 'shared/storage';
+import { Settings, loadSettings } from 'shared/storage';
 
-export type OptionsForm = {
+export type OptionsForm = Settings & {
   chatGPTApiKey: string;
 };
 
 const loadOptionsForm = async (): Promise<OptionsForm> => {
   const settings = await loadSettings();
   return {
+    ...settings,
     chatGPTApiKey: settings.chatGPTApiKey ?? '',
   };
 };
@@ -26,7 +27,7 @@ export function useOptionsForm() {
   }, []);
 
   const inputs: Record<
-    keyof OptionsForm,
+    keyof Pick<OptionsForm, 'chatGPTApiKey'>,
     { value: any; onChange: ChangeEventHandler<HTMLInputElement> }
   > = {
     chatGPTApiKey: {
@@ -37,9 +38,10 @@ export function useOptionsForm() {
 
   const handleSubmit =
     (submit: (form: OptionsForm) => void) =>
-    (event: FormEvent<HTMLFormElement>) => {
+    async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      submit({ chatGPTApiKey });
+      const settings = await loadSettings();
+      submit({ ...settings, chatGPTApiKey });
     };
 
   return {

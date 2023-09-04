@@ -1,3 +1,5 @@
+import { Settings } from './storage';
+
 export const senderId = '1/1000x-developer';
 
 export type Event = { senderId: string } & (
@@ -16,6 +18,7 @@ export type Event = { senderId: string } & (
       type: 'capture.start-recording';
       data: {
         streamId: string;
+        settings: Settings;
       };
     }
   | { type: 'capture.stop-recording' }

@@ -2,11 +2,15 @@ import { FFmpeg } from '@ffmpeg/ffmpeg';
 import { ProgressEvent } from '@ffmpeg/ffmpeg/dist/esm/types';
 import { fetchFile } from '@ffmpeg/util';
 import { Event, senderId } from 'shared/bridge';
+import { Settings, loadSettings } from 'shared/storage';
 
 let recorder: MediaRecorder | null;
 let data: Blob[] = [];
 
-export async function startRecording(streamId: string) {
+export async function startRecording({
+  streamId,
+  settings,
+}: Extract<Event, { type: 'capture.start-recording' }>['data']) {
   if (recorder) {
     throw new Error('Recorder is already running');
   }
@@ -30,7 +34,7 @@ export async function startRecording(streamId: string) {
 
   recorder.addEventListener('stop', () => {
     const blob = new Blob(data, { type: 'video/webm' });
-    processVideo(blob);
+    processVideo(blob, settings);
     data = [];
   });
 
@@ -46,7 +50,19 @@ export async function stopRecording() {
   recorder = null;
 }
 
-async function processVideo(video: Blob) {
+async function processVideo(video: Blob, settings: Settings) {
+  const url = settings.recordGif
+    ? await convertToGif(video)
+    : URL.createObjectURL(new Blob([video], { type: 'video/webm' }));
+  const event: Event = {
+    senderId,
+    type: 'capture.transmit-recording',
+    data: { url },
+  };
+  chrome.runtime.sendMessage(event);
+}
+
+async function convertToGif(video: Blob) {
   const ffmpeg = new FFmpeg();
   ffmpeg.on('progress', handleProgress);
   await ffmpeg.load({
@@ -56,13 +72,7 @@ async function processVideo(video: Blob) {
   await ffmpeg.writeFile('input.webm', await fetchFile(video));
   await ffmpeg.exec(['-i', 'input.webm', 'output.gif']);
   const output = await ffmpeg.readFile('output.gif');
-  const url = URL.createObjectURL(new Blob([output], { type: 'image/gif' }));
-  const event: Event = {
-    senderId,
-    type: 'capture.transmit-recording',
-    data: { url },
-  };
-  chrome.runtime.sendMessage(event);
+  return URL.createObjectURL(new Blob([output], { type: 'image/gif' }));
 }
 
 function handleProgress({ progress }: ProgressEvent) {

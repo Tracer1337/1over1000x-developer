@@ -8,7 +8,7 @@ chrome.runtime.onMessage.addListener(async (message) => {
 
   switch (message.type) {
     case 'capture.start-recording':
-      startRecording(message.data.streamId);
+      startRecording(message.data);
       break;
     case 'capture.stop-recording':
       stopRecording();

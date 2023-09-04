@@ -1,4 +1,5 @@
 import { Event, getCurrentTab, resetIcon, senderId } from 'shared/bridge';
+import { loadSettings } from 'shared/storage';
 
 export let stopScreenCapture: (() => void) | null = null;
 export let transmitScreenCapture: ((url: string) => void) | null = null;
@@ -42,7 +43,7 @@ async function runScreenCapture() {
   const event: Event = {
     senderId,
     type: 'capture.start-recording',
-    data: { streamId },
+    data: { streamId, settings: await loadSettings() },
   };
 
   chrome.runtime.sendMessage(event);
@@ -71,9 +72,10 @@ async function runScreenCapture() {
 }
 
 async function downloadScreenCapture(gifUrl: string) {
+  const settings = await loadSettings();
   await chrome.downloads.download({
     url: gifUrl,
-    filename: 'recording.gif',
+    filename: settings.recordGif ? 'recording.gif' : 'recording.webm',
   });
 }
 
