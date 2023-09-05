@@ -1,12 +1,13 @@
 import { createElement } from 'react';
 import { Box, Paper } from '@mui/material';
 import Navigation from '../Navigation';
-import CaptureView from '../../views/CaptureView';
-import TabView from '../../views/TabView';
-import ModulesView from '../../views/ModulesView';
+import CaptureView from 'popup/views/CaptureView';
+import TabView from 'popup/views/TabView';
+import CommandsView from 'popup/views/CommandsView';
+import ModulesView from 'popup/views/ModulesView';
 import { useTab } from './hooks/useTab';
 
-const views = [CaptureView, TabView, ModulesView];
+const views = [CaptureView, TabView, CommandsView, ModulesView];
 
 export function App() {
   const [tab, setTab] = useTab();
