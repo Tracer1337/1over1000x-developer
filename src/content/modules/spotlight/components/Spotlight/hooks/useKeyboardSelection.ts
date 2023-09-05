@@ -21,7 +21,7 @@ export function useKeyboardSelection(results: SpotlightResult[]) {
           break;
       }
     },
-    [results],
+    [results, selection],
   );
 
   useEffect(() => {

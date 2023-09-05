@@ -4,6 +4,7 @@ import { TransitionGroup } from 'react-transition-group';
 import { match } from 'ts-pattern';
 import { SpotlightResult } from '../../results';
 import GitlabIssueResult from './components/GitlabIssueResult';
+import CommandResult from './components/CommandResult';
 
 export function Results({
   results,
@@ -30,7 +31,14 @@ export function Results({
             })}
           >
             {match(result)
-              .with({ type: 'gitlab-issue' }, () => (
+              .with({ type: 'command' }, (result) => (
+                <CommandResult
+                  result={result}
+                  selected={result === selectedResult}
+                  onClose={onClose}
+                />
+              ))
+              .with({ type: 'gitlab-issue' }, (result) => (
                 <GitlabIssueResult
                   result={result}
                   selected={result === selectedResult}

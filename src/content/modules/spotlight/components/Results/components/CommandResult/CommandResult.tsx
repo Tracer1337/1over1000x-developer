@@ -1,22 +1,25 @@
-import { Paper, Box, Typography } from '@mui/material';
+import { Paper, Typography } from '@mui/material';
 import { SpotlightResult } from 'content/modules/spotlight/results';
 import { useAction } from '../../hooks/useAction';
+import { Event, senderId } from 'shared/bridge';
 
-export function GitlabIssueResult({
+export function CommandResult({
   result,
   selected,
   onClose,
 }: {
-  result: Extract<SpotlightResult, { type: 'gitlab-issue' }>;
+  result: Extract<SpotlightResult, { type: 'command' }>;
   selected: boolean;
   onClose: () => void;
 }) {
-  const href = `https://gitlab.dzh.hamburg/theraos/app/-/issues/${result.data.issueId}`;
-
   const action = useAction({
     active: selected,
     callback: () => {
-      window.open(href, '_blank');
+      const event: Event = {
+        senderId,
+        type: `command.${result.data.command.key}`,
+      };
+      chrome.runtime.sendMessage(event);
       onClose();
     },
   });
@@ -29,12 +32,7 @@ export function GitlabIssueResult({
       href="#"
       onClick={action}
     >
-      <Box
-        component="img"
-        src={chrome.runtime.getURL('/assets/gitlab-logo.svg')}
-        sx={{ width: 48, my: -2, ml: -1, mr: 1 }}
-      />
-      <Typography>Issue #{result.data.issueId}</Typography>
+      <Typography>{result.data.command.label}</Typography>
     </Paper>
   );
 }

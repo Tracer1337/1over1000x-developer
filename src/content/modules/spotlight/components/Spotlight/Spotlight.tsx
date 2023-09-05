@@ -26,12 +26,6 @@ export function Spotlight() {
 
   useEffect(() => setResults(generateResults(input)), [input]);
 
-  const handleInputBlur = () => {
-    if (selectedResult === null) {
-      setIsOpen(false);
-    }
-  };
-
   useEffect(() => {
     if (!isOpen) {
       setInput('');
@@ -73,7 +67,6 @@ export function Spotlight() {
           fullWidth
           autoFocus
           autoComplete="off"
-          onBlur={handleInputBlur}
           inputRef={inputRef}
         />
         <Results

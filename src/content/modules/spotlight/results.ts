@@ -1,13 +1,46 @@
-export type SpotlightResult = {
-  type: 'gitlab-issue';
-  id: string;
-  data: {
-    issueId: number;
-  };
-};
+import { commandDefs } from 'shared/types';
+
+export type SpotlightResult =
+  | {
+      type: 'command';
+      id: string;
+      data: {
+        command: (typeof commandDefs)[number];
+      };
+    }
+  | {
+      type: 'gitlab-issue';
+      id: string;
+      data: {
+        issueId: number;
+      };
+    };
 
 export function generateResults(input: string) {
-  return [...generateGitlabIssueResults(input)];
+  return [
+    ...generateCommandResults(input),
+    ...generateGitlabIssueResults(input),
+  ];
+}
+
+function generateCommandResults(
+  input: string,
+): Extract<SpotlightResult, { type: 'command' }>[] {
+  if (input[0] !== '>') {
+    return [];
+  }
+  input = input.slice(1);
+  return commandDefs
+    .filter(
+      (command) =>
+        input.length === 0 ||
+        command.label.toLowerCase().startsWith(input.toLowerCase()),
+    )
+    .map((command) => ({
+      type: 'command',
+      id: `command-${command.key}`,
+      data: { command },
+    }));
 }
 
 function generateGitlabIssueResults(

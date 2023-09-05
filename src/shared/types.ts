@@ -16,11 +16,7 @@ export type Command = (typeof commandDefs)[number]['key'];
 export const commandDefs = [
   {
     key: 'reload-tabs',
-    label: 'Reload all tabs',
-  },
-  {
-    key: 'tab-capture',
-    label: 'Record current tab',
+    label: 'Reload All Tabs',
   },
 ] as const;
 

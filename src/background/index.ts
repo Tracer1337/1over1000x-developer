@@ -32,5 +32,8 @@ chrome.runtime.onMessage.addListener((event, sender) => {
       return stopScreenCapture?.();
     case 'capture.transmit-recording':
       return transmitScreenCapture?.(event.data.url);
+    case 'command.reload-tabs':
+      console.log('Reload tabs');
+      return;
   }
 });
