@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Module, moduleDefs } from './module';
 
 export enum StorageKeys {
   SETTINGS = 'settings',
@@ -9,17 +10,33 @@ export enum StorageKeys {
 export type Settings = {
   chatGPTApiKey: string | null;
   recordGif: boolean;
-  modules: Record<'gitlab' | 'spotlight', boolean>;
+  modules: Record<Module, boolean>;
 };
 
 function getDefaultSettings(): Settings {
   return {
     chatGPTApiKey: null,
     recordGif: false,
-    modules: {
-      gitlab: true,
-      spotlight: true,
-    },
+    modules: Object.fromEntries(
+      moduleDefs.map(({ key }) => [key, true]),
+    ) as Settings['modules'],
+  };
+}
+
+function createSettingsObject(values: { [key: string]: any }): Settings {
+  if (!(values instanceof Object)) {
+    throw new Error('Parameter is not an object');
+  }
+  const defaultSettings = getDefaultSettings();
+  return {
+    chatGPTApiKey: values.chatGPTApiKey ?? defaultSettings.chatGPTApiKey,
+    recordGif: values.recordGif ?? defaultSettings.recordGif,
+    modules: Object.fromEntries(
+      moduleDefs.map(({ key }) => [
+        key,
+        values.modules?.[key] ?? defaultSettings.modules[key],
+      ]),
+    ) as Settings['modules'],
   };
 }
 
@@ -27,12 +44,12 @@ export async function loadSettings(): Promise<Settings> {
   const json = (await chrome.storage.local.get(StorageKeys.SETTINGS))[
     StorageKeys.SETTINGS
   ];
-  return Object.assign(getDefaultSettings(), json ? JSON.parse(json) : {});
+  return createSettingsObject(json ? JSON.parse(json) : {});
 }
 
 export async function saveSettings(settings: Settings) {
   await chrome.storage.local.set({
-    [StorageKeys.SETTINGS]: JSON.stringify(settings),
+    [StorageKeys.SETTINGS]: JSON.stringify(createSettingsObject(settings)),
   });
 }
 

@@ -1,9 +1,10 @@
 import { isEvent, runRouteHandlers } from 'shared/bridge';
 import setupGitlabModule from 'content/modules/gitlab';
 import setupSpotlightModule from 'content/modules/spotlight';
-import { Settings, loadSettings } from 'shared/storage';
+import { Module, moduleDefs } from 'shared/module';
+import { loadSettings } from 'shared/storage';
 
-const modules: Record<keyof Settings['modules'], () => void> = {
+const moduleSetup: Record<Module, () => void> = {
   gitlab: setupGitlabModule,
   spotlight: setupSpotlightModule,
 };
@@ -20,9 +21,9 @@ chrome.runtime.onMessage.addListener((message) => {
 
 async function setup() {
   const settings = await loadSettings();
-  Object.entries(modules).forEach(([name, setup]) => {
-    if (settings.modules[name as keyof Settings['modules']]) {
-      setup();
+  moduleDefs.forEach((module) => {
+    if (settings.modules[module.key]) {
+      moduleSetup[module.key]();
     }
   });
   runRouteHandlers();
