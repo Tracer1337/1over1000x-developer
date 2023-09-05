@@ -1,9 +1,10 @@
-import { Settings, useSettings } from 'shared/storage';
+import { useSettings } from 'shared/storage';
+import { Module } from 'shared/types';
 
 export function useModules() {
   const [settings, setSettings] = useSettings();
 
-  const toggleModule = (module: keyof Settings['modules']) => {
+  const toggleModule = (module: Module) => {
     if (!settings) {
       return;
     }

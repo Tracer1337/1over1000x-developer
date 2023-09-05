@@ -75,7 +75,7 @@ async function downloadScreenCapture(gifUrl: string) {
   const settings = await loadSettings();
   await chrome.downloads.download({
     url: gifUrl,
-    filename: settings.recordGif ? 'recording.gif' : 'recording.webm',
+    filename: `recording.${settings.captureFormat}`,
   });
 }
 

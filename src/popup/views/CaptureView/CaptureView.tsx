@@ -1,6 +1,6 @@
 import { Typography, Stack } from '@mui/material';
+import ScreenCaptureFormatInput from './components/ScreenCaptureFormatInput';
 import ScreenCaptureButton from './components/ScreenCaptureButton';
-import ScreenCaptureGifSwitch from './components/ScreenCaptureGifSwitch';
 import ScreenCaptureProcess from './components/ScreenCaptureProcess';
 
 export function CaptureView() {
@@ -8,12 +8,12 @@ export function CaptureView() {
     <>
       <Typography
         variant="h5"
-        sx={{ opacity: 0.67, fontWeight: 'bold', mb: 1 }}
+        sx={{ opacity: 0.67, fontWeight: 'bold', mb: 2 }}
       >
         Tab Capture
       </Typography>
       <Stack gap={1}>
-        <ScreenCaptureGifSwitch />
+        <ScreenCaptureFormatInput />
         <ScreenCaptureButton />
         <ScreenCaptureProcess />
       </Stack>

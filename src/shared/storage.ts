@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Module, moduleDefs } from './module';
+import { CaptureFormat, Module, moduleDefs } from './types';
 
 export enum StorageKeys {
   SETTINGS = 'settings',
@@ -9,14 +9,14 @@ export enum StorageKeys {
 
 export type Settings = {
   chatGPTApiKey: string | null;
-  recordGif: boolean;
+  captureFormat: CaptureFormat;
   modules: Record<Module, boolean>;
 };
 
 function getDefaultSettings(): Settings {
   return {
     chatGPTApiKey: null,
-    recordGif: false,
+    captureFormat: 'webm',
     modules: Object.fromEntries(
       moduleDefs.map(({ key }) => [key, true]),
     ) as Settings['modules'],
@@ -30,7 +30,7 @@ function createSettingsObject(values: { [key: string]: any }): Settings {
   const defaultSettings = getDefaultSettings();
   return {
     chatGPTApiKey: values.chatGPTApiKey ?? defaultSettings.chatGPTApiKey,
-    recordGif: values.recordGif ?? defaultSettings.recordGif,
+    captureFormat: values.captureFormat ?? defaultSettings.captureFormat,
     modules: Object.fromEntries(
       moduleDefs.map(({ key }) => [
         key,

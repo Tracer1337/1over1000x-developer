@@ -1,3 +1,4 @@
+import { Command } from './types';
 import { Settings } from './storage';
 
 export const senderId = '1/1000x-developer';
@@ -34,6 +35,7 @@ export type Event = { senderId: string } & (
         progress: number;
       };
     }
+  | { type: `command.${Command}` }
 );
 
 export function isEvent(object: unknown): object is Event {

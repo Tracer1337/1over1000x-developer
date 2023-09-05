@@ -1,6 +1,6 @@
 import { FormControlLabel, Switch, Stack } from '@mui/material';
 import { useModules } from './hooks/useModules';
-import { moduleDefs } from 'shared/module';
+import { moduleDefs } from 'shared/types';
 
 export function ModulePicker() {
   const [modules, toggleModule] = useModules();
