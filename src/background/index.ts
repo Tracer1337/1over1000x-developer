@@ -1,6 +1,6 @@
 import { Event, getCurrentTab, isEvent, senderId } from 'shared/bridge';
 import { chatGPTPolyfill } from 'shared/chatgpt';
-import { createTabGroup } from './tab';
+import { createTabGroup, reloadAllTabs } from './tab';
 import {
   startScreenCapture,
   stopScreenCapture,
@@ -33,7 +33,6 @@ chrome.runtime.onMessage.addListener((event, sender) => {
     case 'capture.transmit-recording':
       return transmitScreenCapture?.(event.data.url);
     case 'command.reload-tabs':
-      console.log('Reload tabs');
-      return;
+      return reloadAllTabs();
   }
 });

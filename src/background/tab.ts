@@ -92,3 +92,8 @@ function loadingAnimation(render: (text: string) => void) {
     isRunning = false;
   };
 }
+
+export async function reloadAllTabs() {
+  const tabs = await chrome.tabs.query({ currentWindow: true });
+  tabs.map((tab) => (tab.id === undefined ? null : chrome.tabs.reload(tab.id)));
+}
