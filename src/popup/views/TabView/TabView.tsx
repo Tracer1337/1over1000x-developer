@@ -48,7 +48,7 @@ export function TabView() {
             />
           </Box>
         )}
-        <Box sx={{ mx: -3, maxHeight: '230px', overflowY: 'auto' }}>
+        <Box sx={{ mx: -3, maxHeight: '236px', overflowY: 'auto' }}>
           <TabGroupList
             tabGroups={tabGroups}
             selection={selection}

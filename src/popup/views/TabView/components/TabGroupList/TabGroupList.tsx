@@ -30,7 +30,11 @@ export function TabGroupList({
           >
             <ListItemText primary={group.name} />
           </ListItemButton>
-          <Collapse in={expand} timeout="auto" unmountOnExit>
+          <Collapse
+            in={selection === group && expand}
+            timeout="auto"
+            unmountOnExit
+          >
             <List component="div" disablePadding dense>
               {group.tabs.map((tab, index) => (
                 <ListItem sx={{ pl: 5 }} key={index}>
