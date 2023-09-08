@@ -32,7 +32,7 @@ export type Event = { senderId: string } & (
   | {
       type: 'capture.process';
       data: {
-        progress: number;
+        loading: boolean;
       };
     }
   | { type: `command.${Command}` }

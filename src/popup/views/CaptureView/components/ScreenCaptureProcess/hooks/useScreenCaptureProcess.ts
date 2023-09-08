@@ -2,13 +2,13 @@ import { useState, useEffect, useCallback } from 'react';
 import { isEvent } from 'shared/bridge';
 
 export function useScreenCaptureProcess() {
-  const [progress, setProgress] = useState(1);
+  const [loading, setLoading] = useState(false);
 
   const handleOnMessage = useCallback((event: any) => {
     if (!isEvent(event) || event.type !== 'capture.process') {
       return;
     }
-    setProgress(event.data.progress);
+    setLoading(event.data.loading);
   }, []);
 
   useEffect(() => {
@@ -18,5 +18,5 @@ export function useScreenCaptureProcess() {
     };
   }, [handleOnMessage]);
 
-  return progress;
+  return loading;
 }

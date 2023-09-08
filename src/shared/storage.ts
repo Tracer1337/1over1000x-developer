@@ -53,11 +53,27 @@ export async function saveSettings(settings: Settings) {
   });
 }
 
+export function addSettingsListener(callback: (settings: Settings) => void) {
+  const handleStorageChange = (changes: {
+    [key: string]: chrome.storage.StorageChange;
+  }) => {
+    if (!(StorageKeys.SETTINGS in changes)) {
+      return;
+    }
+    callback(JSON.parse(changes[StorageKeys.SETTINGS].newValue));
+  };
+  chrome.storage.local.onChanged.addListener(handleStorageChange);
+  return () => {
+    chrome.storage.local.onChanged.removeListener(handleStorageChange);
+  };
+}
+
 export function useSettings() {
   const [settings, setSettings] = useState<Settings | null>(null);
 
   useEffect(() => {
     loadSettings().then(setSettings);
+    return addSettingsListener(setSettings);
   }, []);
 
   const updateSettings = (settings: Settings) => {

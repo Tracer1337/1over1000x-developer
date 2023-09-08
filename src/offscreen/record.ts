@@ -1,5 +1,4 @@
 import { FFmpeg } from '@ffmpeg/ffmpeg';
-import { ProgressEvent } from '@ffmpeg/ffmpeg/dist/esm/types';
 import { fetchFile } from '@ffmpeg/util';
 import { Event, senderId } from 'shared/bridge';
 import { Settings } from 'shared/storage';
@@ -60,6 +59,7 @@ export async function stopRecording() {
 
 async function processVideo(video: Blob, settings: Settings) {
   const url = await videoFormatters[settings.captureFormat](video);
+  emitProcessEvent(false);
   const event: Event = {
     senderId,
     type: 'capture.transmit-recording',
@@ -88,7 +88,7 @@ async function convertToGIF(video: Blob) {
 
 async function setupFFmpeg(video: Blob) {
   const ffmpeg = new FFmpeg();
-  ffmpeg.on('progress', handleProgress);
+  ffmpeg.on('progress', () => emitProcessEvent(true));
   await ffmpeg.load({
     coreURL: 'ffmpeg-core.js',
     wasmURL: 'ffmpeg-core.wasm',
@@ -97,11 +97,11 @@ async function setupFFmpeg(video: Blob) {
   return ffmpeg;
 }
 
-function handleProgress({ progress }: ProgressEvent) {
+function emitProcessEvent(loading: boolean) {
   const event: Event = {
     senderId,
     type: 'capture.process',
-    data: { progress },
+    data: { loading },
   };
   chrome.runtime.sendMessage(event);
 }

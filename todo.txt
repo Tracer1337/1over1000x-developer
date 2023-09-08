@@ -1,3 +1,4 @@
 "Account wechseln" Button in thevea
 Add spotlight to popup
-Replace tab-capture progress with spinner
+User Story anhand markierten Text generieren
+DeepL über Context-Menü integrieren
