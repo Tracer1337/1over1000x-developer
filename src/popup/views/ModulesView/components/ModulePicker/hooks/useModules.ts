@@ -1,5 +1,5 @@
-import { useSettings } from 'shared/storage';
 import { Module } from 'shared/types';
+import { useSettings } from 'shared/settings';
 
 export function useModules() {
   const [settings, setSettings] = useSettings();

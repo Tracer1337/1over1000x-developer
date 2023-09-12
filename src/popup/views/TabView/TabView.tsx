@@ -3,8 +3,8 @@ import CreateTabGroupButton from './components/CreateTabGroupButton';
 import TabGroupList from './components/TabGroupList';
 import { useEffect, useState } from 'react';
 import TabGroupActions from './components/TabGroupActions';
-import { TabGroup, openTabGroup, removeTabGroup } from 'shared/tab';
-import { useTabGroups } from './hooks/useTabGroups';
+import { openTabGroup, removeTabGroup } from 'shared/tab';
+import { StorageKeys, TabGroup, useStorageValue } from 'shared/storage';
 
 export function TabView() {
   const [selection, setSelection] = useState<TabGroup | null>(null);
@@ -12,7 +12,7 @@ export function TabView() {
 
   useEffect(() => setExpand(false), [selection]);
 
-  const tabGroups = useTabGroups();
+  const [tabGroups] = useStorageValue(StorageKeys.TAB_GROUPS);
 
   const handleRemove = () => {
     if (tabGroups && selection && confirm('These tabs will be removed')) {

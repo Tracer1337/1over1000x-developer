@@ -2,7 +2,7 @@ import { Button, IconButton } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import { TabGroup } from 'shared/tab';
+import { TabGroup } from 'shared/storage';
 
 export function TabGroupActions({
   selection,

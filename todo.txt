@@ -2,3 +2,4 @@
 Add spotlight to popup
 User Story anhand markierten Text generieren
 DeepL über Context-Menü integrieren
+Migrate remaining selectors (wait-for-selectors) to queries

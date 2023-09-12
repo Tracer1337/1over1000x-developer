@@ -1,5 +1,5 @@
 import { Event, getCurrentTab, resetIcon, senderId } from 'shared/bridge';
-import { loadSettings } from 'shared/storage';
+import { loadSettings } from 'shared/settings';
 
 export let stopScreenCapture: (() => void) | null = null;
 export let transmitScreenCapture: ((url: string) => void) | null = null;

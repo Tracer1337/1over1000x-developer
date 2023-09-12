@@ -1,6 +1,6 @@
+import { saveSettings } from 'shared/settings';
 import { OptionsForm } from './useForm';
 import { useState } from 'react';
-import { saveSettings } from 'shared/storage';
 
 export function useSubmit() {
   const [isLoading, setIsLoading] = useState(false);

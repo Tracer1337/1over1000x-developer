@@ -1,7 +1,7 @@
 import { Box, Fade, LinearProgress, Typography } from '@mui/material';
 import { useScreenCaptureProcess } from './hooks/useScreenCaptureProcess';
-import { useSettings } from 'shared/storage';
 import { captureFormatDefs } from 'shared/types';
+import { useSettings } from 'shared/settings';
 
 export function ScreenCaptureProcess() {
   const [settings] = useSettings();

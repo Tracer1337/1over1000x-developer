@@ -2,7 +2,7 @@ import { isEvent, runRouteHandlers } from 'shared/bridge';
 import setupGitlabModule from 'content/modules/gitlab';
 import setupSpotlightModule from 'content/modules/spotlight';
 import { Module, moduleDefs } from 'shared/types';
-import { loadSettings } from 'shared/storage';
+import { loadSettings } from 'shared/settings';
 
 const moduleSetup: Record<Module, () => void> = {
   gitlab: setupGitlabModule,

@@ -31,7 +31,7 @@ export function setup() {
     callback: setupFileHelper,
   });
   registerRouteHandler({
-    path: RegExp('https://gitlab.dzh.hamburg/theraos/app/-/issues/\\d+'),
+    path: RegExp('https://gitlab.dzh.hamburg/theraos/app/-/issues/(\\d+|new)'),
     callback: setupIssueActions,
   });
 }

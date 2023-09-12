@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { CaptureFormat, Module, moduleDefs } from './types';
+import { CaptureFormat, Module } from './types';
 
 export enum StorageKeys {
   SETTINGS = 'settings',
   POPUP_TAB = 'popup_tab',
   TAB_GROUPS = 'tab_groups',
+  USER_STORY = 'user_story',
 }
 
 export type Settings = {
@@ -13,54 +14,54 @@ export type Settings = {
   modules: Record<Module, boolean>;
 };
 
-function getDefaultSettings(): Settings {
-  return {
-    chatGPTApiKey: null,
-    captureFormat: 'webm',
-    modules: Object.fromEntries(
-      moduleDefs.map(({ key }) => [key, true]),
-    ) as Settings['modules'],
-  };
+export type TabGroup = {
+  name: string;
+  tabs: { url: string }[];
+};
+
+export type UserStory = {
+  loading: boolean;
+  data: {
+    title: string;
+    description: string;
+    criteria: string[];
+  } | null;
+};
+
+export type Storage = {
+  [StorageKeys.SETTINGS]: Settings;
+  [StorageKeys.USER_STORY]: UserStory;
+  [StorageKeys.TAB_GROUPS]: TabGroup[];
+  [StorageKeys.POPUP_TAB]: number;
+};
+
+export async function loadStorageValue<Key extends StorageKeys>(
+  key: Key,
+): Promise<Storage[Key] | null> {
+  const json = (await chrome.storage.local.get(key))[key];
+  return json ? JSON.parse(json) : null;
 }
 
-function createSettingsObject(values: { [key: string]: any }): Settings {
-  if (!(values instanceof Object)) {
-    throw new Error('Parameter is not an object');
-  }
-  const defaultSettings = getDefaultSettings();
-  return {
-    chatGPTApiKey: values.chatGPTApiKey ?? defaultSettings.chatGPTApiKey,
-    captureFormat: values.captureFormat ?? defaultSettings.captureFormat,
-    modules: Object.fromEntries(
-      moduleDefs.map(({ key }) => [
-        key,
-        values.modules?.[key] ?? defaultSettings.modules[key],
-      ]),
-    ) as Settings['modules'],
-  };
-}
-
-export async function loadSettings(): Promise<Settings> {
-  const json = (await chrome.storage.local.get(StorageKeys.SETTINGS))[
-    StorageKeys.SETTINGS
-  ];
-  return createSettingsObject(json ? JSON.parse(json) : {});
-}
-
-export async function saveSettings(settings: Settings) {
+export async function saveStorageValue<Key extends StorageKeys>(
+  key: Key,
+  value: Storage[Key] | null,
+) {
   await chrome.storage.local.set({
-    [StorageKeys.SETTINGS]: JSON.stringify(createSettingsObject(settings)),
+    [key]: JSON.stringify(value),
   });
 }
 
-export function addSettingsListener(callback: (settings: Settings) => void) {
+export function addStorageValueListener<Key extends StorageKeys>(
+  key: Key,
+  callback: (value: Storage[Key]) => void,
+) {
   const handleStorageChange = (changes: {
     [key: string]: chrome.storage.StorageChange;
   }) => {
-    if (!(StorageKeys.SETTINGS in changes)) {
+    if (!(key in changes)) {
       return;
     }
-    callback(JSON.parse(changes[StorageKeys.SETTINGS].newValue));
+    callback(JSON.parse(changes[key].newValue));
   };
   chrome.storage.local.onChanged.addListener(handleStorageChange);
   return () => {
@@ -68,17 +69,17 @@ export function addSettingsListener(callback: (settings: Settings) => void) {
   };
 }
 
-export function useSettings() {
-  const [settings, setSettings] = useState<Settings | null>(null);
+export function useStorageValue<Key extends StorageKeys>(key: Key) {
+  const [value, setValue] = useState<Storage[Key] | null>(null);
 
   useEffect(() => {
-    loadSettings().then(setSettings);
-    return addSettingsListener(setSettings);
+    loadStorageValue(key).then(setValue);
+    return addStorageValueListener(key, setValue);
   }, []);
 
-  const updateSettings = (settings: Settings) => {
-    saveSettings(settings).then(() => setSettings(settings));
+  const updateValue = (newValue: Storage[Key] | null) => {
+    saveStorageValue(key, newValue).then(() => setValue(newValue));
   };
 
-  return [settings, updateSettings] as const;
+  return [value, updateValue] as const;
 }

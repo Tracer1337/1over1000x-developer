@@ -1,21 +1,13 @@
-import { StorageKeys } from './storage';
-
-export type TabGroup = {
-  name: string;
-  tabs: { url: string }[];
-};
+import {
+  StorageKeys,
+  TabGroup,
+  loadStorageValue,
+  saveStorageValue,
+} from './storage';
 
 export async function loadTabGroups(): Promise<TabGroup[]> {
-  const json = (await chrome.storage.local.get(StorageKeys.TAB_GROUPS))[
-    StorageKeys.TAB_GROUPS
-  ];
-  return json ? JSON.parse(json) : [];
-}
-
-export async function saveTabGroups(tabGroups: TabGroup[]) {
-  await chrome.storage.local.set({
-    [StorageKeys.TAB_GROUPS]: JSON.stringify(tabGroups),
-  });
+  const tabGroups = await loadStorageValue(StorageKeys.TAB_GROUPS);
+  return tabGroups ?? [];
 }
 
 export async function saveCurrentTabs(name: string) {
@@ -30,13 +22,13 @@ export async function saveCurrentTabs(name: string) {
       })),
     },
   ];
-  await saveTabGroups(newTabGroups);
+  await saveStorageValue(StorageKeys.TAB_GROUPS, newTabGroups);
 }
 
 export async function removeTabGroup(index: number) {
   const tabGroups = await loadTabGroups();
   tabGroups.splice(index, 1);
-  await saveTabGroups(tabGroups);
+  await saveStorageValue(StorageKeys.TAB_GROUPS, tabGroups);
 }
 
 export async function openTabGroup(group: TabGroup) {

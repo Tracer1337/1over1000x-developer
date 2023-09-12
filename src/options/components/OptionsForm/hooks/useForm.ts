@@ -1,5 +1,6 @@
 import { ChangeEventHandler, FormEvent, useEffect, useState } from 'react';
-import { Settings, loadSettings } from 'shared/storage';
+import { loadSettings } from 'shared/settings';
+import { Settings } from 'shared/storage';
 
 export type OptionsForm = Settings & {
   chatGPTApiKey: string;

@@ -1,5 +1,5 @@
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
-import { useSettings } from 'shared/storage';
+import { useSettings } from 'shared/settings';
 import { CaptureFormat, captureFormatDefs } from 'shared/types';
 
 const disabled: CaptureFormat[] = ['mp4'];

@@ -41,6 +41,14 @@ const queries = {
       '#new-actions-header-dropdown__BV_toggle_',
     );
   },
+  ['gitlab.issue.title-input']: () => {
+    return document.querySelector<HTMLInputElement>('#issue_title');
+  },
+  ['gitlab.issue.description-input']: () => {
+    return document.querySelector<HTMLTextAreaElement>(
+      'textarea[name="issue[description]"]',
+    );
+  },
   ['gitlab.mr-overview.thread-file-actions-sibling']: (file: Element) => {
     return file.querySelector('.more-actions ul li:nth-child(2)');
   },
@@ -71,6 +79,23 @@ function query<K extends keyof typeof queries>(
   ...args: Parameters<(typeof queries)[K]>
 ): ReturnType<(typeof queries)[K]> {
   return (queries[key] as any)(...args) as ReturnType<(typeof queries)[K]>;
+}
+
+export async function waitForQuery<K extends keyof typeof queries>(
+  key: K,
+  timeout = 5,
+  ...args: Parameters<(typeof queries)[K]>
+): Promise<ReturnType<(typeof queries)[K]>> {
+  let result: ReturnType<(typeof queries)[K]> | null = null;
+  const startTime = Date.now();
+  while (!result) {
+    result = query(key, ...args);
+    if (Date.now() - startTime > timeout * 1000) {
+      throw new Error(`Query ${key} could not be found`);
+    }
+    await new Promise(requestAnimationFrame);
+  }
+  return result;
 }
 
 export default query;

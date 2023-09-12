@@ -1,6 +1,7 @@
-import { Event, getCurrentTab, isEvent, senderId } from 'shared/bridge';
+import { isEvent } from 'shared/bridge';
 import { chatGPTPolyfill } from 'shared/chatgpt';
-import { createTabGroup, reloadAllTabs } from './tab';
+import { createContextMenu, handleContextMenuClick } from './menu';
+import { createTabGroup, emitNavigationChange, reloadAllTabs } from './tab';
 import {
   startScreenCapture,
   stopScreenCapture,
@@ -9,14 +10,11 @@ import {
 
 chatGPTPolyfill();
 
-chrome.webNavigation.onHistoryStateUpdated.addListener(async () => {
-  const currentTab = await getCurrentTab();
-  if (currentTab.id === undefined) {
-    return;
-  }
-  const event: Event = { senderId, type: 'navigation.change' };
-  chrome.tabs.sendMessage(currentTab.id, event).catch(() => {});
-});
+chrome.runtime.onInstalled.addListener(createContextMenu);
+
+chrome.contextMenus.onClicked.addListener(handleContextMenuClick);
+
+chrome.webNavigation.onHistoryStateUpdated.addListener(emitNavigationChange);
 
 chrome.runtime.onMessage.addListener((event, sender) => {
   if (!isEvent(event)) {

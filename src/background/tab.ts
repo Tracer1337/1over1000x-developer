@@ -1,5 +1,5 @@
 import qs from 'qs';
-import { Event } from 'shared/bridge';
+import { Event, getCurrentTab, senderId } from 'shared/bridge';
 import { loadChatGPTClient } from 'shared/chatgpt';
 import { prompts } from 'shared/chatgpt';
 
@@ -91,6 +91,15 @@ function loadingAnimation(render: (text: string) => void) {
   return () => {
     isRunning = false;
   };
+}
+
+export async function emitNavigationChange() {
+  const currentTab = await getCurrentTab();
+  if (currentTab.id === undefined) {
+    return;
+  }
+  const event: Event = { senderId, type: 'navigation.change' };
+  chrome.tabs.sendMessage(currentTab.id, event).catch(() => {});
 }
 
 export async function reloadAllTabs() {

@@ -5,12 +5,12 @@ import CaptureView from 'popup/views/CaptureView';
 import TabView from 'popup/views/TabView';
 import CommandsView from 'popup/views/CommandsView';
 import ModulesView from 'popup/views/ModulesView';
-import { useTab } from './hooks/useTab';
+import { StorageKeys, useStorageValue } from 'shared/storage';
 
 const views = [CaptureView, TabView, CommandsView, ModulesView];
 
 export function App() {
-  const [tab, setTab] = useTab();
+  const [tab, setTab] = useStorageValue(StorageKeys.POPUP_TAB);
 
   if (tab === null) {
     return null;

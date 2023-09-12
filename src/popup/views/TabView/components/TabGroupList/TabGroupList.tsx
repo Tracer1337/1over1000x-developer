@@ -6,7 +6,7 @@ import {
   ListItemButton,
   ListItemText,
 } from '@mui/material';
-import { TabGroup } from 'shared/tab';
+import { TabGroup } from 'shared/storage';
 
 export function TabGroupList({
   tabGroups,

@@ -21,7 +21,8 @@
     "tabGroups",
     "tabCapture",
     "offscreen",
-    "downloads"
+    "downloads",
+    "contextMenus"
   ],
   "background": {
     "service_worker": "background.js"
