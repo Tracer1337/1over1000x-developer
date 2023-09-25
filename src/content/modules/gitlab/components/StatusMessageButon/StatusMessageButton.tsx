@@ -1,7 +1,7 @@
 import { useStatusMessage } from './hooks/useStatusMessage';
 
 export function StatusMessageButton({ onClick }: { onClick: () => void }) {
-  const copyStatusMessage = useStatusMessage();
+  const [canCopyStatusMessage, copyStatusMessage] = useStatusMessage();
 
   return (
     <>
@@ -10,6 +10,7 @@ export function StatusMessageButton({ onClick }: { onClick: () => void }) {
         type="button"
         className="dropdown-item"
         onClick={() => copyStatusMessage().then(() => onClick())}
+        disabled={!canCopyStatusMessage}
       >
         <div className="gl-dropdown-item-text-wrapper">
           <p className="gl-dropdown-item-text-primary">Copy status message</p>

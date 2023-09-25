@@ -15,6 +15,11 @@ const queries = {
     const match = location.pathname.match(/\d+$/)?.[0];
     return match ? parseInt(match) : null;
   },
+  ['gitlab.issue.status-container']: () => {
+    return document.querySelector(
+      '[data-testid="sidebar-labels"] [data-testid="collapsed-content"]',
+    );
+  },
   ['gitlab.issue.status']: () => {
     return (
       Array.from(
@@ -31,7 +36,7 @@ const queries = {
     return (
       document
         .querySelector(
-          '.js-issue-widgets .card ul.related-items-list li:last-child a',
+          '.js-issue-widgets .gl-new-card ul.related-items-list li:last-child a',
         )
         ?.getAttribute('href') ?? null
     );

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import createCache from '@emotion/cache';
 import { CacheProvider } from '@emotion/react';
 import { createTheme, ThemeProvider } from '@mui/material';
@@ -95,4 +95,25 @@ export function withShadowRoot(
     ),
     shadowContainer,
   );
+}
+
+export function useMutationObserver(
+  callback: () => void,
+  element: Element | null,
+  config: MutationObserverInit = {
+    attributes: true,
+    childList: true,
+    subtree: true,
+  },
+) {
+  useEffect(() => {
+    if (!element) {
+      return;
+    }
+    const observer = new MutationObserver(callback);
+    observer.observe(element, config);
+    return () => {
+      observer.disconnect();
+    };
+  }, [callback, element]);
 }
