@@ -14,6 +14,7 @@ function getDefaultSettings(): Settings {
     modules: Object.fromEntries(
       moduleDefs.map(({ key }) => [key, true]),
     ) as Settings['modules'],
+    spotlightHosts: [],
   };
 }
 
@@ -31,6 +32,7 @@ function createSettingsObject(values: { [key: string]: any }): Settings {
         values.modules?.[key] ?? defaultSettings.modules[key],
       ]),
     ) as Settings['modules'],
+    spotlightHosts: values.spotlightHosts ?? defaultSettings.spotlightHosts,
   };
 }
 

@@ -1,14 +1,15 @@
-import { saveSettings } from 'shared/settings';
-import { OptionsForm } from './useForm';
+import { loadSettings, saveSettings } from 'shared/settings';
+import { GeneralForm } from './useForm';
 import { useState } from 'react';
 
 export function useSubmit() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
 
-  const submit = async (form: OptionsForm) => {
+  const submit = async (form: GeneralForm) => {
     setIsLoading(true);
-    await saveSettings(form);
+    const settings = await loadSettings();
+    await saveSettings({ ...settings, ...form });
     setIsSnackbarOpen(true);
     setIsLoading(false);
   };

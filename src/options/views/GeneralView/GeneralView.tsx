@@ -7,11 +7,10 @@ import {
   TextField,
 } from '@mui/material';
 import { useSubmit } from './hooks/useSubmit';
-import { useOptionsForm } from './hooks/useForm';
+import { useGeneralForm } from './hooks/useForm';
 
-export function OptionsForm() {
-  const { inputs, handleSubmit, isLoading } = useOptionsForm();
-
+export function GeneralView() {
+  const { inputs, handleSubmit, isLoading } = useGeneralForm();
   const { submit, isLoading: isSubmitting, snackbar } = useSubmit();
 
   if (isLoading) {
