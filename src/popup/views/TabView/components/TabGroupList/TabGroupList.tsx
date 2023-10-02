@@ -1,40 +1,49 @@
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import {
+  IconButton,
   Collapse,
   List,
   ListItem,
-  ListItemButton,
   ListItemText,
+  Stack,
 } from '@mui/material';
+import RemoveIcon from '@mui/icons-material/Remove';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { TabGroup } from 'shared/storage';
+import { openTabGroup, removeTabGroup } from 'shared/tab';
 
-export function TabGroupList({
-  tabGroups,
-  selection,
-  expand,
-  onSelect,
-}: {
-  tabGroups: TabGroup[];
-  selection: TabGroup | null;
-  expand: boolean;
-  onSelect: (selection: TabGroup | null) => void;
-}) {
+export function TabGroupList({ tabGroups }: { tabGroups: TabGroup[] }) {
+  const [expand, setExpand] = useState<TabGroup | null>(null);
+
+  const handleRemove = (group: TabGroup) => {
+    if (confirm(`'${group.name}' will be removed`)) {
+      removeTabGroup(tabGroups.indexOf(group));
+    }
+  };
+
   return (
     <List>
       {tabGroups.map((group, index) => (
         <Fragment key={index}>
-          <ListItemButton
-            selected={selection === group}
-            onClick={() => onSelect(selection === group ? null : group)}
-            sx={{ pl: 3 }}
-          >
+          <ListItem sx={{ pl: 3 }}>
             <ListItemText primary={group.name} />
-          </ListItemButton>
-          <Collapse
-            in={selection === group && expand}
-            timeout="auto"
-            unmountOnExit
-          >
+            <Stack direction="row" gap={0.5}>
+              <IconButton onClick={() => handleRemove(group)}>
+                <RemoveIcon />
+              </IconButton>
+              <IconButton
+                onClick={() => setExpand(expand === group ? null : group)}
+              >
+                {expand ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+              </IconButton>
+              <IconButton onClick={() => openTabGroup(group)}>
+                <ChevronRightIcon />
+              </IconButton>
+            </Stack>
+          </ListItem>
+          <Collapse in={expand === group} timeout="auto" unmountOnExit>
             <List component="div" disablePadding dense>
               {group.tabs.map((tab, index) => (
                 <ListItem sx={{ pl: 5 }} key={index}>
