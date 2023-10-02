@@ -1,19 +1,21 @@
+import { useState } from 'react';
 import { Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import { saveCurrentTabs } from 'shared/tab';
+import CreateTabGroupDialog from '../CreateTabGroupDialog';
 
 export function CreateTabGroupButton() {
-  const handleClick = () => {
-    const name = prompt('Enter a descriptive name');
-    if (!name) {
-      return;
-    }
-    saveCurrentTabs(name);
-  };
+  const [open, setOpen] = useState(false);
 
   return (
-    <Button variant="outlined" startIcon={<AddIcon />} onClick={handleClick}>
-      Save Current Tabs
-    </Button>
+    <>
+      <Button
+        variant="outlined"
+        startIcon={<AddIcon />}
+        onClick={() => setOpen(true)}
+      >
+        Save Current Tabs
+      </Button>
+      <CreateTabGroupDialog open={open} onClose={() => setOpen(false)} />
+    </>
   );
 }

@@ -20,7 +20,7 @@ export function TabGroupList({ tabGroups }: { tabGroups: TabGroup[] }) {
   const [expand, setExpand] = useState<TabGroup | null>(null);
 
   const handleRemove = (group: TabGroup) =>
-    confirm({ description: `'${group.name}' will be removed` }).then(() =>
+    confirm({ description: `"${group.name}" will be removed` }).then(() =>
       removeTabGroup(tabGroups.indexOf(group)),
     );
 
