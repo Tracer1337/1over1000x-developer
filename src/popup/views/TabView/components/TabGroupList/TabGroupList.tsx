@@ -7,6 +7,7 @@ import {
   ListItemText,
   Stack,
 } from '@mui/material';
+import { useConfirm } from 'material-ui-confirm';
 import RemoveIcon from '@mui/icons-material/Remove';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -15,13 +16,13 @@ import { TabGroup } from 'shared/storage';
 import { openTabGroup, removeTabGroup } from 'shared/tab';
 
 export function TabGroupList({ tabGroups }: { tabGroups: TabGroup[] }) {
+  const confirm = useConfirm();
   const [expand, setExpand] = useState<TabGroup | null>(null);
 
-  const handleRemove = (group: TabGroup) => {
-    if (confirm(`'${group.name}' will be removed`)) {
-      removeTabGroup(tabGroups.indexOf(group));
-    }
-  };
+  const handleRemove = (group: TabGroup) =>
+    confirm({ description: `'${group.name}' will be removed` }).then(() =>
+      removeTabGroup(tabGroups.indexOf(group)),
+    );
 
   return (
     <List>
