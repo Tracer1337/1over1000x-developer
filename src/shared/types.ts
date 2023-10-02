@@ -1,13 +1,18 @@
+import SearchIcon from '@mui/icons-material/Search';
+import { GitLabIcon } from './icons';
+
 export type Module = (typeof moduleDefs)[number]['key'];
 
 export const moduleDefs = [
   {
     key: 'gitlab',
     label: 'GitLab',
+    icon: GitLabIcon,
   },
   {
     key: 'spotlight',
     label: 'Spotlight',
+    icon: SearchIcon,
   },
 ] as const;
 
