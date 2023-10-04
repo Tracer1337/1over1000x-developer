@@ -36,7 +36,7 @@ const queries = {
     return (
       document
         .querySelector(
-          '.js-issue-widgets .gl-new-card ul.related-items-list li:last-child a',
+          '.js-issue-widgets a[href^="https://gitlab.dzh.hamburg/theraos/app/-/merge_requests/"]',
         )
         ?.getAttribute('href') ?? null
     );
