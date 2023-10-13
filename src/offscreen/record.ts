@@ -9,13 +9,13 @@ let data: Blob[] = [];
 let startTime: number;
 let endTime: number;
 
-const gifFramerate = 30;
-
-const videoFormatters: Record<CaptureFormat, (video: Blob) => Promise<string>> =
-  {
-    webm: convertToWebm,
-    gif: convertToGIF,
-  };
+const videoFormatters: Record<
+  CaptureFormat,
+  (video: Blob, settings: Settings) => Promise<string>
+> = {
+  webm: convertToWebm,
+  gif: convertToGIF,
+};
 
 export async function startRecording({
   streamId,
@@ -32,8 +32,12 @@ export async function startRecording({
       mandatory: {
         chromeMediaSource: 'tab',
         chromeMediaSourceId: streamId,
-        maxFrameRate: gifFramerate,
-        minFrameRate: gifFramerate,
+        ...(settings.captureFormat === 'gif'
+          ? {
+              maxFrameRate: settings.captureFramerate,
+              minFrameRate: settings.captureFramerate,
+            }
+          : {}),
       },
     },
   });
@@ -67,7 +71,7 @@ export async function stopRecording() {
 }
 
 async function processVideo(video: Blob, settings: Settings) {
-  const url = await videoFormatters[settings.captureFormat](video);
+  const url = await videoFormatters[settings.captureFormat](video, settings);
   emitProcessEvent(false);
   const event: Event = {
     senderId,
@@ -81,12 +85,12 @@ async function convertToWebm(video: Blob) {
   return URL.createObjectURL(new Blob([video], { type: 'video/webm' }));
 }
 
-async function convertToGIF(video: Blob) {
+async function convertToGIF(video: Blob, settings: Settings) {
   return new Promise<string>(async (resolve) => {
     const {
       frames,
       dimensions: { width, height },
-    } = await extractFrames(video);
+    } = await extractFrames(video, settings);
 
     const gif = new GifEncoder({ width, height });
 
@@ -97,14 +101,14 @@ async function convertToGIF(video: Blob) {
     });
 
     for (let i = 0; i < frames.length; i++) {
-      gif.addFrame(frames[i], 1000 / gifFramerate);
+      gif.addFrame(frames[i], 1000 / settings.captureFramerate);
     }
 
     gif.render();
   });
 }
 
-async function extractFrames(video: Blob) {
+async function extractFrames(video: Blob, settings: Settings) {
   const dimensions = await getVideoDimensions(video);
 
   const ffmpeg = await setupFFmpeg(video);
@@ -112,7 +116,7 @@ async function extractFrames(video: Blob) {
     '-i',
     'input.webm',
     '-r',
-    gifFramerate.toString(),
+    settings.captureFramerate.toString(),
     '-f',
     'image2',
     'output_%03d.png',

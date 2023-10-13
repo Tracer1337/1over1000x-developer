@@ -11,6 +11,7 @@ export enum StorageKeys {
 export type Settings = {
   chatGPTApiKey: string | null;
   captureFormat: CaptureFormat;
+  captureFramerate: number;
   modules: Record<Module, boolean>;
   spotlightHosts: string[];
 };
