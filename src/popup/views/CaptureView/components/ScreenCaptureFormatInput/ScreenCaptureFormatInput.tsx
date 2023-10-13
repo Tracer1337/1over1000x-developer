@@ -2,8 +2,6 @@ import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { useSettings } from 'shared/settings';
 import { CaptureFormat, captureFormatDefs } from 'shared/types';
 
-const disabled: CaptureFormat[] = ['mp4'];
-
 export function ScreenCaptureFormatInput() {
   const [settings, setSettings] = useSettings();
 
@@ -25,11 +23,7 @@ export function ScreenCaptureFormatInput() {
         }
       >
         {captureFormatDefs.map((format) => (
-          <MenuItem
-            value={format.key}
-            key={format.key}
-            disabled={disabled.includes(format.key)}
-          >
+          <MenuItem value={format.key} key={format.key}>
             {format.label}
           </MenuItem>
         ))}

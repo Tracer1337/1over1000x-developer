@@ -1,5 +1,8 @@
 "Account wechseln" Button in thevea
-Add spotlight to popup
-User Story anhand markierten Text generieren
-DeepL über Context-Menü integrieren
 Migrate remaining selectors (wait-for-selectors) to queries
+Statistics
+  * Most used features
+  * Most visited websites
+  * Most clicks on websites
+  * Most time having a website on screen
+VSCode tailwind theme visualizer

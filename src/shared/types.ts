@@ -33,10 +33,6 @@ export const captureFormatDefs = [
     label: 'WebM',
   },
   {
-    key: 'mp4',
-    label: 'MP4',
-  },
-  {
     key: 'gif',
     label: 'GIF',
   },

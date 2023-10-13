@@ -11,7 +11,7 @@ import { useConfirm } from 'material-ui-confirm';
 import RemoveIcon from '@mui/icons-material/Remove';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import LaunchIcon from '@mui/icons-material/Launch';
 import { TabGroup } from 'shared/storage';
 import { openTabGroup, removeTabGroup } from 'shared/tab';
 
@@ -40,7 +40,7 @@ export function TabGroupList({ tabGroups }: { tabGroups: TabGroup[] }) {
                 {expand ? <ExpandLessIcon /> : <ExpandMoreIcon />}
               </IconButton>
               <IconButton onClick={() => openTabGroup(group)}>
-                <ChevronRightIcon />
+                <LaunchIcon />
               </IconButton>
             </Stack>
           </ListItem>
