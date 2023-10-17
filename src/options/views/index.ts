@@ -5,7 +5,13 @@ import SpotlightView from './SpotlightView';
 
 const spotlightModule = moduleDefs.find(({ key }) => key === 'spotlight')!;
 
-const views: { title: string; icon: React.FC; component: React.FC }[] = [
+export type View = {
+  title: string;
+  icon: React.FC;
+  component: React.FC;
+};
+
+const views: View[] = [
   {
     title: 'General',
     icon: SettingsIcon,

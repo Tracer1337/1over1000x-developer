@@ -1,11 +1,6 @@
 import React from 'react';
 import { Box, ToggleButtonGroup, ToggleButton } from '@mui/material';
-import CenterFocusWeakIcon from '@mui/icons-material/CenterFocusWeak';
-import TabIcon from '@mui/icons-material/Tab';
-import TerminalIcon from '@mui/icons-material/Terminal';
-import TuneIcon from '@mui/icons-material/Tune';
-
-const tabIcons = [CenterFocusWeakIcon, TabIcon, TerminalIcon, TuneIcon];
+import views from 'popup/views';
 
 export function Navigation({
   tab,
@@ -47,9 +42,9 @@ export function Navigation({
           },
         })}
       >
-        {tabIcons.map((Icon, index) => (
+        {views.map((view, index) => (
           <ToggleButton key={index} value={index}>
-            <Icon />
+            {React.createElement(view.icon)}
           </ToggleButton>
         ))}
       </ToggleButtonGroup>
