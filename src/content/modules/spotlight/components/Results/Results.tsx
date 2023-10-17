@@ -5,6 +5,7 @@ import { match } from 'ts-pattern';
 import { SpotlightResult } from '../../results';
 import GitlabIssueResult from './components/GitlabIssueResult';
 import CommandResult from './components/CommandResult';
+import FormResult from './components/FormResult';
 
 export function Results({
   results,
@@ -40,6 +41,13 @@ export function Results({
               ))
               .with({ type: 'gitlab-issue' }, (result) => (
                 <GitlabIssueResult
+                  result={result}
+                  selected={result === selectedResult}
+                  onClose={onClose}
+                />
+              ))
+              .with({ type: 'form' }, (result) => (
+                <FormResult
                   result={result}
                   selected={result === selectedResult}
                   onClose={onClose}

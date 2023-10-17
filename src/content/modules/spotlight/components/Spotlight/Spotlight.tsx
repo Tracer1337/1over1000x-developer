@@ -24,7 +24,9 @@ export function Spotlight() {
     close: handleClose,
   });
 
-  useEffect(() => setResults(generateResults(input)), [input]);
+  useEffect(() => {
+    generateResults(input).then(setResults);
+  }, [input]);
 
   useEffect(() => {
     if (!isOpen) {

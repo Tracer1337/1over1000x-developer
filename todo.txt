@@ -6,4 +6,3 @@ Statistics
   * Most clicks on websites
   * Most time having a website on screen
 VSCode tailwind theme visualizer
-Form Saver Spotlight
