@@ -2,10 +2,12 @@ import CenterFocusWeakIcon from '@mui/icons-material/CenterFocusWeak';
 import TabIcon from '@mui/icons-material/Tab';
 import TerminalIcon from '@mui/icons-material/Terminal';
 import TuneIcon from '@mui/icons-material/Tune';
+import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import CaptureView from './CaptureView';
 import TabView from './TabView';
 import CommandsView from './CommandsView';
 import ModulesView from './ModulesView';
+import FormsView from './FormsView';
 
 export type View = {
   title: string;
@@ -23,6 +25,11 @@ const views: View[] = [
     title: 'Saved Tabs',
     icon: TabIcon,
     component: TabView,
+  },
+  {
+    title: 'Saved Forms',
+    icon: DriveFileRenameOutlineIcon,
+    component: FormsView,
   },
   {
     title: 'Commands',

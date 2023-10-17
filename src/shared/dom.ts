@@ -117,3 +117,13 @@ export function useMutationObserver(
     };
   }, [callback, element]);
 }
+
+export function getHost() {
+  const hostParts = location.host.split('.');
+  if (hostParts.length < 2) {
+    return hostParts[0];
+  }
+  return `${hostParts[hostParts.length - 2]}.${
+    hostParts[hostParts.length - 1]
+  }`;
+}

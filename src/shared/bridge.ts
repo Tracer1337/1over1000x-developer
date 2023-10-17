@@ -1,5 +1,7 @@
 import { Command } from './types';
-import { Settings } from './storage';
+import { SavedForm, Settings } from './storage';
+import { useCallback, useEffect, useState } from 'react';
+import { getHost } from './dom';
 
 export const senderId = '1/1000x-developer';
 
@@ -36,6 +38,19 @@ export type Event = { senderId: string } & (
       };
     }
   | { type: `command.${Command}` }
+  | { type: 'page-info.request' }
+  | {
+      type: 'page-info.response';
+      data: {
+        hasForm: boolean;
+        host: string;
+      };
+    }
+  | { type: 'form.save' }
+  | {
+      type: 'form.load';
+      data: SavedForm;
+    }
 );
 
 export function isEvent(object: unknown): object is Event {
@@ -95,4 +110,53 @@ export async function getCurrentTab() {
       resolve(tabs[0]);
     }),
   );
+}
+
+export function usePageInfo() {
+  const [pageInfo, setPageInfo] =
+    useState<Extract<Event, { type: 'page-info.response' }>['data']>();
+
+  const handleMessage = useCallback((event: unknown) => {
+    if (!isEvent(event) || event.type !== 'page-info.response') {
+      return;
+    }
+    setPageInfo(event.data);
+  }, []);
+
+  useEffect(() => {
+    chrome.runtime.onMessage.addListener(handleMessage);
+    return () => {
+      chrome.runtime.onMessage.removeListener(handleMessage);
+    };
+  }, []);
+
+  useEffect(() => {
+    getCurrentTab().then((currentTab) => {
+      if (currentTab.id === undefined) {
+        return;
+      }
+      const event: Event = {
+        senderId,
+        type: 'page-info.request',
+      };
+      chrome.tabs.sendMessage(currentTab.id, event).catch(() => {});
+    });
+  }, []);
+
+  return pageInfo;
+}
+
+export function emitPageInfo() {
+  const detectForm = () => document.querySelector('form') !== null;
+
+  const event: Event = {
+    senderId,
+    type: 'page-info.response',
+    data: {
+      hasForm: detectForm(),
+      host: getHost(),
+    },
+  };
+
+  chrome.runtime.sendMessage(event);
 }

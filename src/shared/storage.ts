@@ -6,6 +6,7 @@ export enum StorageKeys {
   POPUP_TAB = 'popup_tab',
   TAB_GROUPS = 'tab_groups',
   USER_STORY = 'user_story',
+  FORMS = 'forms',
 }
 
 export type Settings = {
@@ -19,6 +20,12 @@ export type Settings = {
 export type TabGroup = {
   name: string;
   tabs: { url: string }[];
+};
+
+export type SavedForm = {
+  label: string;
+  host: string;
+  values: string[];
 };
 
 export type UserStory = {
@@ -35,6 +42,7 @@ export type Storage = {
   [StorageKeys.USER_STORY]: UserStory;
   [StorageKeys.TAB_GROUPS]: TabGroup[];
   [StorageKeys.POPUP_TAB]: number;
+  [StorageKeys.FORMS]: SavedForm[];
 };
 
 export async function loadStorageValue<Key extends StorageKeys>(
