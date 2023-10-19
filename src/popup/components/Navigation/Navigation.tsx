@@ -1,53 +1,24 @@
 import React from 'react';
-import { Box, ToggleButtonGroup, ToggleButton } from '@mui/material';
+import {
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+} from '@mui/material';
 import views from 'popup/views';
 
-export function Navigation({
-  tab,
-  onChange,
-}: {
-  tab: number;
-  onChange: (tab: number) => void;
-}) {
-  const handleTabChange = (_event: React.MouseEvent, newTab: number | null) => {
-    if (newTab !== null) {
-      onChange(newTab);
-    }
-  };
-
+export function Navigation({ onChange }: { onChange: (tab: number) => void }) {
   return (
-    <Box
-      sx={{
-        position: 'fixed',
-        top: 'auto',
-        bottom: 0,
-        width: '100%',
-        display: 'flex',
-        justifyContent: 'center',
-        background: 'white',
-      }}
-    >
-      <ToggleButtonGroup
-        value={tab}
-        onChange={handleTabChange}
-        exclusive
-        color="primary"
-        fullWidth
-        sx={(theme) => ({
-          '& .MuiToggleButton-root': {
-            'borderRadius': 0,
-            '&..Mui-selected': {
-              borderColor: theme.palette.primary.main,
-            },
-          },
-        })}
-      >
-        {views.map((view, index) => (
-          <ToggleButton key={index} value={index}>
-            {React.createElement(view.icon)}
-          </ToggleButton>
-        ))}
-      </ToggleButtonGroup>
-    </Box>
+    <List>
+      {views.map((view, i) => (
+        <ListItem disablePadding key={i}>
+          <ListItemButton onClick={() => onChange(i)}>
+            <ListItemIcon>{React.createElement(view.icon)}</ListItemIcon>
+            <ListItemText primary={view.title} />
+          </ListItemButton>
+        </ListItem>
+      ))}
+    </List>
   );
 }
