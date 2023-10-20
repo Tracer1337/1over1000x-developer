@@ -7,13 +7,9 @@ import {
 } from 'shared/dom';
 import { createRenderLoop } from 'shared/bridge';
 import Spotlight from './components/Spotlight';
-import { loadSettings } from 'shared/settings';
 
-export async function setup() {
-  const settings = await loadSettings();
-  if (settings.spotlightHosts.includes(location.hostname)) {
-    createRenderLoop(renderSpotlight);
-  }
+export function setup() {
+  createRenderLoop(renderSpotlight);
 }
 
 function renderSpotlight() {

@@ -13,8 +13,13 @@ export type Settings = {
   chatGPTApiKey: string | null;
   captureFormat: CaptureFormat;
   captureFramerate: number;
-  modules: Record<Module, boolean>;
-  spotlightHosts: string[];
+  modules: Record<
+    Module,
+    {
+      enabled: boolean;
+      hosts: string[];
+    }
+  >;
 };
 
 export type TabGroup = {

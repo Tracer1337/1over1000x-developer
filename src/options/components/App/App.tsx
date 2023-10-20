@@ -14,7 +14,7 @@ export function App() {
       </Box>
       <Stack direction="row" justifyContent="center">
         <Navigation value={view} onChange={setView} />
-        <Container maxWidth="xs" sx={{ mx: 8 }}>
+        <Container maxWidth="sm" sx={{ mx: 8 }}>
           <Box sx={{ mb: 4 }}>{React.createElement(views[view].component)}</Box>
         </Container>
         <Box sx={{ visibility: 'hidden' }}>

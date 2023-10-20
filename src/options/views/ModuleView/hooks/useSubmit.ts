@@ -1,15 +1,21 @@
 import { loadSettings, saveSettings } from 'shared/settings';
-import { SpotlightForm } from './useForm';
+import { ModuleForm } from './useModuleForm';
 import { useState } from 'react';
+import { Module } from 'shared/types';
+import { produce } from 'immer';
 
-export function useSubmit() {
+export function useSubmit(module: Module) {
   const [isLoading, setIsLoading] = useState(false);
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
 
-  const submit = async (form: SpotlightForm) => {
+  const submit = async (form: ModuleForm) => {
     setIsLoading(true);
     const settings = await loadSettings();
-    await saveSettings({ ...settings, ...form });
+    await saveSettings(
+      produce(settings, (draft) => {
+        Object.assign(draft.modules[module], form);
+      }),
+    );
     setIsSnackbarOpen(true);
     setIsLoading(false);
   };

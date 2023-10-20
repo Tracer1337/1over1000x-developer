@@ -1,9 +1,8 @@
 import SettingsIcon from '@mui/icons-material/Settings';
 import { moduleDefs } from 'shared/types';
 import GeneralView from './GeneralView';
-import SpotlightView from './SpotlightView';
-
-const spotlightModule = moduleDefs.find(({ key }) => key === 'spotlight')!;
+import React from 'react';
+import ModuleView from './ModuleView';
 
 export type View = {
   title: string;
@@ -17,11 +16,11 @@ const views: View[] = [
     icon: SettingsIcon,
     component: GeneralView,
   },
-  {
-    title: spotlightModule.label,
-    icon: spotlightModule.icon,
-    component: SpotlightView,
-  },
+  ...moduleDefs.map((module) => ({
+    title: module.label,
+    icon: module.icon,
+    component: () => React.createElement(ModuleView, { module }),
+  })),
 ];
 
 export default views;

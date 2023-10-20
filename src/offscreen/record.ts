@@ -46,7 +46,6 @@ export async function startRecording({
 
   recorder.addEventListener('dataavailable', (event) => {
     data.push(event.data);
-    console.log('Data Available', data.length);
   });
 
   recorder.addEventListener('stop', () => {

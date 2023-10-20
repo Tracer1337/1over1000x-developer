@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import {
   Alert,
   CircularProgress,
@@ -14,16 +14,18 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useSubmit } from './hooks/useSubmit';
-import { useSpotlightForm } from './hooks/useForm';
+import { useModuleForm } from './hooks/useModuleForm';
+import { moduleDefs } from 'shared/types';
 
-export function SpotlightView() {
+export function ModuleView({ module }: { module: (typeof moduleDefs)[number] }) {
   const [host, setHost] = useState('');
-  const { submit, snackbar } = useSubmit();
-  const { spotlightHosts, addSpotlightHost, removeSpotlightHost, isLoading } =
-    useSpotlightForm(submit);
+  const { submit, snackbar } = useSubmit(module.key);
+  const { hosts, addHost, removeHost, isLoading } =
+    useModuleForm(module.key, submit);
 
-  const handleAddClick = () => {
-    addSpotlightHost(host);
+  const handleSubmit = (event?: FormEvent) => {
+    event?.preventDefault()
+    addHost(host);
     setHost('');
   };
 
@@ -33,16 +35,17 @@ export function SpotlightView() {
 
   return (
     <Stack gap={2}>
-      <Stack direction="row" gap={1}>
+      <Stack direction="row" gap={1} component="form" onSubmit={handleSubmit}>
         <TextField
           value={host}
           onChange={(event) => setHost(event.currentTarget.value)}
           label="Host"
           fullWidth
-          helperText="Enter a website where you want to use Spotlight"
+          autoComplete="off"
+          helperText={`Enter a website where you want to use the ${module.key} module`}
         />
         <IconButton
-          onClick={handleAddClick}
+          type="submit"
           sx={{ width: 56, height: 56 }}
           disabled={host.length === 0}
         >
@@ -50,11 +53,11 @@ export function SpotlightView() {
         </IconButton>
       </Stack>
       <List>
-        {spotlightHosts.map((host, index) => (
+        {hosts.map((host, index) => (
           <Paper variant="outlined" key={index} sx={{ mb: 1 }}>
             <ListItem
               secondaryAction={
-                <IconButton onClick={() => removeSpotlightHost(index)}>
+                <IconButton onClick={() => removeHost(index)}>
                   <DeleteIcon />
                 </IconButton>
               }

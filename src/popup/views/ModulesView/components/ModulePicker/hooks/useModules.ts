@@ -1,5 +1,6 @@
 import { Module } from 'shared/types';
 import { useSettings } from 'shared/settings';
+import { produce } from 'immer';
 
 export function useModules() {
   const [settings, setSettings] = useSettings();
@@ -8,13 +9,11 @@ export function useModules() {
     if (!settings) {
       return;
     }
-    setSettings({
-      ...settings,
-      modules: {
-        ...settings.modules,
-        [module]: !settings.modules[module],
-      },
-    });
+    setSettings(
+      produce(settings, (draft) => {
+        draft.modules[module].enabled = !draft.modules[module].enabled;
+      }),
+    );
   };
 
   return [settings?.modules, toggleModule] as const;

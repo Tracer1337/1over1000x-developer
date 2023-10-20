@@ -19,7 +19,7 @@ export function Navigation({
   return (
     <Stack gap={1}>
       {views.map(({ title, icon }, index) => (
-        <Card key={index} variant="outlined" sx={{ width: 250 }}>
+        <Card key={index} variant="outlined" sx={{ width: 300 }}>
           <CardActionArea onClick={() => onChange(index)}>
             <CardContent
               sx={(theme) => ({

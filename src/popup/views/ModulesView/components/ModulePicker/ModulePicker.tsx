@@ -27,7 +27,7 @@ export function ModulePicker() {
           <Switch
             edge="end"
             onChange={() => toggleModule(key)}
-            checked={modules[key]}
+            checked={modules[key].enabled}
           />
         </ListItem>
       ))}
