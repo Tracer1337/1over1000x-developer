@@ -6,7 +6,7 @@ import {
   saveStorageValue,
   useStorageValue,
 } from './storage';
-import { Module, ModuleConfig, moduleDefs } from './types';
+import { moduleDefs } from './types';
 
 function getDefaultSettings(): Settings {
   return {

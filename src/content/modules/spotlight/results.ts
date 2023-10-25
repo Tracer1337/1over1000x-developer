@@ -59,7 +59,10 @@ function generateGitlabIssueResults(
   settings: Settings,
   input: string,
 ): Extract<SpotlightResult, { type: 'gitlab-issue' }>[] {
-  if (!settings.modules.gitlab.config.host) {
+  if (
+    !settings.modules.gitlab.config.host ||
+    !settings.modules.gitlab.config.project
+  ) {
     return [];
   }
   const ids = input.match(/\b\d{4}\b/g)?.map((id) => parseInt(id)) ?? [];

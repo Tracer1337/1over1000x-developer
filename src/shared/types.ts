@@ -15,7 +15,18 @@ export const moduleDefs = [
     label: 'GitLab',
     icon: GitLabIcon,
     config: z.object({
-      host: z.string().nullable().default(null).describe('Host'),
+      host: z
+        .string()
+        .nullable()
+        .default(null)
+        .describe('Host // Your GitLab Host (gitlab.my-company.com)'),
+      project: z
+        .string()
+        .nullable()
+        .default(null)
+        .describe(
+          'Main Project // Your Main Project in GitLab (/my-company/my-project)',
+        ),
     }),
   },
   {

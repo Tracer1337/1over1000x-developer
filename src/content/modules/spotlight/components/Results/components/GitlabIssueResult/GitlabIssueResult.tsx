@@ -14,7 +14,9 @@ export function GitlabIssueResult({
   selected: boolean;
   onClose: () => void;
 }) {
-  const href = `https://${settings.modules.gitlab.config.host}/theraos/app/-/issues/${result.data.issueId}`;
+  const { host, project } = settings.modules.gitlab.config;
+
+  const href = `https://${host}${project}/-/issues/${result.data.issueId}`;
 
   const action = useAction({
     active: selected,

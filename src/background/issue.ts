@@ -6,7 +6,10 @@ import { StorageKeys, UserStory, saveStorageValue } from 'shared/storage';
 export async function createIssue(input: string | undefined) {
   const settings = await loadSettings();
 
-  if (!settings.modules.gitlab.config.host) {
+  if (
+    !settings.modules.gitlab.config.host ||
+    !settings.modules.gitlab.config.project
+  ) {
     return;
   }
 
@@ -21,8 +24,10 @@ export async function createIssue(input: string | undefined) {
     data: null,
   });
 
+  const { host, project } = settings.modules.gitlab.config;
+
   chrome.tabs.create({
-    url: `https://${settings.modules.gitlab.config.host}/theraos/app/-/issues/new`,
+    url: `https://${host}${project}/-/issues/new`,
   });
 
   await saveStorageValue(StorageKeys.USER_STORY, {
