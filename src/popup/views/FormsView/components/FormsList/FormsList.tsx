@@ -12,8 +12,7 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import EditIcon from '@mui/icons-material/Edit';
 import DoneIcon from '@mui/icons-material/Done';
 import { SavedForm, StorageKeys, useStorageValue } from 'shared/storage';
-import { usePageInfo } from 'shared/bridge';
-import { useLoadForm } from './hooks/useLoadForm';
+import { sendExtensionMessage, usePageInfo } from 'shared/bridge';
 import { useConfirm } from 'material-ui-confirm';
 import { removeForm } from 'shared/form';
 
@@ -22,7 +21,6 @@ export function FormsList() {
   const [forms, setForms] = useStorageValue(StorageKeys.FORMS);
   const pageInfo = usePageInfo();
   const confirm = useConfirm();
-  const loadForm = useLoadForm();
   const [edit, setEdit] = useState<SavedForm | null>(null);
 
   const handleRemove = (form: SavedForm) => {
@@ -101,7 +99,7 @@ export function FormsList() {
               )}
               <IconButton
                 onClick={() => {
-                  loadForm(form);
+                  sendExtensionMessage('form.load', form).toCurrentTab();
                   window.close();
                 }}
               >

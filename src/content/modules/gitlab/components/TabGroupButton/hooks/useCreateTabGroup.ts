@@ -1,4 +1,4 @@
-import { Event, senderId } from 'shared/bridge';
+import { sendExtensionMessage } from 'shared/bridge';
 import query from 'shared/query';
 
 export function useCreateTabGroup() {
@@ -9,17 +9,12 @@ export function useCreateTabGroup() {
     if (!title || !issueId) {
       return;
     }
-    const event: Event = {
-      senderId,
-      type: 'tab-group.create',
-      data: {
-        title,
-        issueUrl: window.location.href,
-        mrUrl,
-        issueId,
-      },
-    };
-    chrome.runtime.sendMessage(event);
+    sendExtensionMessage('tab-group.create', {
+      title,
+      issueUrl: window.location.href,
+      mrUrl,
+      issueId,
+    });
   };
 
   return createTabGroup;

@@ -1,6 +1,6 @@
-import { Command, Module } from './types';
+import { Command } from './types';
 import { SavedForm, Settings } from './storage';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getHost } from './dom';
 
 export const senderId = '1/1000x-developer';
@@ -54,13 +54,79 @@ export type Event = { senderId: string } & (
     }
 );
 
-export function isEvent(object: unknown): object is Event {
+type EventData<T> = Extract<Event, { type: T }> extends { data: infer D }
+  ? D
+  : undefined;
+
+function isEventOfType<T extends Event['type']>(
+  obj: any,
+  type: T,
+): obj is Extract<Event, { type: T }> {
   return (
-    typeof object === 'object' &&
-    object !== null &&
-    'senderId' in object &&
-    object.senderId === senderId
+    obj &&
+    typeof obj === 'object' &&
+    obj.type === type &&
+    obj.senderId === senderId
   );
+}
+
+export function addExtensionListener<T extends Event['type']>(
+  type: T,
+  callback: (
+    event: Extract<Event, { type: T }>,
+    sender: chrome.runtime.MessageSender,
+  ) => void,
+) {
+  const handler = (event: unknown, sender: chrome.runtime.MessageSender) => {
+    if (isEventOfType(event, type)) {
+      callback(event, sender);
+    }
+  };
+  chrome.runtime.onMessage.addListener(handler);
+  return () => {
+    chrome.runtime.onMessage.removeListener(handler);
+  };
+}
+
+type ExtensionMessageForwarders = {
+  toCurrentTab: () => void;
+};
+
+export function sendExtensionMessage(
+  type: Extract<
+    Event,
+    {
+      type: string;
+      data?: never;
+    }
+  >['type'],
+): ExtensionMessageForwarders;
+export function sendExtensionMessage<T extends Event['type']>(
+  type: T,
+  data: EventData<T>,
+): ExtensionMessageForwarders;
+export function sendExtensionMessage<T extends Event['type']>(
+  type: T,
+  data?: any,
+) {
+  const event = {
+    senderId,
+    type,
+    ...(data ? { data } : {}),
+  };
+
+  chrome.runtime.sendMessage(event);
+
+  const forwarders: ExtensionMessageForwarders = {
+    toCurrentTab: async () => {
+      const currentTab = await getCurrentTab();
+      if (currentTab.id !== undefined) {
+        chrome.tabs.sendMessage(currentTab.id, event).catch(() => {});
+      }
+    },
+  };
+
+  return forwarders;
 }
 
 type RouteHandler = {
@@ -117,31 +183,16 @@ export function usePageInfo() {
   const [pageInfo, setPageInfo] =
     useState<Extract<Event, { type: 'page-info.response' }>['data']>();
 
-  const handleMessage = useCallback((event: unknown) => {
-    if (!isEvent(event) || event.type !== 'page-info.response') {
-      return;
-    }
-    setPageInfo(event.data);
-  }, []);
+  useEffect(
+    () =>
+      addExtensionListener('page-info.response', (event) =>
+        setPageInfo(event.data),
+      ),
+    [],
+  );
 
   useEffect(() => {
-    chrome.runtime.onMessage.addListener(handleMessage);
-    return () => {
-      chrome.runtime.onMessage.removeListener(handleMessage);
-    };
-  }, []);
-
-  useEffect(() => {
-    getCurrentTab().then((currentTab) => {
-      if (currentTab.id === undefined) {
-        return;
-      }
-      const event: Event = {
-        senderId,
-        type: 'page-info.request',
-      };
-      chrome.tabs.sendMessage(currentTab.id, event).catch(() => {});
-    });
+    sendExtensionMessage('page-info.request').toCurrentTab();
   }, []);
 
   return pageInfo;
@@ -150,14 +201,8 @@ export function usePageInfo() {
 export function emitPageInfo() {
   const detectForm = () => document.querySelector('form') !== null;
 
-  const event: Event = {
-    senderId,
-    type: 'page-info.response',
-    data: {
-      hasForm: detectForm(),
-      host: getHost(),
-    },
-  };
-
-  chrome.runtime.sendMessage(event);
+  sendExtensionMessage('page-info.response', {
+    hasForm: detectForm(),
+    host: getHost(),
+  });
 }

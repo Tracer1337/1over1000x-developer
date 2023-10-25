@@ -96,15 +96,6 @@ function loadingAnimation(render: (text: string) => void) {
   };
 }
 
-export async function emitNavigationChange() {
-  const currentTab = await getCurrentTab();
-  if (currentTab.id === undefined) {
-    return;
-  }
-  const event: Event = { senderId, type: 'navigation.change' };
-  chrome.tabs.sendMessage(currentTab.id, event).catch(() => {});
-}
-
 export async function reloadAllTabs() {
   const tabs = await chrome.tabs.query({ currentWindow: true });
   tabs.map((tab) => (tab.id === undefined ? null : chrome.tabs.reload(tab.id)));

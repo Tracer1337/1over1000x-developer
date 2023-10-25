@@ -1,17 +1,7 @@
-import { isEvent } from 'shared/bridge';
+import { addExtensionListener } from 'shared/bridge';
 import { startRecording, stopRecording } from './record';
 
-chrome.runtime.onMessage.addListener(async (message) => {
-  if (!isEvent(message)) {
-    return;
-  }
-
-  switch (message.type) {
-    case 'capture.start-recording':
-      startRecording(message.data);
-      break;
-    case 'capture.stop-recording':
-      stopRecording();
-      break;
-  }
-});
+addExtensionListener('capture.start-recording', (event) =>
+  startRecording(event.data),
+);
+addExtensionListener('capture.stop-recording', stopRecording);

@@ -1,18 +1,16 @@
 import { Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import { usePageInfo } from 'shared/bridge';
-import { useSaveForm } from './hooks/useSaveForm';
+import { sendExtensionMessage, usePageInfo } from 'shared/bridge';
 
 export function CreateSavedFormButton() {
   const pageInfo = usePageInfo();
-  const saveForm = useSaveForm();
 
   return (
     <Button
       variant="outlined"
       startIcon={<AddIcon />}
       disabled={!pageInfo?.hasForm}
-      onClick={saveForm}
+      onClick={() => sendExtensionMessage('form.save').toCurrentTab()}
     >
       Save Current Form
     </Button>

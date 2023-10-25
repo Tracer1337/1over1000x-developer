@@ -1,8 +1,16 @@
-import { Event, getCurrentTab, resetIcon, senderId } from 'shared/bridge';
+import {
+  Event,
+  getCurrentTab,
+  resetIcon,
+  sendExtensionMessage,
+  senderId,
+} from 'shared/bridge';
 import { loadSettings } from 'shared/settings';
 
 export let stopScreenCapture: (() => void) | null = null;
-export let transmitScreenCapture: ((url: string) => void) | null = null;
+export let transmitScreenCapture:
+  | ((url: Extract<Event, { type: 'capture.transmit-recording' }>) => void)
+  | null = null;
 
 export async function startScreenCapture() {
   assertNoRunningScreenCapture();
@@ -40,27 +48,23 @@ async function runScreenCapture() {
     justification: 'Recording from chrome.tabCapture API',
   });
 
-  const event: Event = {
-    senderId,
-    type: 'capture.start-recording',
-    data: { streamId, settings: await loadSettings() },
-  };
-
-  chrome.runtime.sendMessage(event);
+  sendExtensionMessage('capture.start-recording', {
+    streamId,
+    settings: await loadSettings(),
+  });
 
   const stopTimer = startTimer();
 
   const [videoUrl] = await Promise.all([
     new Promise<string>((resolve) => {
-      transmitScreenCapture = (url: string) => {
-        resolve(url);
+      transmitScreenCapture = (event) => {
+        resolve(event.data.url);
         transmitScreenCapture = null;
       };
     }),
     new Promise<void>((resolve) => {
       stopScreenCapture = () => {
-        const event: Event = { senderId, type: 'capture.stop-recording' };
-        chrome.runtime.sendMessage(event);
+        sendExtensionMessage('capture.stop-recording');
         resolve();
         stopTimer();
         stopScreenCapture = null;

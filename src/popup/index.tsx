@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import { CssBaseline } from '@mui/material';
-import { Event, senderId } from 'shared/bridge';
+import { sendExtensionMessage } from 'shared/bridge';
 import App from './components/App';
 
 import '@fontsource/roboto/300.css';
@@ -26,9 +26,5 @@ root.render(
 );
 
 function handleIconClick() {
-  const stopCaptureEvent: Event = {
-    senderId,
-    type: 'capture.stop',
-  };
-  chrome.runtime.sendMessage(stopCaptureEvent);
+  sendExtensionMessage('capture.stop');
 }

@@ -1,6 +1,6 @@
 import { FFmpeg } from '@ffmpeg/ffmpeg';
 import { fetchFile } from '@ffmpeg/util';
-import { Event, senderId } from 'shared/bridge';
+import { Event, sendExtensionMessage } from 'shared/bridge';
 import { Settings } from 'shared/storage';
 import { CaptureFormat } from 'shared/types';
 
@@ -71,13 +71,8 @@ export async function stopRecording() {
 
 async function processVideo(video: Blob, settings: Settings) {
   const url = await videoFormatters[settings.captureFormat](video, settings);
-  emitProcessEvent(false);
-  const event: Event = {
-    senderId,
-    type: 'capture.transmit-recording',
-    data: { url },
-  };
-  chrome.runtime.sendMessage(event);
+  sendExtensionMessage('capture.process', { loading: false });
+  sendExtensionMessage('capture.transmit-recording', { url });
 }
 
 async function convertToWebm(video: Blob) {
@@ -93,7 +88,9 @@ async function convertToGIF(video: Blob, settings: Settings) {
 
     const gif = new GifEncoder({ width, height });
 
-    gif.on('progress', () => emitProcessEvent(true));
+    gif.on('progress', () =>
+      sendExtensionMessage('capture.process', { loading: true }),
+    );
 
     gif.once('finished', (blob) => {
       resolve(URL.createObjectURL(blob));
@@ -151,7 +148,9 @@ async function extractFrames(video: Blob, settings: Settings) {
 
 async function setupFFmpeg(video: Blob) {
   const ffmpeg = new FFmpeg();
-  ffmpeg.on('progress', () => emitProcessEvent(true));
+  ffmpeg.on('progress', () =>
+    sendExtensionMessage('capture.process', { loading: true }),
+  );
   ffmpeg.on('log', (event) => console.log(event.type, event.message));
   await ffmpeg.load({
     coreURL: 'ffmpeg-core.js',
@@ -159,15 +158,6 @@ async function setupFFmpeg(video: Blob) {
   });
   await ffmpeg.writeFile('input.webm', await fetchFile(video));
   return ffmpeg;
-}
-
-function emitProcessEvent(loading: boolean) {
-  const event: Event = {
-    senderId,
-    type: 'capture.process',
-    data: { loading },
-  };
-  chrome.runtime.sendMessage(event);
 }
 
 function getVideoDimensions(video: Blob) {

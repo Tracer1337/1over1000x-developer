@@ -1,11 +1,15 @@
 import { Button } from '@mui/material';
-import { useStartScreenCapture } from './hooks/useStartScreenCapture';
+import { sendExtensionMessage } from 'shared/bridge';
 
 export function ScreenCaptureButton() {
-  const startScreenCapture = useStartScreenCapture();
-
   return (
-    <Button variant="contained" onClick={startScreenCapture}>
+    <Button
+      variant="contained"
+      onClick={() => {
+        sendExtensionMessage('capture.start');
+        window.close();
+      }}
+    >
       Start Recording
     </Button>
   );

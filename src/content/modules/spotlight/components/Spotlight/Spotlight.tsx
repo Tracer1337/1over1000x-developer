@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSpotlightShortcuts } from './hooks/useSpotlightShortcuts';
 import { Box, Stack, TextField } from '@mui/material';
-import { StorageKeys, useStorageValue } from 'shared/storage';
+import { useSettings } from 'shared/settings';
 import { SpotlightResult, generateResults } from '../../results';
 import Results from '../Results';
 import { useKeyboardSelection } from './hooks/useKeyboardSelection';
 
 export function Spotlight() {
-  const [settings] = useStorageValue(StorageKeys.SETTINGS);
+  const [settings] = useSettings();
 
   const inputRef = useRef<HTMLInputElement>(null);
 
