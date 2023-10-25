@@ -1,19 +1,20 @@
 import { loadSettings, saveSettings } from 'shared/settings';
-import { ModuleForm } from './useModuleForm';
 import { useState } from 'react';
-import { Module } from 'shared/types';
+import { Module, moduleDefs } from 'shared/types';
 import { produce } from 'immer';
 
-export function useSubmit(module: Module) {
+export function useSubmit<K extends Module>(
+  module: Extract<(typeof moduleDefs)[number], { key: K }>,
+) {
   const [isLoading, setIsLoading] = useState(false);
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
 
-  const submit = async (form: ModuleForm) => {
+  const submit = async (config: any) => {
     setIsLoading(true);
     const settings = await loadSettings();
     await saveSettings(
       produce(settings, (draft) => {
-        Object.assign(draft.modules[module], form);
+        Object.assign(draft.modules[module.key].config as any, config);
       }),
     );
     setIsSnackbarOpen(true);

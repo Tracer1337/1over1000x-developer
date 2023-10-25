@@ -11,6 +11,7 @@ export type Event = { senderId: string } & (
       type: 'tab-group.create';
       data: {
         title: string;
+        issueUrl: string;
         issueId: number;
         mrUrl: string | null;
       };
@@ -87,14 +88,6 @@ export function createRenderLoop(callback: () => void, interval = 200) {
   const intervalId = setInterval(callback, interval);
   callback();
   return () => clearInterval(intervalId);
-}
-
-export function isModuleActive(moduleSettings: Settings['modules'][Module]) {
-  return (
-    moduleSettings.enabled &&
-    (moduleSettings.hosts.includes(location.host) ||
-      moduleSettings.hosts.includes(getHost()))
-  );
 }
 
 export async function resetIcon() {

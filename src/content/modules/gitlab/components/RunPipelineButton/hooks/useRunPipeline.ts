@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { getApiHeaders } from 'shared/gitlab';
+import { getApiHeaders, getGitLabProjectUrl } from 'shared/gitlab';
 import query from 'shared/query';
 
 export function useRunPipeline({
@@ -13,7 +13,7 @@ export function useRunPipeline({
 
   const runPipeline = () => {
     setIsLoading(true);
-    fetch('https://gitlab.dzh.hamburg/theraos/app/-/pipelines', {
+    fetch(`${getGitLabProjectUrl(window.location.href)}-/pipelines`, {
       method: 'POST',
       headers: {
         ...getApiHeaders(),

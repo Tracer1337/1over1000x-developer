@@ -2,6 +2,7 @@ import qs from 'qs';
 import { Event, getCurrentTab, senderId } from 'shared/bridge';
 import { loadChatGPTClient } from 'shared/chatgpt';
 import { prompts } from 'shared/chatgpt';
+import { getGitLabProjectUrl } from 'shared/gitlab';
 
 type CreateTabGroupEvent = Extract<Event, { type: 'tab-group.create' }>;
 
@@ -27,13 +28,15 @@ async function collectTabs(
   }
   const mrTab = event.data.mrUrl
     ? await chrome.tabs.create({ url: event.data.mrUrl, active: false })
-    : await chrome.tabs.create({ url: getCreateMrUrl(event.data.issueId) });
+    : await chrome.tabs.create({
+        url: getCreateMrUrl(event.data.issueUrl, event.data.issueId),
+      });
   return [issueTab.id, mrTab?.id].filter(
     (id): id is number => id !== undefined,
   );
 }
 
-function getCreateMrUrl(issueId: number) {
+function getCreateMrUrl(issueUrl: string, issueId: number) {
   const params = {
     merge_request: {
       source_project_id: '152',
@@ -42,7 +45,7 @@ function getCreateMrUrl(issueId: number) {
       target_branch: 'master',
     },
   };
-  return `https://gitlab.dzh.hamburg/theraos/app/-/merge_requests/new?${qs.stringify(
+  return `${getGitLabProjectUrl(issueUrl)}-/merge_requests/new?${qs.stringify(
     params,
   )}`;
 }

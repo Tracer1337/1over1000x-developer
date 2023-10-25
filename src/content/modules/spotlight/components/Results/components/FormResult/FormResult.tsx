@@ -1,13 +1,16 @@
 import { Paper, Typography } from '@mui/material';
 import { SpotlightResult } from 'content/modules/spotlight/results';
-import { useAction } from '../../hooks/useAction';
 import { loadForm } from 'shared/form';
+import { Settings } from 'shared/storage';
+import { useAction } from '../../hooks/useAction';
 
 export function FormResult({
+  settings,
   result,
   selected,
   onClose,
 }: {
+  settings: Settings;
   result: Extract<SpotlightResult, { type: 'form' }>;
   selected: boolean;
   onClose: () => void;

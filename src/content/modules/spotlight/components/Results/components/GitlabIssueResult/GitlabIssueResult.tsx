@@ -1,17 +1,20 @@
 import { Paper, Box, Typography } from '@mui/material';
 import { SpotlightResult } from 'content/modules/spotlight/results';
+import { Settings } from 'shared/storage';
 import { useAction } from '../../hooks/useAction';
 
 export function GitlabIssueResult({
+  settings,
   result,
   selected,
   onClose,
 }: {
+  settings: Settings;
   result: Extract<SpotlightResult, { type: 'gitlab-issue' }>;
   selected: boolean;
   onClose: () => void;
 }) {
-  const href = `https://gitlab.dzh.hamburg/theraos/app/-/issues/${result.data.issueId}`;
+  const href = `https://${settings.modules.gitlab.config.host}/theraos/app/-/issues/${result.data.issueId}`;
 
   const action = useAction({
     active: selected,

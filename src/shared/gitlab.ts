@@ -13,3 +13,7 @@ function getCsrfToken() {
   }
   return csrfToken;
 }
+
+export function getGitLabProjectUrl(url: string) {
+  return url.split('-')[0];
+}

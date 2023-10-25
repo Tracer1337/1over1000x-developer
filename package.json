@@ -37,9 +37,11 @@
     "@ffmpeg/ffmpeg": "^0.12.6",
     "@ffmpeg/util": "^0.12.1",
     "@fontsource/roboto": "^5.0.5",
+    "@hookform/resolvers": "^3.3.2",
     "@mui/icons-material": "^5.14.1",
     "@mui/lab": "^5.0.0-alpha.137",
     "@mui/material": "^5.14.2",
+    "@ts-react/form": "^1.8.3",
     "canvas-confetti": "^1.6.0",
     "chatgpt": "^5.2.5",
     "immer": "^10.0.3",
@@ -47,8 +49,10 @@
     "qs": "^6.11.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.47.0",
     "react-transition-group": "^4.4.5",
     "ts-pattern": "^5.0.5",
+    "zod": "^3.22.4",
     "zustand": "^4.3.9"
   }
 }

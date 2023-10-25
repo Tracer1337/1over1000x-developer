@@ -35,9 +35,7 @@ const queries = {
   ['gitlab.issue.mr-url']: () => {
     return (
       document
-        .querySelector(
-          '.js-issue-widgets a[href^="https://gitlab.dzh.hamburg/theraos/app/-/merge_requests/"]',
-        )
+        .querySelector(`.js-issue-widgets a[href*="/merge_requests/"]`)
         ?.getAttribute('href') ?? null
     );
   },

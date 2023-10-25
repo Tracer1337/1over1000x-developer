@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSpotlightShortcuts } from './hooks/useSpotlightShortcuts';
 import { Box, Stack, TextField } from '@mui/material';
+import { StorageKeys, useStorageValue } from 'shared/storage';
 import { SpotlightResult, generateResults } from '../../results';
 import Results from '../Results';
 import { useKeyboardSelection } from './hooks/useKeyboardSelection';
 
 export function Spotlight() {
+  const [settings] = useStorageValue(StorageKeys.SETTINGS);
+
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [isOpen, setIsOpen] = useState(false);
@@ -25,8 +28,10 @@ export function Spotlight() {
   });
 
   useEffect(() => {
-    generateResults(input).then(setResults);
-  }, [input]);
+    if (settings) {
+      generateResults(settings, input).then(setResults);
+    }
+  }, [settings, input]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -42,7 +47,7 @@ export function Spotlight() {
     }
   }, [selectedResult]);
 
-  if (!isOpen) {
+  if (!isOpen || !settings) {
     return null;
   }
 
@@ -72,6 +77,7 @@ export function Spotlight() {
           inputRef={inputRef}
         />
         <Results
+          settings={settings}
           results={results}
           selectedResult={selectedResult}
           onClose={handleClose}

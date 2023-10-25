@@ -1,7 +1,8 @@
+import React from 'react';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { moduleDefs } from 'shared/types';
+import { isZodObject } from 'shared/schema';
 import GeneralView from './GeneralView';
-import React from 'react';
 import ModuleView from './ModuleView';
 
 export type View = {
@@ -16,11 +17,13 @@ const views: View[] = [
     icon: SettingsIcon,
     component: GeneralView,
   },
-  ...moduleDefs.map((module) => ({
-    title: module.label,
-    icon: module.icon,
-    component: () => React.createElement(ModuleView, { module }),
-  })),
+  ...moduleDefs
+    .filter((module) => isZodObject(module.config))
+    .map((module) => ({
+      title: module.label,
+      icon: module.icon,
+      component: () => React.createElement(ModuleView, { module }),
+    })),
 ];
 
 export default views;

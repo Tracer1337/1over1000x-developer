@@ -1,8 +1,15 @@
 import { ChatGPTAPI } from 'chatgpt';
 import { loadChatGPTClient, prompts } from 'shared/chatgpt';
+import { loadSettings } from 'shared/settings';
 import { StorageKeys, UserStory, saveStorageValue } from 'shared/storage';
 
 export async function createIssue(input: string | undefined) {
+  const settings = await loadSettings();
+
+  if (!settings.modules.gitlab.config.host) {
+    return;
+  }
+
   const api = await loadChatGPTClient();
 
   if (!input || !api) {
@@ -15,7 +22,7 @@ export async function createIssue(input: string | undefined) {
   });
 
   chrome.tabs.create({
-    url: 'https://gitlab.dzh.hamburg/theraos/app/-/issues/new',
+    url: `https://${settings.modules.gitlab.config.host}/theraos/app/-/issues/new`,
   });
 
   await saveStorageValue(StorageKeys.USER_STORY, {

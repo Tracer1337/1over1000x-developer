@@ -1,72 +1,33 @@
-import { FormEvent, useState } from 'react';
-import {
-  Alert,
-  CircularProgress,
-  Snackbar,
-  Stack,
-  TextField,
-  IconButton,
-  List,
-  ListItem,
-  ListItemText,
-  Paper,
-} from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { Alert, CircularProgress, Snackbar } from '@mui/material';
+import { Module, moduleDefs } from 'shared/types';
+import { SchemaForm, isZodObject } from 'shared/schema';
 import { useSubmit } from './hooks/useSubmit';
-import { useModuleForm } from './hooks/useModuleForm';
-import { moduleDefs } from 'shared/types';
+import { useDefaultValue } from './hooks/useDefaultValue';
 
-export function ModuleView({ module }: { module: (typeof moduleDefs)[number] }) {
-  const [host, setHost] = useState('');
-  const { submit, snackbar } = useSubmit(module.key);
-  const { hosts, addHost, removeHost, isLoading } =
-    useModuleForm(module.key, submit);
+export function ModuleView<K extends Module>({
+  module,
+}: {
+  module: Extract<(typeof moduleDefs)[number], { key: K }>;
+}) {
+  const defaultValue = useDefaultValue(module);
+  const { submit, isLoading, snackbar } = useSubmit(module);
 
-  const handleSubmit = (event?: FormEvent) => {
-    event?.preventDefault()
-    addHost(host);
-    setHost('');
-  };
+  if (!isZodObject(module.config)) {
+    return;
+  }
 
-  if (isLoading) {
+  if (!defaultValue) {
     return <CircularProgress />;
   }
 
   return (
-    <Stack gap={2}>
-      <Stack direction="row" gap={1} component="form" onSubmit={handleSubmit}>
-        <TextField
-          value={host}
-          onChange={(event) => setHost(event.currentTarget.value)}
-          label="Host"
-          fullWidth
-          autoComplete="off"
-          helperText={`Enter a website where you want to use the ${module.key} module`}
-        />
-        <IconButton
-          type="submit"
-          sx={{ width: 56, height: 56 }}
-          disabled={host.length === 0}
-        >
-          <AddIcon />
-        </IconButton>
-      </Stack>
-      <List>
-        {hosts.map((host, index) => (
-          <Paper variant="outlined" key={index} sx={{ mb: 1 }}>
-            <ListItem
-              secondaryAction={
-                <IconButton onClick={() => removeHost(index)}>
-                  <DeleteIcon />
-                </IconButton>
-              }
-            >
-              <ListItemText primary={host} />
-            </ListItem>
-          </Paper>
-        ))}
-      </List>
+    <>
+      <SchemaForm
+        schema={module.config}
+        onSubmit={submit}
+        defaultValues={defaultValue}
+        formProps={{ loading: isLoading }}
+      />
       <Snackbar
         {...snackbar}
         autoHideDuration={6000}
@@ -81,6 +42,6 @@ export function ModuleView({ module }: { module: (typeof moduleDefs)[number] }) 
           Settings saved
         </Alert>
       </Snackbar>
-    </Stack>
+    </>
   );
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { CaptureFormat, Module } from './types';
+import { CaptureFormat, ModuleConfig, moduleDefs } from './types';
 
 export enum StorageKeys {
   SETTINGS = 'settings',
@@ -13,13 +13,9 @@ export type Settings = {
   chatGPTApiKey: string | null;
   captureFormat: CaptureFormat;
   captureFramerate: number;
-  modules: Record<
-    Module,
-    {
-      enabled: boolean;
-      hosts: string[];
-    }
-  >;
+  modules: {
+    [K in (typeof moduleDefs)[number]['key']]: ModuleConfig<K>;
+  };
 };
 
 export type TabGroup = {

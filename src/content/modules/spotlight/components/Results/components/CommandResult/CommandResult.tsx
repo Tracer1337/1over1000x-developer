@@ -1,13 +1,16 @@
 import { Paper, Typography } from '@mui/material';
 import { SpotlightResult } from 'content/modules/spotlight/results';
-import { useAction } from '../../hooks/useAction';
 import { Event, senderId } from 'shared/bridge';
+import { Settings } from 'shared/storage';
+import { useAction } from '../../hooks/useAction';
 
 export function CommandResult({
+  settings,
   result,
   selected,
   onClose,
 }: {
+  settings: Settings;
   result: Extract<SpotlightResult, { type: 'command' }>;
   selected: boolean;
   onClose: () => void;

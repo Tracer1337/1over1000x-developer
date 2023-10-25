@@ -1,9 +1,4 @@
-import {
-  emitPageInfo,
-  isEvent,
-  isModuleActive,
-  runRouteHandlers,
-} from 'shared/bridge';
+import { emitPageInfo, isEvent, runRouteHandlers } from 'shared/bridge';
 import setupGitlabModule from 'content/modules/gitlab';
 import setupSpotlightModule from 'content/modules/spotlight';
 import { Module, moduleDefs } from 'shared/types';
@@ -33,11 +28,9 @@ chrome.runtime.onMessage.addListener((event) => {
 
 async function setup() {
   const settings = await loadSettings();
-  await Promise.all(
-    moduleDefs
-      .filter((module) => isModuleActive(settings.modules[module.key]))
-      .map((module) => moduleSetup[module.key]()),
-  );
+  moduleDefs
+    .filter((module) => settings.modules[module.key].enabled)
+    .map((module) => moduleSetup[module.key]());
   runRouteHandlers();
 }
 

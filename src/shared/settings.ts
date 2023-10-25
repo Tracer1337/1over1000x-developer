@@ -1,3 +1,4 @@
+import { getDefaultValues, isZodObject } from './schema';
 import {
   Settings,
   StorageKeys,
@@ -5,7 +6,7 @@ import {
   saveStorageValue,
   useStorageValue,
 } from './storage';
-import { moduleDefs } from './types';
+import { Module, ModuleConfig, moduleDefs } from './types';
 
 function getDefaultSettings(): Settings {
   return {
@@ -13,11 +14,11 @@ function getDefaultSettings(): Settings {
     captureFormat: 'webm',
     captureFramerate: 15,
     modules: Object.fromEntries(
-      moduleDefs.map(({ key }) => [
+      moduleDefs.map(({ key, config }) => [
         key,
         {
           enabled: true,
-          hosts: [] as string[],
+          config: isZodObject(config) ? getDefaultValues(config) : undefined,
         },
       ]),
     ) as Settings['modules'],
@@ -37,7 +38,14 @@ function createSettingsObject(values: { [key: string]: any }): Settings {
     modules: Object.fromEntries(
       moduleDefs.map(({ key }) => [
         key,
-        values.modules?.[key] ?? defaultSettings.modules[key],
+        {
+          enabled:
+            values.modules?.[key]?.enabled ??
+            defaultSettings.modules[key].enabled,
+          config:
+            values.modules?.[key]?.config ??
+            defaultSettings.modules[key].config,
+        },
       ]),
     ) as Settings['modules'],
   };

@@ -1,5 +1,10 @@
 import { getHost } from 'shared/dom';
-import { SavedForm, StorageKeys, loadStorageValue } from 'shared/storage';
+import {
+  SavedForm,
+  Settings,
+  StorageKeys,
+  loadStorageValue,
+} from 'shared/storage';
 import { commandDefs } from 'shared/types';
 
 export type SpotlightResult =
@@ -25,15 +30,16 @@ export type SpotlightResult =
       };
     };
 
-export async function generateResults(input: string) {
+export async function generateResults(settings: Settings, input: string) {
   return [
-    ...generateCommandResults(input),
-    ...generateGitlabIssueResults(input),
-    ...(await generateFormResults(input)),
+    ...generateCommandResults(settings, input),
+    ...generateGitlabIssueResults(settings, input),
+    ...(await generateFormResults(settings, input)),
   ];
 }
 
 function generateCommandResults(
+  _settings: Settings,
   input: string,
 ): Extract<SpotlightResult, { type: 'command' }>[] {
   if (input[0] !== '>') {
@@ -50,8 +56,12 @@ function generateCommandResults(
 }
 
 function generateGitlabIssueResults(
+  settings: Settings,
   input: string,
 ): Extract<SpotlightResult, { type: 'gitlab-issue' }>[] {
+  if (!settings.modules.gitlab.config.host) {
+    return [];
+  }
   const ids = input.match(/\b\d{4}\b/g)?.map((id) => parseInt(id)) ?? [];
   const distinctIds = Array.from(new Set(ids));
   return distinctIds.map((id) => ({
@@ -62,6 +72,7 @@ function generateGitlabIssueResults(
 }
 
 async function generateFormResults(
+  _settings: Settings,
   input: string,
 ): Promise<Extract<SpotlightResult, { type: 'form' }>[]> {
   if (input[0] !== '#') {
