@@ -6,6 +6,7 @@ import GeneralView from './GeneralView';
 import ModuleView from './ModuleView';
 
 export type View = {
+  path: string;
   title: string;
   icon: React.FC;
   component: React.FC;
@@ -13,6 +14,7 @@ export type View = {
 
 const views: View[] = [
   {
+    path: '/general',
     title: 'General',
     icon: SettingsIcon,
     component: GeneralView,
@@ -20,6 +22,7 @@ const views: View[] = [
   ...moduleDefs
     .filter((module) => isZodObject(module.config))
     .map((module) => ({
+      path: `/${module.key}`,
       title: module.label,
       icon: module.icon,
       component: () => React.createElement(ModuleView, { module }),

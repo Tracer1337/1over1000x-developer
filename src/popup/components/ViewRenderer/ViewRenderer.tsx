@@ -1,5 +1,5 @@
 import { createElement } from 'react';
-import { useParams, useLocation, Redirect } from 'wouter';
+import { useLocation, Redirect } from 'wouter';
 import { Box, Stack, Typography } from '@mui/material';
 import PushPinIcon from '@mui/icons-material/PushPin';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -8,12 +8,11 @@ import { useSavedLocation } from 'shared/dom';
 import { StorageKeys } from 'shared/storage';
 
 export function ViewRenderer() {
-  const { index } = useParams();
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const { saveLocation, isSavedLocation, clearSavedLocation } =
     useSavedLocation(StorageKeys.POPUP_LOCATION);
 
-  const view = views[parseInt(index ?? '0')];
+  const view = views.find((view) => view.path === location);
 
   if (!view) {
     return <Redirect to="/" />;

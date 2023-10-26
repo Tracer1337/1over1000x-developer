@@ -16,7 +16,7 @@ export function Navigation() {
     <List>
       {views.map((view, i) => (
         <ListItem disablePadding key={i}>
-          <ListItemButton onClick={() => setLocation(`/${i}`)}>
+          <ListItemButton onClick={() => setLocation(view.path)}>
             <ListItemIcon>{React.createElement(view.icon)}</ListItemIcon>
             <ListItemText primary={view.title} />
           </ListItemButton>

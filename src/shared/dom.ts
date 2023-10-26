@@ -4,6 +4,11 @@ import { CacheProvider } from '@emotion/react';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { createPortal } from 'react-dom';
 import { useLocation } from 'wouter';
+import {
+  BaseLocationHook,
+  navigate,
+  useLocationProperty,
+} from 'wouter/use-location';
 import { StorageKeys, useStorageValue } from './storage';
 
 export async function waitForSelector<T extends HTMLElement>(
@@ -164,4 +169,11 @@ export function useSavedLocation(storageKey: StorageKeys) {
     goToSavedLocation,
     isSavedLocation,
   };
+}
+
+export function useHashLocation(): ReturnType<BaseLocationHook> {
+  const location = useLocationProperty(
+    () => window.location.hash.replace(/^#/, '') || '/',
+  );
+  return [location, (to: string) => navigate(`#${to}`)];
 }

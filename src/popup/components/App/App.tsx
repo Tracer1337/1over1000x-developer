@@ -12,7 +12,7 @@ export function App() {
     <Box sx={{ width: 300, height: 400 }}>
       <Paper square sx={{ height: '100%' }}>
         <Switch>
-          <Route path="/:index">
+          <Route path="/:path">
             <Box sx={{ p: 3 }}>
               <ViewRenderer />
             </Box>
