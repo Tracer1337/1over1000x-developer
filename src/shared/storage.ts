@@ -3,7 +3,7 @@ import { CaptureFormat, ModuleConfig, moduleDefs } from './types';
 
 export enum StorageKeys {
   SETTINGS = 'settings',
-  POPUP_TAB = 'popup_tab',
+  POPUP_LOCATION = 'popup_location',
   TAB_GROUPS = 'tab_groups',
   USER_STORY = 'user_story',
   FORMS = 'forms',
@@ -42,7 +42,7 @@ export type Storage = {
   [StorageKeys.SETTINGS]: Settings;
   [StorageKeys.USER_STORY]: UserStory;
   [StorageKeys.TAB_GROUPS]: TabGroup[];
-  [StorageKeys.POPUP_TAB]: number;
+  [StorageKeys.POPUP_LOCATION]: string;
   [StorageKeys.FORMS]: SavedForm[];
 };
 

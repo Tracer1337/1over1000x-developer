@@ -1,8 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import createCache from '@emotion/cache';
 import { CacheProvider } from '@emotion/react';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { createPortal } from 'react-dom';
+import { useLocation } from 'wouter';
+import { StorageKeys, useStorageValue } from './storage';
 
 export async function waitForSelector<T extends HTMLElement>(
   selector: string,
@@ -126,4 +128,40 @@ export function getHost() {
   return `${hostParts[hostParts.length - 2]}.${
     hostParts[hostParts.length - 1]
   }`;
+}
+
+export function useSavedLocation(storageKey: StorageKeys) {
+  const [location, setLocation] = useLocation();
+  const [savedLocation, setSavedLocation] = useStorageValue(storageKey);
+  const [hasRedirected, setHasRedirected] = useState(false);
+
+  if (savedLocation && typeof savedLocation !== 'string') {
+    throw new Error('Saved location is not of type string');
+  }
+
+  const saveLocation = () => {
+    setSavedLocation(location);
+  };
+
+  const clearSavedLocation = () => {
+    setSavedLocation('/');
+  };
+
+  const goToSavedLocation = () => {
+    useEffect(() => {
+      if (savedLocation && !hasRedirected) {
+        setLocation(savedLocation);
+        setHasRedirected(true);
+      }
+    }, [savedLocation, hasRedirected]);
+  };
+
+  const isSavedLocation = location === savedLocation;
+
+  return {
+    saveLocation,
+    clearSavedLocation,
+    goToSavedLocation,
+    isSavedLocation,
+  };
 }

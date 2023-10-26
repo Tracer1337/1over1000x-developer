@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLocation } from 'wouter';
 import {
   List,
   ListItem,
@@ -8,12 +9,14 @@ import {
 } from '@mui/material';
 import views from 'popup/views';
 
-export function Navigation({ onChange }: { onChange: (tab: number) => void }) {
+export function Navigation() {
+  const [, setLocation] = useLocation();
+
   return (
     <List>
       {views.map((view, i) => (
         <ListItem disablePadding key={i}>
-          <ListItemButton onClick={() => onChange(i)}>
+          <ListItemButton onClick={() => setLocation(`/${i}`)}>
             <ListItemIcon>{React.createElement(view.icon)}</ListItemIcon>
             <ListItemText primary={view.title} />
           </ListItemButton>
