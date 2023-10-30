@@ -5,18 +5,21 @@ import {
   shouldHandleElement,
   withShadowRoot,
 } from 'shared/dom';
-import { createRenderLoop } from 'shared/bridge';
+import { addExtensionListener } from 'shared/bridge';
 import Spotlight from './components/Spotlight';
 
 export function setup() {
-  createRenderLoop(renderSpotlight);
+  addExtensionListener('spotlight.launch', renderSpotlight);
 }
 
 function renderSpotlight() {
   const container = getOrCreateContainer('1/1000x-developer-spotlight');
-  if (shouldHandleElement(container)) {
-    createRoot(container).render(
-      withShadowRoot(container, React.createElement(Spotlight)),
-    );
-  }
+  createRoot(container).render(
+    withShadowRoot(
+      container,
+      React.createElement(Spotlight, {
+        onClose: () => container.remove(),
+      }),
+    ),
+  );
 }

@@ -7,12 +7,15 @@ import {
   stopScreenCapture,
   transmitScreenCapture,
 } from './capture';
+import { handleCommand } from './command';
 
 chatGPTPolyfill();
 
 chrome.runtime.onInstalled.addListener(createContextMenu);
 
 chrome.contextMenus.onClicked.addListener(handleContextMenuClick);
+
+chrome.commands.onCommand.addListener(handleCommand);
 
 chrome.webNavigation.onHistoryStateUpdated.addListener(() =>
   sendExtensionMessage('navigation.change').toCurrentTab(),

@@ -1,23 +1,13 @@
 import { useCallback, useEffect } from 'react';
 
-export function useSpotlightShortcuts({
-  open,
-  close,
-}: {
-  open: () => void;
-  close: () => void;
-}) {
+export function useSpotlightShortcuts({ close }: { close: () => void }) {
   const handleKeydown = useCallback(
     (event: KeyboardEvent) => {
-      if ((event.ctrlKey || event.altKey) && event.key === 'p') {
-        event.preventDefault();
-        open();
-      }
       if (event.key === 'Escape') {
         close();
       }
     },
-    [open, close],
+    [close],
   );
 
   useEffect(() => {

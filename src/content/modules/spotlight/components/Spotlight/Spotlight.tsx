@@ -6,25 +6,18 @@ import { SpotlightResult, generateResults } from '../../results';
 import Results from '../Results';
 import { useKeyboardSelection } from './hooks/useKeyboardSelection';
 
-export function Spotlight() {
+export function Spotlight({ onClose }: { onClose: () => void }) {
   const [settings] = useSettings();
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
   const [results, setResults] = useState<SpotlightResult[]>([]);
 
-  const { selectedResult, resetSelection } = useKeyboardSelection(results);
-
-  const handleClose = () => {
-    setIsOpen(false);
-    resetSelection();
-  };
+  const { selectedResult } = useKeyboardSelection(results);
 
   useSpotlightShortcuts({
-    open: () => setIsOpen(true),
-    close: handleClose,
+    close: onClose,
   });
 
   useEffect(() => {
@@ -34,12 +27,6 @@ export function Spotlight() {
   }, [settings, input]);
 
   useEffect(() => {
-    if (!isOpen) {
-      setInput('');
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
     if (selectedResult === null) {
       inputRef.current?.focus();
     } else {
@@ -47,7 +34,7 @@ export function Spotlight() {
     }
   }, [selectedResult]);
 
-  if (!isOpen || !settings) {
+  if (!settings) {
     return null;
   }
 
@@ -80,7 +67,7 @@ export function Spotlight() {
           settings={settings}
           results={results}
           selectedResult={selectedResult}
-          onClose={handleClose}
+          onClose={onClose}
         />
       </Stack>
     </Box>

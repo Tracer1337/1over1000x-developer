@@ -31,6 +31,5 @@ export function useKeyboardSelection(results: SpotlightResult[]) {
 
   return {
     selectedResult: selection === null ? null : results[selection],
-    resetSelection: () => setSelection(null),
   };
 }
