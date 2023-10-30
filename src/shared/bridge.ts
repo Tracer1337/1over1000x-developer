@@ -115,7 +115,7 @@ export function sendExtensionMessage<T extends Event['type']>(
     ...(data ? { data } : {}),
   };
 
-  chrome.runtime.sendMessage(event);
+  chrome.runtime.sendMessage(event).catch(() => {});
 
   const forwarders: ExtensionMessageForwarders = {
     toCurrentTab: async () => {
