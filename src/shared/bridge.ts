@@ -52,6 +52,12 @@ export type Event = { senderId: string } & (
       type: 'form.load';
       data: SavedForm;
     }
+  | {
+      type: 'chatgpt.open';
+      data: {
+        prompt: string;
+      };
+    }
 );
 
 type EventData<T> = Extract<Event, { type: T }> extends { data: infer D }

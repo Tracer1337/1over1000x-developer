@@ -1,4 +1,5 @@
 import { Box, Paper, Typography } from '@mui/material';
+import { Event, senderId } from 'shared/bridge';
 import { useAction } from '../../hooks/useAction';
 import { ResultComponent } from '../../types';
 
@@ -10,7 +11,13 @@ const ChatGPTResult: ResultComponent<'chatgpt'> = ({
 }) => {
   const action = useAction({
     active: selected,
-    callback: () => {
+    callback: async () => {
+      const event: Event = {
+        senderId,
+        type: 'chatgpt.open',
+        data: result.data,
+      };
+      await chrome.runtime.sendMessage(event);
       onClose();
     },
   });

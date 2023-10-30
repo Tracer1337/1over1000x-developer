@@ -8,6 +8,7 @@ import {
   transmitScreenCapture,
 } from './capture';
 import { handleCommand } from './command';
+import { openChatGPT } from './chatgpt';
 
 chatGPTPolyfill();
 
@@ -28,3 +29,4 @@ addExtensionListener('capture.transmit-recording', (event) =>
   transmitScreenCapture?.(event),
 );
 addExtensionListener('command.reload-tabs', reloadAllTabs);
+addExtensionListener('chatgpt.open', openChatGPT);

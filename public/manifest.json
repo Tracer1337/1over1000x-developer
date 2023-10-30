@@ -23,7 +23,8 @@
     "offscreen",
     "downloads",
     "contextMenus",
-    "commands"
+    "commands",
+    "scripting"
   ],
   "background": {
     "service_worker": "background.js"
@@ -39,6 +40,9 @@
         "content.js"
       ]
     }
+  ],
+  "host_permissions": [
+    "<all_urls>"
   ],
   "web_accessible_resources": [
     {
