@@ -1,4 +1,3 @@
-import { sendExtensionMessage } from 'shared/bridge';
 import { loadSettings } from 'shared/settings';
 
 const handlers: Record<string, () => void> = {
@@ -14,10 +13,13 @@ async function handleSpotlightCommand() {
   if (!settings.modules.spotlight.enabled) {
     return;
   }
-  const currentWindow = await chrome.windows.getLastFocused();
-  if (!currentWindow?.id) {
-    return;
-  }
-  chrome.windows.update(currentWindow.id, { focused: true });
-  sendExtensionMessage('spotlight.launch').toCurrentTab();
+  const width = 600;
+  const height = 600;
+  chrome.windows.create({
+    focused: true,
+    width,
+    height,
+    type: 'popup',
+    url: 'chrome-extension://dhldkgjggdacbkhlpkmmipfmhaboanep/spotlight.html',
+  });
 }

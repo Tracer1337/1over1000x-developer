@@ -3,10 +3,10 @@ import { Box, Collapse, Stack } from '@mui/material';
 import { TransitionGroup } from 'react-transition-group';
 import { match } from 'ts-pattern';
 import { Settings } from 'shared/storage';
-import { SpotlightResult } from '../../results';
 import GitlabIssueResult from './components/GitlabIssueResult';
 import CommandResult from './components/CommandResult';
 import FormResult from './components/FormResult';
+import { SpotlightResult } from '../Spotlight/results';
 
 export function Results({
   settings,

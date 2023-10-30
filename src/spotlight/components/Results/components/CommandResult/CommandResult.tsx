@@ -1,7 +1,7 @@
 import { Paper, Typography } from '@mui/material';
-import { SpotlightResult } from 'content/modules/spotlight/results';
-import { Event, sendExtensionMessage, senderId } from 'shared/bridge';
+import { sendExtensionMessage } from 'shared/bridge';
 import { Settings } from 'shared/storage';
+import { SpotlightResult } from 'spotlight/components/Spotlight/results';
 import { useAction } from '../../hooks/useAction';
 
 export function CommandResult({
@@ -26,7 +26,7 @@ export function CommandResult({
   return (
     <Paper
       variant="outlined"
-      sx={{ height: 32, p: 2, display: 'flex', alignItems: 'center' }}
+      sx={{ height: 56, p: 2, display: 'flex', alignItems: 'center' }}
       component="a"
       href="#"
       onClick={action}

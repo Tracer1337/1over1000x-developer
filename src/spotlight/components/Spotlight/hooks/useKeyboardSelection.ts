@@ -1,5 +1,5 @@
-import { SpotlightResult } from 'content/modules/spotlight/results';
 import { useCallback, useEffect, useState } from 'react';
+import { SpotlightResult } from 'spotlight/components/Spotlight/results';
 
 export function useKeyboardSelection(results: SpotlightResult[]) {
   const [selection, setSelection] = useState<number | null>(null);

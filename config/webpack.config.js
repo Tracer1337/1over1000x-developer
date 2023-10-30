@@ -14,6 +14,7 @@ const config = (env, argv) =>
       offscreen: PATHS.src + '/offscreen/index.ts',
       popup: PATHS.src + '/popup/index.tsx',
       options: PATHS.src + '/options/index.tsx',
+      spotlight: PATHS.src + '/spotlight/index.tsx',
     },
     devtool: argv.mode === 'production' ? false : 'source-map',
   });

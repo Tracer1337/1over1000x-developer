@@ -4,14 +4,12 @@ import {
   runRouteHandlers,
 } from 'shared/bridge';
 import setupGitlabModule from 'content/modules/gitlab';
-import setupSpotlightModule from 'content/modules/spotlight';
 import { Module, moduleDefs } from 'shared/types';
 import { loadSettings } from 'shared/settings';
 import { loadForm, saveForm } from 'shared/form';
 
-const moduleSetup: Record<Module, () => void> = {
+const moduleSetup: Partial<Record<Module, () => void>> = {
   gitlab: setupGitlabModule,
-  spotlight: setupSpotlightModule,
 };
 
 addExtensionListener('navigation.change', runRouteHandlers);
@@ -23,7 +21,7 @@ async function setup() {
   const settings = await loadSettings();
   moduleDefs
     .filter((module) => settings.modules[module.key].enabled)
-    .map((module) => moduleSetup[module.key]());
+    .map((module) => moduleSetup[module.key]?.());
   runRouteHandlers();
 }
 

@@ -52,7 +52,6 @@ export type Event = { senderId: string } & (
       type: 'form.load';
       data: SavedForm;
     }
-  | { type: 'spotlight.launch' }
 );
 
 type EventData<T> = Extract<Event, { type: T }> extends { data: infer D }
