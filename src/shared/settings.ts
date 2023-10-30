@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { getDefaultValues, isZodObject } from './schema';
 import {
   Settings,
@@ -63,7 +64,7 @@ export async function saveSettings(settings: Settings) {
 export function useSettings() {
   const [settings, setSettings] = useStorageValue(StorageKeys.SETTINGS);
   return [
-    createSettingsObject(settings ?? {}),
+    useMemo(() => createSettingsObject(settings ?? {}), [settings]),
     (newValue: Settings) => setSettings(createSettingsObject(newValue)),
   ] as const;
 }
