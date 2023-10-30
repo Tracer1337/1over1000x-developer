@@ -1,20 +1,14 @@
 import { Paper, Typography } from '@mui/material';
 import { Event, senderId } from 'shared/bridge';
-import { Settings } from 'shared/storage';
-import { SpotlightResult } from 'spotlight/components/Spotlight/results';
 import { useAction } from '../../hooks/useAction';
+import { ResultComponent } from '../../types';
 
-export function CommandResult({
-  settings,
+const CommandResult: ResultComponent<'command'> = ({
+  settings: _settings,
   result,
   selected,
   onClose,
-}: {
-  settings: Settings;
-  result: Extract<SpotlightResult, { type: 'command' }>;
-  selected: boolean;
-  onClose: () => void;
-}) {
+}) => {
   const action = useAction({
     active: selected,
     callback: async () => {
@@ -30,7 +24,12 @@ export function CommandResult({
   return (
     <Paper
       variant="outlined"
-      sx={{ height: 56, p: 2, display: 'flex', alignItems: 'center' }}
+      sx={{
+        height: 56,
+        p: 2,
+        display: 'flex',
+        alignItems: 'center',
+      }}
       component="a"
       href="#"
       onClick={action}
@@ -38,4 +37,12 @@ export function CommandResult({
       <Typography>{result.data.command.label}</Typography>
     </Paper>
   );
-}
+};
+
+CommandResult.wrapperProps = {
+  sx: {
+    width: '100%',
+  },
+};
+
+export { CommandResult };

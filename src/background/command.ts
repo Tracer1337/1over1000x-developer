@@ -13,12 +13,10 @@ async function handleSpotlightCommand() {
   if (!settings.modules.spotlight.enabled) {
     return;
   }
-  const width = 450;
-  const height = 600;
   chrome.windows.create({
     focused: true,
-    width,
-    height,
+    width: 450,
+    height: 600,
     type: 'popup',
     url: 'chrome-extension://dhldkgjggdacbkhlpkmmipfmhaboanep/spotlight.html',
   });

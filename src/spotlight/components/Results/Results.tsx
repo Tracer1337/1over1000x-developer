@@ -1,11 +1,9 @@
-import { useRef } from 'react';
+import { createElement } from 'react';
 import { Box, Collapse, Stack } from '@mui/material';
 import { TransitionGroup } from 'react-transition-group';
-import { match } from 'ts-pattern';
 import { Settings } from 'shared/storage';
-import GitlabIssueResult from './components/GitlabIssueResult';
-import CommandResult from './components/CommandResult';
 import { SpotlightResult } from '../Spotlight/results';
+import { resultComponents } from './components';
 
 export function Results({
   settings,
@@ -18,21 +16,19 @@ export function Results({
   selectedResult: SpotlightResult | null;
   onClose: () => void;
 }) {
-  const containerRef = useRef(null);
-
-  const getResultProps = <T extends SpotlightResult['type']>(
-    result: Extract<SpotlightResult, { type: T }>,
-  ) => ({
-    settings,
-    result,
-    selected: result === selectedResult,
-    onClose,
-  });
-
   return (
-    <Stack gap={1} ref={containerRef} component={TransitionGroup}>
+    <Stack
+      gap={1}
+      flexDirection="row"
+      flexWrap="wrap"
+      component={TransitionGroup}
+    >
       {results.map((result) => (
-        <Collapse key={result.id} timeout={100}>
+        <Collapse
+          key={result.id}
+          timeout={100}
+          {...resultComponents[result.type].wrapperProps}
+        >
           <Box
             sx={(theme) => ({
               outline:
@@ -42,14 +38,12 @@ export function Results({
               borderRadius: `${theme.shape.borderRadius}px`,
             })}
           >
-            {match(result)
-              .with({ type: 'command' }, (result) => (
-                <CommandResult {...getResultProps(result)} />
-              ))
-              .with({ type: 'gitlab-issue' }, (result) => (
-                <GitlabIssueResult {...getResultProps(result)} />
-              ))
-              .exhaustive()}
+            {createElement(resultComponents[result.type] as any, {
+              settings,
+              result,
+              selected: result === selectedResult,
+              onClose,
+            })}
           </Box>
         </Collapse>
       ))}

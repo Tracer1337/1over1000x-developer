@@ -1,27 +1,74 @@
 import { Settings } from 'shared/storage';
 import { commandDefs } from 'shared/types';
 
-export type SpotlightResult =
+export type SpotlightResult = { id: string } & (
+  | {
+      type: 'google';
+      data: {
+        search: string;
+      };
+    }
+  | {
+      type: 'chatgpt';
+      data: {
+        prompt: string;
+      };
+    }
   | {
       type: 'command';
-      id: string;
       data: {
         command: (typeof commandDefs)[number];
       };
     }
   | {
       type: 'gitlab-issue';
-      id: string;
       data: {
         issueId: number;
       };
-    };
+    }
+);
 
 export async function generateResults(settings: Settings, input: string) {
   return [
+    ...generateGoogleResults(settings, input),
+    ...generateChatGPTResults(settings, input),
     ...generateCommandResults(settings, input),
     ...generateGitlabIssueResults(settings, input),
   ];
+}
+
+function generateGoogleResults(
+  _settings: Settings,
+  input: string,
+): Extract<SpotlightResult, { type: 'google' }>[] {
+  return input.length === 0 || input[0] === '>'
+    ? []
+    : [
+        {
+          type: 'google',
+          id: 'google',
+          data: {
+            search: input,
+          },
+        },
+      ];
+}
+
+function generateChatGPTResults(
+  _settings: Settings,
+  input: string,
+): Extract<SpotlightResult, { type: 'chatgpt' }>[] {
+  return input.length === 0 || input[0] === '>'
+    ? []
+    : [
+        {
+          type: 'chatgpt',
+          id: 'chatgpt',
+          data: {
+            prompt: input,
+          },
+        },
+      ];
 }
 
 function generateCommandResults(

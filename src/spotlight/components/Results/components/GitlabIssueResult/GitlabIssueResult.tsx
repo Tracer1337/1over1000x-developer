@@ -1,19 +1,13 @@
 import { Paper, Box, Typography } from '@mui/material';
-import { Settings } from 'shared/storage';
-import { SpotlightResult } from 'spotlight/components/Spotlight/results';
 import { useAction } from '../../hooks/useAction';
+import { ResultComponent } from '../../types';
 
-export function GitlabIssueResult({
+const GitlabIssueResult: ResultComponent<'gitlab-issue'> = ({
   settings,
   result,
   selected,
   onClose,
-}: {
-  settings: Settings;
-  result: Extract<SpotlightResult, { type: 'gitlab-issue' }>;
-  selected: boolean;
-  onClose: () => void;
-}) {
+}) => {
   const { host, project } = settings.modules.gitlab.config;
 
   const href = `https://${host}${project}/-/issues/${result.data.issueId}`;
@@ -29,7 +23,12 @@ export function GitlabIssueResult({
   return (
     <Paper
       variant="outlined"
-      sx={{ height: 56, p: 2, display: 'flex', alignItems: 'center' }}
+      sx={{
+        height: 56,
+        p: 2,
+        display: 'flex',
+        alignItems: 'center',
+      }}
       component="a"
       href="#"
       onClick={action}
@@ -42,4 +41,12 @@ export function GitlabIssueResult({
       <Typography>Issue #{result.data.issueId}</Typography>
     </Paper>
   );
-}
+};
+
+GitlabIssueResult.wrapperProps = {
+  sx: {
+    width: '100%',
+  },
+};
+
+export { GitlabIssueResult };
