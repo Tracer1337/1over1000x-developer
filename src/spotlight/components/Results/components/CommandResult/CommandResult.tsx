@@ -1,5 +1,5 @@
 import { Paper, Typography } from '@mui/material';
-import { sendExtensionMessage } from 'shared/bridge';
+import { Event, senderId } from 'shared/bridge';
 import { Settings } from 'shared/storage';
 import { SpotlightResult } from 'spotlight/components/Spotlight/results';
 import { useAction } from '../../hooks/useAction';
@@ -17,8 +17,12 @@ export function CommandResult({
 }) {
   const action = useAction({
     active: selected,
-    callback: () => {
-      sendExtensionMessage(`command.${result.data.command.key}`);
+    callback: async () => {
+      const event: Event = {
+        senderId,
+        type: `command.${result.data.command.key}`,
+      };
+      await chrome.runtime.sendMessage(event);
       onClose();
     },
   });

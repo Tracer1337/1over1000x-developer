@@ -97,6 +97,12 @@ function loadingAnimation(render: (text: string) => void) {
 }
 
 export async function reloadAllTabs() {
-  const tabs = await chrome.tabs.query({ currentWindow: true });
+  const window = await chrome.windows.getLastFocused({
+    windowTypes: ['normal'],
+  });
+  if (!window?.id) {
+    return;
+  }
+  const tabs = await chrome.tabs.query({ windowId: window.id });
   tabs.map((tab) => (tab.id === undefined ? null : chrome.tabs.reload(tab.id)));
 }

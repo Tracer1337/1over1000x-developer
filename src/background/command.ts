@@ -13,7 +13,7 @@ async function handleSpotlightCommand() {
   if (!settings.modules.spotlight.enabled) {
     return;
   }
-  const width = 600;
+  const width = 450;
   const height = 600;
   chrome.windows.create({
     focused: true,

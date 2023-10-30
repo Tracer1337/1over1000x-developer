@@ -5,7 +5,6 @@ import { match } from 'ts-pattern';
 import { Settings } from 'shared/storage';
 import GitlabIssueResult from './components/GitlabIssueResult';
 import CommandResult from './components/CommandResult';
-import FormResult from './components/FormResult';
 import { SpotlightResult } from '../Spotlight/results';
 
 export function Results({
@@ -49,9 +48,6 @@ export function Results({
               ))
               .with({ type: 'gitlab-issue' }, (result) => (
                 <GitlabIssueResult {...getResultProps(result)} />
-              ))
-              .with({ type: 'form' }, (result) => (
-                <FormResult {...getResultProps(result)} />
               ))
               .exhaustive()}
           </Box>

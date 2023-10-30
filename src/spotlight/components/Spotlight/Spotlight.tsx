@@ -41,7 +41,7 @@ export function Spotlight({ onClose }: { onClose: () => void }) {
   return (
     <Stack gap={2}>
       <TextField
-        placeholder="Quick actions (append > for commands or # for saved forms)"
+        placeholder="Quick actions (append > for commands)"
         value={input}
         onChange={(event) => setInput(event.currentTarget.value)}
         sx={{ background: 'white' }}

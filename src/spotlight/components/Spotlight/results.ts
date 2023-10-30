@@ -1,10 +1,4 @@
-import { getHost } from 'shared/dom';
-import {
-  SavedForm,
-  Settings,
-  StorageKeys,
-  loadStorageValue,
-} from 'shared/storage';
+import { Settings } from 'shared/storage';
 import { commandDefs } from 'shared/types';
 
 export type SpotlightResult =
@@ -21,20 +15,12 @@ export type SpotlightResult =
       data: {
         issueId: number;
       };
-    }
-  | {
-      type: 'form';
-      id: string;
-      data: {
-        form: SavedForm;
-      };
     };
 
 export async function generateResults(settings: Settings, input: string) {
   return [
     ...generateCommandResults(settings, input),
     ...generateGitlabIssueResults(settings, input),
-    ...(await generateFormResults(settings, input)),
   ];
 }
 
@@ -72,26 +58,6 @@ function generateGitlabIssueResults(
     id: `gitlab-issue-${id}`,
     data: { issueId: id },
   }));
-}
-
-async function generateFormResults(
-  _settings: Settings,
-  input: string,
-): Promise<Extract<SpotlightResult, { type: 'form' }>[]> {
-  if (input[0] !== '#') {
-    return [];
-  }
-  input = input.slice(1);
-  const forms = (await loadStorageValue(StorageKeys.FORMS)) || [];
-  return forms
-    .filter((form) => form.host === getHost())
-    .filter((form) => form.label.length > 0)
-    .filter((form) => searchText(form.label, input))
-    .map((form) => ({
-      type: 'form',
-      id: `form-${form.label}`,
-      data: { form },
-    }));
 }
 
 function searchText(text: string, search: string) {
