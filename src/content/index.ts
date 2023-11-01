@@ -23,6 +23,7 @@ async function setup() {
   moduleDefs
     .filter((module) => settings.modules[module.key].enabled)
     .map((module) => moduleSetup[module.key]());
+  setupCaptureModule();
   runRouteHandlers();
 }
 
