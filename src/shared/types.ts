@@ -1,4 +1,3 @@
-import SearchIcon from '@mui/icons-material/Search';
 import { z } from 'zod';
 import { GitLabIcon } from './icons';
 
@@ -28,12 +27,6 @@ export const moduleDefs = [
           'Main Project // Your Main Project in GitLab (/my-company/my-project)',
         ),
     }),
-  },
-  {
-    key: 'spotlight',
-    label: 'Spotlight',
-    icon: SearchIcon,
-    config: z.void(),
   },
 ] as const;
 

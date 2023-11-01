@@ -1,5 +1,3 @@
-import { loadSettings } from 'shared/settings';
-
 const handlers: Record<string, () => void> = {
   spotlight: handleSpotlightCommand,
 };
@@ -9,10 +7,6 @@ export function handleCommand(command: string) {
 }
 
 async function handleSpotlightCommand() {
-  const settings = await loadSettings();
-  if (!settings.modules.spotlight.enabled) {
-    return;
-  }
   chrome.windows.create({
     focused: true,
     width: 450,

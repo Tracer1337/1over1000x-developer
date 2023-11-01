@@ -3,12 +3,13 @@ import {
   emitPageInfo,
   runRouteHandlers,
 } from 'shared/bridge';
-import setupGitlabModule from 'content/modules/gitlab';
 import { Module, moduleDefs } from 'shared/types';
 import { loadSettings } from 'shared/settings';
 import { loadForm, saveForm } from 'shared/form';
+import setupGitlabModule from 'content/modules/gitlab';
+import setupCaptureModule from 'content/modules/capture';
 
-const moduleSetup: Partial<Record<Module, () => void>> = {
+const moduleSetup: Record<Module, () => void> = {
   gitlab: setupGitlabModule,
 };
 
@@ -21,7 +22,7 @@ async function setup() {
   const settings = await loadSettings();
   moduleDefs
     .filter((module) => settings.modules[module.key].enabled)
-    .map((module) => moduleSetup[module.key]?.());
+    .map((module) => moduleSetup[module.key]());
   runRouteHandlers();
 }
 
