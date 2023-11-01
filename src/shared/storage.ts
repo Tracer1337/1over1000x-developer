@@ -7,6 +7,7 @@ export enum StorageKeys {
   TAB_GROUPS = 'tab_groups',
   USER_STORY = 'user_story',
   FORMS = 'forms',
+  CAPTURE = 'capture',
 }
 
 export type Settings = {
@@ -44,6 +45,9 @@ export type Storage = {
   [StorageKeys.TAB_GROUPS]: TabGroup[];
   [StorageKeys.POPUP_LOCATION]: string;
   [StorageKeys.FORMS]: SavedForm[];
+  [StorageKeys.CAPTURE]: {
+    state: 'idle' | 'running' | 'loading';
+  };
 };
 
 export async function loadStorageValue<Key extends StorageKeys>(

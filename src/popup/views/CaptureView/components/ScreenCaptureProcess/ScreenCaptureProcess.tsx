@@ -1,18 +1,11 @@
-import { useEffect, useState } from 'react';
 import { Box, Fade, LinearProgress, Typography } from '@mui/material';
 import { captureFormatDefs } from 'shared/types';
 import { useSettings } from 'shared/settings';
-import { addExtensionListener } from 'shared/bridge';
+import { StorageKeys, useStorageValue } from 'shared/storage';
 
 export function ScreenCaptureProcess() {
   const [settings] = useSettings();
-  const [loading, setLoading] = useState(false);
-
-  useEffect(
-    addExtensionListener('capture.process', (event) =>
-      setLoading(event.data.loading),
-    ),
-  );
+  const [capture] = useStorageValue(StorageKeys.CAPTURE);
 
   if (!settings) {
     return null;
@@ -23,7 +16,7 @@ export function ScreenCaptureProcess() {
   )?.label;
 
   return (
-    <Fade in={loading}>
+    <Fade in={capture?.state === 'loading'}>
       <Box>
         <Typography variant="subtitle2">Converting to {formatLabel}</Typography>
         <LinearProgress />

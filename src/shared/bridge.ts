@@ -1,5 +1,5 @@
 import { Command } from './types';
-import { SavedForm, Settings } from './storage';
+import { SavedForm, Settings, Storage, StorageKeys } from './storage';
 import { useEffect, useState } from 'react';
 import { getHost } from './dom';
 
@@ -32,12 +32,6 @@ export type Event = { senderId: string } & (
         url: string;
       };
     }
-  | {
-      type: 'capture.process';
-      data: {
-        loading: boolean;
-      };
-    }
   | { type: `command.${Command}` }
   | { type: 'page-info.request' }
   | {
@@ -57,6 +51,12 @@ export type Event = { senderId: string } & (
       data: {
         prompt: string;
       };
+    }
+  | {
+      type: 'storage.save';
+      data: Partial<{
+        [K in StorageKeys]: Storage[K];
+      }>;
     }
 );
 

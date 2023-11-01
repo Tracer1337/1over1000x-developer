@@ -1,8 +1,14 @@
 import { addExtensionListener, sendExtensionMessage } from 'shared/bridge';
 import { chatGPTPolyfill } from 'shared/chatgpt';
+import {
+  StorageKeys,
+  addStorageValueListener,
+  saveStorageValue,
+} from 'shared/storage';
 import { createContextMenu, handleContextMenuClick } from './menu';
 import { createTabGroup, reloadAllTabs } from './tab';
 import {
+  handleCaptureValueChange,
   startScreenCapture,
   stopScreenCapture,
   transmitScreenCapture,
@@ -30,3 +36,10 @@ addExtensionListener('capture.transmit-recording', (event) =>
 );
 addExtensionListener('command.reload-tabs', reloadAllTabs);
 addExtensionListener('chatgpt.open', openChatGPT);
+addExtensionListener('storage.save', (event) =>
+  Object.entries(event.data).forEach(([key, value]: any) =>
+    saveStorageValue(key, value),
+  ),
+);
+
+addStorageValueListener(StorageKeys.CAPTURE, handleCaptureValueChange);

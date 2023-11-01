@@ -3,9 +3,9 @@ import {
   getCurrentTab,
   resetIcon,
   sendExtensionMessage,
-  senderId,
 } from 'shared/bridge';
 import { loadSettings } from 'shared/settings';
+import { Storage, StorageKeys, saveStorageValue } from 'shared/storage';
 
 export let stopScreenCapture: (() => void) | null = null;
 export let transmitScreenCapture:
@@ -16,15 +16,26 @@ export async function startScreenCapture() {
   assertNoRunningScreenCapture();
   assertNoOffscreenDocument();
 
-  await chrome.action.setIcon({ path: '/assets/stop-icon.png' });
+  await saveStorageValue(StorageKeys.CAPTURE, { state: 'running' });
 
   const videoUrl = await runScreenCapture();
 
-  await resetIcon();
-
   await downloadScreenCapture(videoUrl);
 
-  await chrome.offscreen.closeDocument();
+  await saveStorageValue(StorageKeys.CAPTURE, { state: 'idle' });
+}
+
+export async function handleCaptureValueChange(
+  value: Storage[StorageKeys.CAPTURE],
+) {
+  if (value.state === 'running') {
+    await chrome.action.setIcon({ path: '/assets/stop-icon.png' });
+  }
+
+  if (value.state === 'idle') {
+    await resetIcon();
+    await chrome.offscreen.closeDocument();
+  }
 }
 
 async function runScreenCapture() {

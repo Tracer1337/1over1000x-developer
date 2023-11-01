@@ -1,7 +1,7 @@
 import { FFmpeg } from '@ffmpeg/ffmpeg';
 import { fetchFile } from '@ffmpeg/util';
 import { Event, sendExtensionMessage } from 'shared/bridge';
-import { Settings } from 'shared/storage';
+import { Settings, StorageKeys } from 'shared/storage';
 import { CaptureFormat } from 'shared/types';
 
 let recorder: MediaRecorder | null;
@@ -70,8 +70,10 @@ export async function stopRecording() {
 }
 
 async function processVideo(video: Blob, settings: Settings) {
+  sendExtensionMessage('storage.save', {
+    [StorageKeys.CAPTURE]: { state: 'loading' },
+  });
   const url = await videoFormatters[settings.captureFormat](video, settings);
-  sendExtensionMessage('capture.process', { loading: false });
   sendExtensionMessage('capture.transmit-recording', { url });
 }
 
@@ -87,10 +89,6 @@ async function convertToGIF(video: Blob, settings: Settings) {
     } = await extractFrames(video, settings);
 
     const gif = new GifEncoder({ width, height });
-
-    gif.on('progress', () =>
-      sendExtensionMessage('capture.process', { loading: true }),
-    );
 
     gif.once('finished', (blob) => {
       resolve(URL.createObjectURL(blob));
@@ -148,9 +146,6 @@ async function extractFrames(video: Blob, settings: Settings) {
 
 async function setupFFmpeg(video: Blob) {
   const ffmpeg = new FFmpeg();
-  ffmpeg.on('progress', () =>
-    sendExtensionMessage('capture.process', { loading: true }),
-  );
   ffmpeg.on('log', (event) => console.log(event.type, event.message));
   await ffmpeg.load({
     coreURL: 'ffmpeg-core.js',
