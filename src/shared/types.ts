@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { GitLabIcon } from './icons';
+import { GitHubIcon, GitLabIcon } from './icons';
 
 export type Module = (typeof moduleDefs)[number]['key'];
 
@@ -27,6 +27,12 @@ export const moduleDefs = [
           'Main Project // Your Main Project in GitLab (/my-company/my-project)',
         ),
     }),
+  },
+  {
+    key: 'github',
+    label: 'GitHub',
+    icon: GitHubIcon,
+    config: z.void(),
   },
 ] as const;
 

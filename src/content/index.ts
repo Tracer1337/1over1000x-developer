@@ -7,10 +7,12 @@ import { Module, moduleDefs } from 'shared/types';
 import { loadSettings } from 'shared/settings';
 import { loadForm, saveForm } from 'shared/form';
 import setupGitlabModule from 'content/modules/gitlab';
+import setupGithubModule from 'content/modules/github';
 import setupCaptureModule from 'content/modules/capture';
 
 const moduleSetup: Record<Module, () => void> = {
   gitlab: setupGitlabModule,
+  github: setupGithubModule,
 };
 
 addExtensionListener('navigation.change', runRouteHandlers);
