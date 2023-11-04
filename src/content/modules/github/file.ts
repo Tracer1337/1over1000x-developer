@@ -1,6 +1,16 @@
 import { ReactNode, createElement } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Subject, tap, switchMap, takeUntil, Observable, map } from 'rxjs';
+import {
+  Subject,
+  tap,
+  switchMap,
+  takeUntil,
+  Observable,
+  map,
+  timeout,
+  catchError,
+  of,
+} from 'rxjs';
 import query from 'shared/query';
 import { DrawioAPI } from 'shared/drawio';
 import GitHubLoadingIndicator from './components/GitHubLoadingIndicator';
@@ -58,10 +68,21 @@ function getFileExtension() {
 
 function renderDrawioFile(fileContent: string, destroy: Subject<void>) {
   const drawioAPI = new DrawioAPI();
-  destroy.subscribe(() => drawioAPI.destroy());
+  let isDestroyed = false;
+  destroy.subscribe(() => {
+    isDestroyed = true;
+    drawioAPI.destroy();
+  });
   return drawioAPI.load(fileContent).pipe(
     switchMap(() => drawioAPI.export('svg')),
     tap(() => drawioAPI.destroy()),
     map((svg) => createElement(ImageViewer, { src: svg })),
+    timeout({ first: 2000 }),
+    catchError(() => {
+      if (!isDestroyed) {
+        window.location.reload();
+      }
+      return of();
+    }),
   );
 }
