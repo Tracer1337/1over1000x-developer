@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import createCache from '@emotion/cache';
 import { CacheProvider } from '@emotion/react';
 import { createTheme, ThemeProvider } from '@mui/material';
@@ -176,4 +176,23 @@ export function useHashLocation(): ReturnType<BaseLocationHook> {
     () => window.location.hash.replace(/^#/, '') || '/',
   );
   return [location, (to: string) => navigate(`#${to}`)];
+}
+
+export function useDebouncedEffect(
+  callback: React.EffectCallback,
+  deps: React.DependencyList,
+  timeout: number,
+) {
+  useEffect(() => {
+    let destructor: (() => void) | void;
+
+    const id = setTimeout(() => {
+      destructor = callback();
+    }, timeout);
+
+    return () => {
+      clearTimeout(id);
+      destructor?.();
+    };
+  }, deps);
 }

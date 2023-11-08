@@ -1,12 +1,8 @@
 import { Collapse } from '@mui/material';
-import { Settings } from 'shared/storage';
-import { SpotlightResult } from '../Spotlight/results';
+import { ReactNode } from 'react';
 
-export type ResultComponent<K extends SpotlightResult['type']> = React.FC<{
-  settings: Settings;
-  result: Extract<SpotlightResult, { type: K }>;
-  selected: boolean;
-  onClose: () => void;
-}> & {
+export type SpotlightResult = {
+  id: string;
+  node: ReactNode;
   wrapperProps?: React.ComponentProps<typeof Collapse>;
 };

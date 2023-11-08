@@ -1,30 +1,37 @@
 import { Paper, Box, Typography, Stack, alpha } from '@mui/material';
-import { useAction } from '../../hooks/useAction';
-import { ResultComponent } from '../../types';
+import { useSpotlight } from '../Spotlight/context';
 
-const GitlabIssueResult: ResultComponent<'gitlab-issue'> = ({
-  settings,
-  result,
-  selected,
-  onClose,
-}) => {
-  const { host, project } = settings.modules.gitlab.config;
-
-  const href = `https://${host}${project}/-/issues/${result.data.issueId}`;
-
-  const action = useAction({
-    active: selected,
-    callback: () => {
-      window.open(href, '_blank');
-      onClose();
+export function GitlabIssueResult({
+  issueId,
+  title,
+}: {
+  issueId: number;
+  title?: string;
+}) {
+  const {
+    settings: {
+      modules: {
+        gitlab: {
+          config: { host, project },
+        },
+      },
     },
-  });
+    onClose,
+  } = useSpotlight();
+
+  const href = `https://${host}${project}/-/issues/${issueId}`;
+
+  const onClick = () => {
+    window.open(href, '_blank');
+    onClose();
+  };
 
   return (
     <Paper
       variant="outlined"
       sx={{
         height: 56,
+        width: '100%',
         p: 2,
         display: 'flex',
         alignItems: 'center',
@@ -32,17 +39,17 @@ const GitlabIssueResult: ResultComponent<'gitlab-issue'> = ({
       }}
       component="a"
       href="#"
-      onClick={action}
+      onClick={onClick}
     >
       <Box
         component="img"
         src={chrome.runtime.getURL('/assets/gitlab-logo.svg')}
         sx={{ width: 48, my: -2, ml: -1, mr: 1 }}
       />
-      {result.data.title ? (
+      {title ? (
         <Stack>
           <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-            #{result.data.issueId}
+            #{issueId}
           </Typography>
           <Typography
             variant="body2"
@@ -54,20 +61,12 @@ const GitlabIssueResult: ResultComponent<'gitlab-issue'> = ({
               color: alpha(theme.palette.text.primary, 0.67),
             })}
           >
-            {result.data.title}
+            {title}
           </Typography>
         </Stack>
       ) : (
-        <Typography>Issue #{result.data.issueId}</Typography>
+        <Typography>Issue #{issueId}</Typography>
       )}
     </Paper>
   );
-};
-
-GitlabIssueResult.wrapperProps = {
-  sx: {
-    width: '100%',
-  },
-};
-
-export { GitlabIssueResult };
+}

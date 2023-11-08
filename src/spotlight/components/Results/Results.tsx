@@ -1,21 +1,10 @@
-import { createElement } from 'react';
 import { Box, Collapse, Stack } from '@mui/material';
 import { TransitionGroup } from 'react-transition-group';
-import { Settings } from 'shared/storage';
-import { SpotlightResult } from '../Spotlight/results';
-import { resultComponents } from './components';
+import { useResults } from './hooks/useResults';
 
-export function Results({
-  settings,
-  results,
-  selectedResult,
-  onClose,
-}: {
-  settings: Settings;
-  results: SpotlightResult[];
-  selectedResult: SpotlightResult | null;
-  onClose: () => void;
-}) {
+export function Results() {
+  const results = useResults();
+
   return (
     <Stack
       gap={1}
@@ -27,24 +16,16 @@ export function Results({
         <Collapse
           key={result.id}
           timeout={100}
-          {...resultComponents[result.type].wrapperProps}
+          sx={{ width: '100%' }}
+          {...result.wrapperProps}
         >
           <Box
             sx={(theme) => ({
-              outline:
-                result === selectedResult
-                  ? `2px solid ${theme.palette.primary.main}`
-                  : null,
               borderRadius: `${theme.shape.borderRadius}px`,
               textDecoration: 'none',
             })}
           >
-            {createElement(resultComponents[result.type] as any, {
-              settings,
-              result,
-              selected: result === selectedResult,
-              onClose,
-            })}
+            {result.node}
           </Box>
         </Collapse>
       ))}

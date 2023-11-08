@@ -29,33 +29,46 @@ export class GitLabApi {
     this.url = `https://${host}/api/v4`;
   }
 
-  public async request<T>(path: string, params = {}): Promise<T> {
+  public async request<T>(
+    path: string,
+    params = {},
+    init?: RequestInit,
+  ): Promise<T> {
     return fetch(`${this.url}${path}?${qs.stringify(params)}`, {
       headers: {
         'PRIVATE-TOKEN': this.token,
       },
+      ...init,
     }).then((res) => res.json());
   }
 }
 
+export type GitLabProject = {
+  id: number;
+  path_with_namespace: string;
+};
+
+export type GitLabIssue = {
+  iid: number;
+  title: string;
+};
+
 class GitLabProjects {
   constructor(private readonly api: GitLabApi) {}
 
-  public all() {
-    return this.api.request<
-      {
-        id: number;
-        path_with_namespace: string;
-      }[]
-    >('/projects');
+  public all(init?: RequestInit) {
+    return this.api.request<GitLabProject[]>('/projects', {}, init);
   }
 
-  public issues(projectId: number, params?: { search?: string }) {
-    return this.api.request<
-      {
-        iid: number;
-        title: string;
-      }[]
-    >(`/projects/${projectId}/issues`, params);
+  public issues(
+    projectId: number,
+    params?: { search?: string },
+    init?: RequestInit,
+  ) {
+    return this.api.request<GitLabIssue[]>(
+      `/projects/${projectId}/issues`,
+      params,
+      init,
+    );
   }
 }
