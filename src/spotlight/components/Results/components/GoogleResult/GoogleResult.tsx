@@ -21,7 +21,13 @@ const GoogleResult: ResultComponent<'google'> = ({
   return (
     <Paper
       variant="outlined"
-      sx={{ height: 56, p: 2, display: 'flex', alignItems: 'center' }}
+      sx={{
+        height: 56,
+        p: 2,
+        display: 'flex',
+        alignItems: 'center',
+        textDecoration: 'none',
+      }}
       component="a"
       href="#"
       onClick={action}

@@ -1,6 +1,11 @@
 import { ReactNode, createElement } from 'react';
 import { z } from 'zod';
-import { createTsForm, useTsController, useDescription } from '@ts-react/form';
+import {
+  createTsForm,
+  useTsController,
+  useDescription,
+  createUniqueFieldSchema,
+} from '@ts-react/form';
 import { TextField as MuiTextField, Stack } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 
@@ -21,9 +26,17 @@ export function isZodObject(schema: {
   return schema._def.typeName === z.ZodFirstPartyTypeKind.ZodObject;
 }
 
-export const SchemaForm = createTsForm([[z.string(), TextField]] as const, {
-  FormComponent: SchemaFormContainer,
-});
+export const PasswordSchema = createUniqueFieldSchema(z.string(), 'password');
+
+export const SchemaForm = createTsForm(
+  [
+    [z.string(), TextField],
+    [PasswordSchema, () => createElement(TextField, { isPasswordField: true })],
+  ] as const,
+  {
+    FormComponent: SchemaFormContainer,
+  },
+);
 
 function SchemaFormContainer({
   children,
@@ -54,7 +67,7 @@ function SchemaFormContainer({
   );
 }
 
-function TextField() {
+function TextField({ isPasswordField = false }) {
   const { field, error } = useTsController<string>();
   const description = useDescription();
 
@@ -64,5 +77,6 @@ function TextField() {
     onChange: (e) => field.onChange(e.currentTarget.value),
     error: !!error?.errorMessage,
     helperText: error?.errorMessage,
+    type: isPasswordField ? 'password' : 'text',
   });
 }

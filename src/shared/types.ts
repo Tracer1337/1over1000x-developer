@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { GitHubIcon, GitLabIcon } from './icons';
+import { PasswordSchema } from './schema';
 
 export type Module = (typeof moduleDefs)[number]['key'];
 
@@ -25,6 +26,11 @@ export const moduleDefs = [
         .default(null)
         .describe(
           'Main Project // Your Main Project in GitLab (/my-company/my-project)',
+        ),
+      token: PasswordSchema.nullable()
+        .default(null)
+        .describe(
+          'Personal Access Token // Your Token for interacting with the GitLab API (read_api)',
         ),
     }),
   },

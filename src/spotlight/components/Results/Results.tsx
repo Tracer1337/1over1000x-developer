@@ -36,6 +36,7 @@ export function Results({
                   ? `2px solid ${theme.palette.primary.main}`
                   : null,
               borderRadius: `${theme.shape.borderRadius}px`,
+              textDecoration: 'none',
             })}
           >
             {createElement(resultComponents[result.type] as any, {

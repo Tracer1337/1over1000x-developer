@@ -29,6 +29,7 @@ const CommandResult: ResultComponent<'command'> = ({
         p: 2,
         display: 'flex',
         alignItems: 'center',
+        textDecoration: 'none',
       }}
       component="a"
       href="#"

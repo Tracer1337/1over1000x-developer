@@ -1,4 +1,18 @@
-import { Observable, combineLatest, map, of } from 'rxjs';
+import {
+  Observable,
+  Subject,
+  combineLatest,
+  debounceTime,
+  filter,
+  from,
+  map,
+  of,
+  shareReplay,
+  startWith,
+  switchMap,
+  withLatestFrom,
+} from 'rxjs';
+import { GitLabApi } from 'shared/gitlab';
 import { Settings } from 'shared/storage';
 import { commandDefs } from 'shared/types';
 
@@ -25,13 +39,14 @@ export type SpotlightResult = { id: string } & (
       type: 'gitlab-issue';
       data: {
         issueId: number;
+        title?: string;
       };
     }
 );
 
-export function generateResults(
+export function createResultGenerator(
   settings: Settings,
-  input: string,
+  input: Subject<string>,
 ): Observable<SpotlightResult[]> {
   return combineLatest([
     generateGoogleResults(settings, input),
@@ -43,81 +58,140 @@ export function generateResults(
 
 function generateGoogleResults(
   _settings: Settings,
-  input: string,
+  input: Subject<string>,
 ): Observable<SpotlightResult[]> {
-  return input.length === 0 || input[0] === '>'
-    ? of([])
-    : of([
-        {
-          type: 'google',
-          id: 'google',
-          data: {
-            search: input,
-          },
-        },
-      ]);
+  return input.pipe(
+    map((input) =>
+      input.length === 0 || input[0] === '>'
+        ? []
+        : [
+            {
+              type: 'google',
+              id: 'google',
+              data: {
+                search: input,
+              },
+            },
+          ],
+    ),
+  );
 }
 
 function generateChatGPTResults(
   _settings: Settings,
-  input: string,
+  input: Subject<string>,
 ): Observable<SpotlightResult[]> {
-  return input.length === 0 || input[0] === '>'
-    ? of([])
-    : of([
-        {
-          type: 'chatgpt',
-          id: 'chatgpt',
-          data: {
-            prompt: input,
-          },
-        },
-      ]);
+  return input.pipe(
+    map((input) =>
+      input.length === 0 || input[0] === '>'
+        ? []
+        : [
+            {
+              type: 'chatgpt',
+              id: 'chatgpt',
+              data: {
+                prompt: input,
+              },
+            },
+          ],
+    ),
+  );
 }
 
 function generateCommandResults(
   _settings: Settings,
-  input: string,
+  input: Subject<string>,
 ): Observable<SpotlightResult[]> {
-  if (input[0] !== '>') {
-    return of([]);
-  }
-  input = input.slice(1);
-  return of(
-    commandDefs
-      .filter((command) => searchText(command.label, input))
-      .map(
-        (command) =>
-          ({
-            type: 'command',
-            id: `command-${command.key}`,
-            data: { command },
-          } as const),
-      ),
+  return input.pipe(
+    map((input) => {
+      if (input[0] !== '>') {
+        return [];
+      }
+      input = input.slice(1);
+      return commandDefs
+        .filter((command) => searchText(command.label, input))
+        .map(
+          (command) =>
+            ({
+              type: 'command',
+              id: `command-${command.key}`,
+              data: { command },
+            } as const),
+        );
+    }),
   );
 }
 
 function generateGitlabIssueResults(
   settings: Settings,
-  input: string,
+  input: Subject<string>,
 ): Observable<SpotlightResult[]> {
-  if (
-    !settings.modules.gitlab.config.host ||
-    !settings.modules.gitlab.config.project
-  ) {
+  const { host, project, token } = settings.modules.gitlab.config;
+
+  if (!host || !project) {
     return of([]);
   }
-  const ids = input.match(/\b\d{4}\b/g)?.map((id) => parseInt(id)) ?? [];
-  const distinctIds = Array.from(new Set(ids));
-  return of(
-    distinctIds.map(
-      (id) =>
-        ({
-          type: 'gitlab-issue',
-          id: `gitlab-issue-${id}`,
-          data: { issueId: id },
-        } as const),
+
+  const resultsById = input.pipe(
+    map((input) => {
+      const ids = input.match(/\b\d{4}\b/g)?.map((id) => parseInt(id)) ?? [];
+      const distinctIds = Array.from(new Set(ids));
+      return distinctIds.map(
+        (id) =>
+          ({
+            type: 'gitlab-issue',
+            id: `gitlab-issue-${id}`,
+            data: { issueId: id },
+          } as const),
+      );
+    }),
+  );
+
+  const gitlabProject = of(token).pipe(
+    filter((token): token is NonNullable<typeof token> => !!token),
+    map((token) => new GitLabApi(host, token)),
+    switchMap((api) =>
+      from(api.projects.all()).pipe(
+        map((projects) =>
+          projects.find(
+            (project) =>
+              '/' + project.path_with_namespace ===
+              settings.modules.gitlab.config.project,
+          ),
+        ),
+        filter((project): project is NonNullable<typeof project> => !!project),
+        withLatestFrom(of(api)),
+      ),
     ),
+    shareReplay(1),
+  );
+
+  const resultsBySearch = input.pipe(
+    debounceTime(300),
+    switchMap((input) => {
+      return gitlabProject.pipe(
+        switchMap(([project, api]) =>
+          from(api.projects.issues(project.id, { search: input })),
+        ),
+      );
+    }),
+    map((issues) =>
+      issues.map(
+        (issue) =>
+          ({
+            type: 'gitlab-issue',
+            id: `gitlab-issue-${issue.iid}`,
+            data: {
+              issueId: issue.iid,
+              title: issue.title,
+            },
+          } as const),
+      ),
+    ),
+  );
+
+  return combineLatest([resultsById, resultsBySearch.pipe(startWith([]))]).pipe(
+    map((values) => values.flat()),
   );
 }
 
