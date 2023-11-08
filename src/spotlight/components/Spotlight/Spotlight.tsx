@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { useSpotlightShortcuts } from './hooks/useSpotlightShortcuts';
 import { Stack, TextField } from '@mui/material';
 import { useSettings } from 'shared/settings';
-import { SpotlightResult, generateResults } from './results';
-import Results from '../Results';
+import { useResults } from './hooks/useResults';
 import { useKeyboardSelection } from './hooks/useKeyboardSelection';
+import Results from '../Results';
 
 export function Spotlight({ onClose }: { onClose: () => void }) {
   const [settings] = useSettings();
@@ -12,19 +12,14 @@ export function Spotlight({ onClose }: { onClose: () => void }) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [input, setInput] = useState('');
-  const [results, setResults] = useState<SpotlightResult[]>([]);
+
+  const results = useResults(input);
 
   const { selectedResult } = useKeyboardSelection(results);
 
   useSpotlightShortcuts({
     close: onClose,
   });
-
-  useEffect(() => {
-    if (settings) {
-      generateResults(settings, input).then(setResults);
-    }
-  }, [settings, input]);
 
   useEffect(() => {
     if (selectedResult === null) {
