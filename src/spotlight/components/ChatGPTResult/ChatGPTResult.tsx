@@ -1,20 +1,12 @@
 import { Box, Paper, Typography } from '@mui/material';
-import { Event, senderId } from 'shared/bridge';
-import { useSpotlight } from '../Spotlight/context';
 
-export function ChatGPTResult() {
-  const { input, onClose } = useSpotlight();
-
-  const onClick = async () => {
-    const event: Event = {
-      senderId,
-      type: 'chatgpt.open',
-      data: { prompt: input },
-    };
-    await chrome.runtime.sendMessage(event);
-    onClose();
-  };
-
+export function ChatGPTResult({
+  id,
+  action,
+}: {
+  id: string;
+  action: () => void;
+}) {
   return (
     <Paper
       variant="outlined"
@@ -27,7 +19,9 @@ export function ChatGPTResult() {
       }}
       component="a"
       href="#"
-      onClick={onClick}
+      onClick={action}
+      data-focusable
+      data-result-id={id}
     >
       <Box
         component="img"

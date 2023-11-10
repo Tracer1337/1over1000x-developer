@@ -1,24 +1,15 @@
 import { Paper, Typography } from '@mui/material';
-import { Event, senderId } from 'shared/bridge';
-import { useSpotlight } from '../Spotlight/context';
 import { commandDefs } from 'shared/types';
 
 export function CommandResult({
+  id,
+  action,
   command,
 }: {
+  id: string;
+  action: () => void;
   command: (typeof commandDefs)[number];
 }) {
-  const { onClose } = useSpotlight();
-
-  const onClick = async () => {
-    const event: Event = {
-      senderId,
-      type: `command.${command.key}`,
-    };
-    await chrome.runtime.sendMessage(event);
-    onClose();
-  };
-
   return (
     <Paper
       variant="outlined"
@@ -31,7 +22,9 @@ export function CommandResult({
       }}
       component="a"
       href="#"
-      onClick={onClick}
+      onClick={action}
+      data-focusable
+      data-result-id={id}
     >
       <Typography>{command.label}</Typography>
     </Paper>

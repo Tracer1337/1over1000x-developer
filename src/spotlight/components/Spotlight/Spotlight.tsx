@@ -1,27 +1,36 @@
-import { useRef, useState } from 'react';
-import { useSpotlightShortcuts } from './hooks/useSpotlightShortcuts';
+import { useMemo, useRef, useState } from 'react';
 import { Stack, TextField } from '@mui/material';
 import { useSettings } from 'shared/settings';
+import { Subject } from 'rxjs';
+import { useSpotlightShortcuts } from './hooks/useSpotlightShortcuts';
+import { useKeyboardControls } from './hooks/useKeyboardControls';
+import { useInputFocus } from './hooks/useInputFocus';
 import { SpotlightProvider } from './context';
 import Results from '../Results';
 
 export function Spotlight({ onClose }: { onClose: () => void }) {
   const [settings] = useSettings();
 
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLDivElement>(null);
 
   const [input, setInput] = useState('');
+
+  const action = useMemo(() => new Subject<string>(), []);
 
   useSpotlightShortcuts({
     close: onClose,
   });
+
+  const focus = useKeyboardControls();
+
+  useInputFocus({ inputRef, focus });
 
   if (!settings) {
     return null;
   }
 
   return (
-    <SpotlightProvider value={{ input, settings, onClose }}>
+    <SpotlightProvider value={{ input, settings, onClose, focus, action }}>
       <Stack gap={2}>
         <TextField
           placeholder="Quick actions (append > for commands)"
@@ -29,9 +38,8 @@ export function Spotlight({ onClose }: { onClose: () => void }) {
           onChange={(event) => setInput(event.currentTarget.value)}
           sx={{ background: 'white' }}
           fullWidth
-          autoFocus
           autoComplete="off"
-          inputRef={inputRef}
+          ref={inputRef}
         />
         <Results />
       </Stack>

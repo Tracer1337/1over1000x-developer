@@ -1,16 +1,12 @@
 import { Box, Paper, Typography } from '@mui/material';
-import { useSpotlight } from '../Spotlight/context';
 
-export function GoogleResult() {
-  const { input, onClose } = useSpotlight();
-
-  const href = `https://www.google.com/search?q=${input}`;
-
-  const onClick = () => {
-    window.open(href, '_blank');
-    onClose();
-  };
-
+export function GoogleResult({
+  id,
+  action,
+}: {
+  id: string;
+  action: () => void;
+}) {
   return (
     <Paper
       variant="outlined"
@@ -23,7 +19,9 @@ export function GoogleResult() {
       }}
       component="a"
       href="#"
-      onClick={onClick}
+      onClick={action}
+      data-focusable
+      data-result-id={id}
     >
       <Box
         component="img"

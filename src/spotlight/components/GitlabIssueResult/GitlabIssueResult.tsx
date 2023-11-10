@@ -1,31 +1,16 @@
 import { Paper, Box, Typography, Stack, alpha } from '@mui/material';
-import { useSpotlight } from '../Spotlight/context';
 
 export function GitlabIssueResult({
-  issueId,
+  id,
+  action,
   title,
+  issueId,
 }: {
-  issueId: number;
+  id: string;
+  action: () => void;
   title?: string;
+  issueId: number;
 }) {
-  const {
-    settings: {
-      modules: {
-        gitlab: {
-          config: { host, project },
-        },
-      },
-    },
-    onClose,
-  } = useSpotlight();
-
-  const href = `https://${host}${project}/-/issues/${issueId}`;
-
-  const onClick = () => {
-    window.open(href, '_blank');
-    onClose();
-  };
-
   return (
     <Paper
       variant="outlined"
@@ -39,7 +24,9 @@ export function GitlabIssueResult({
       }}
       component="a"
       href="#"
-      onClick={onClick}
+      onClick={action}
+      data-focusable
+      data-result-id={id}
     >
       <Box
         component="img"

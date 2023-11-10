@@ -1,9 +1,15 @@
 import { Box, Collapse, Stack } from '@mui/material';
 import { TransitionGroup } from 'react-transition-group';
 import { useResults } from './hooks/useResults';
+import { useResultAction } from './hooks/useResultAction';
+import { useResultFocus } from './hooks/useResultFocus';
 
 export function Results() {
+  const focusedResultId = useResultFocus();
+
   const results = useResults();
+
+  useResultAction({ results });
 
   return (
     <Stack
@@ -21,6 +27,10 @@ export function Results() {
         >
           <Box
             sx={(theme) => ({
+              outline:
+                result.id === focusedResultId
+                  ? `2px solid ${theme.palette.primary.main}`
+                  : null,
               borderRadius: `${theme.shape.borderRadius}px`,
               textDecoration: 'none',
             })}

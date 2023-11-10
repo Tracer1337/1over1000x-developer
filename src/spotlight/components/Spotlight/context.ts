@@ -4,12 +4,15 @@ import {
   createElement,
   useContext,
 } from 'react';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { Settings } from 'shared/storage';
 
-type SpotlightContextValue = {
+export type SpotlightContextValue = {
   input: string;
   settings: Settings;
   onClose: () => void;
+  focus: BehaviorSubject<Element | null>;
+  action: Subject<string>;
 };
 
 const SpotlightContext = createContext<SpotlightContextValue | null>(null);
