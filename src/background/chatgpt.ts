@@ -34,7 +34,11 @@ function waitForTabLoad(tabId: number) {
 }
 
 async function injectPrompt(prompt: string) {
-  while (!document.querySelector('[data-testid="gpt-4"]')) {
+  while (
+    !document
+      .querySelector<HTMLTextAreaElement>('#prompt-textarea')
+      ?.placeholder?.startsWith('Message ChatGPT')
+  ) {
     await new Promise(requestAnimationFrame);
   }
   const promptInput =
