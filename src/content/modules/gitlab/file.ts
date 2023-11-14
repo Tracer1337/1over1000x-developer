@@ -32,16 +32,16 @@ function attachFileActions(file: HTMLElement) {
   if (!menu) {
     return null;
   }
-  const observer = new MutationObserver(() => {
-    if (!hasFileActions(file)) {
-      renderFileActions(file);
-    }
-  });
+  renderFileActions(file);
+  const observer = new MutationObserver(() => renderFileActions(file));
   observer.observe(menu, { childList: true });
   return observer;
 }
 
 function renderFileActions(file: HTMLElement) {
+  if (hasFileActions(file)) {
+    return;
+  }
   const container = getFileActionContainer(file);
   if (!container) {
     return;
