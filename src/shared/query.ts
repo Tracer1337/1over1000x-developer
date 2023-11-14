@@ -52,6 +52,9 @@ const queries = {
       'textarea[name="issue[description]"]',
     );
   },
+  ['gitlab.mr-overview.thread-file-menu']: (file: Element) => {
+    return file.querySelector('.more-actions ul');
+  },
   ['gitlab.mr-overview.thread-file-actions-sibling']: (file: Element) => {
     return file.querySelector('.more-actions ul li:nth-child(2)');
   },
@@ -71,6 +74,9 @@ const queries = {
     return document.querySelector<HTMLButtonElement>(
       `[data-path="${path}"] .dropdown-toggle`,
     );
+  },
+  ['gitlab.mr-diff.file-menu']: (file: Element) => {
+    return file.querySelector('ul[role="menu"]');
   },
   ['gitlab.mr-diff.file-actions-sibling']: (file: Element) => {
     return file.querySelector('ul[role="menu"] .gl-dropdown-item:nth-child(3)');

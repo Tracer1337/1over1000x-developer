@@ -35,6 +35,12 @@ export function shouldHandleElement(element: Element) {
   return true;
 }
 
+export function resetHandledElementMarkers() {
+  document
+    .querySelectorAll('[is-handled]')
+    .forEach((element) => element.removeAttribute('is-handled'));
+}
+
 export function getOrCreateContainer(
   id: string,
   parentSelector = 'body',

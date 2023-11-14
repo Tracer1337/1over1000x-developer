@@ -38,6 +38,12 @@ function handleStoreUpdate(store: SuggestionHelperState) {
   store.reset();
 }
 
+function renderSuggestionHelper(row: Element) {
+  createRoot(getRowActionContainer(row)).render(
+    React.createElement(SuggestionButtons, { row }),
+  );
+}
+
 function collectRows(from: Element, to: Element) {
   const rows: Element[] = [];
   const numberOfRows = getLineNumber(to) - getLineNumber(from);
@@ -100,11 +106,5 @@ function renderGlobalStyles() {
         },
       },
     }),
-  );
-}
-
-function renderSuggestionHelper(row: Element) {
-  createRoot(getRowActionContainer(row)).render(
-    React.createElement(SuggestionButtons, { row }),
   );
 }
