@@ -148,12 +148,24 @@ export function registerRouteHandler(handler: RouteHandler) {
 }
 
 export function runRouteHandlers() {
-  cleanupHandlers.forEach((handler) => handler?.());
+  cleanupHandlers.forEach((handler) => {
+    try {
+      handler?.();
+    } catch (error) {
+      console.warn(error);
+    }
+  });
   cleanupHandlers.length = 0;
-  handlers.forEach(
-    ({ path, callback }) =>
-      path.test(location.href) && cleanupHandlers.push(callback()),
-  );
+  handlers.forEach(({ path, callback }) => {
+    if (!path.test(location.href)) {
+      return;
+    }
+    try {
+      cleanupHandlers.push(callback());
+    } catch (error) {
+      console.warn(error);
+    }
+  });
 }
 
 export function createRenderLoop(callback: () => void, interval = 200) {
