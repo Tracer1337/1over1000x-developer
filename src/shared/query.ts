@@ -41,7 +41,7 @@ const queries = {
   },
   ['gitlab.issue.menu-button']: () => {
     return document.querySelector<HTMLButtonElement>(
-      '#new-actions-header-dropdown__BV_toggle_',
+      '.detail-page-header-actions > div:last-child .gl-new-dropdown-toggle',
     );
   },
   ['gitlab.issue.title-input']: () => {

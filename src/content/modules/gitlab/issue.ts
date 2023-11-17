@@ -44,7 +44,7 @@ async function handleUserStoryChange(userStory: UserStory | null) {
 function renderIsssueActions() {
   const container = getOrCreateContainer(
     'issue-actions',
-    '#new-actions-header-dropdown .gl-dropdown-contents',
+    '.detail-page-header-actions > div:last-child .gl-new-dropdown-contents',
   );
   if (shouldHandleElement(container)) {
     createRoot(container).render(React.createElement(IssueActions));
