@@ -1,21 +1,17 @@
 import { Box } from '@mui/material';
-import CurrentRef from '../CurrentRef';
 import RunPipelineButton from '../RunPipelineButton';
 
 function PipelineEnhancements() {
   return (
     <Box
       sx={{
-        p: 2,
+        py: 2,
         display: 'flex',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-end',
         alignItems: 'center',
       }}
     >
-      <Box sx={{ mr: 2 }}>
-        <RunPipelineButton />
-      </Box>
-      <CurrentRef />
+      <RunPipelineButton />
     </Box>
   );
 }

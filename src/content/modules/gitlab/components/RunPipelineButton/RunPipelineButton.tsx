@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Snackbar, Alert } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
 import { useRunPipeline } from './hooks/useRunPipeline';
 
 function RunPipelineButton() {
@@ -14,14 +13,13 @@ function RunPipelineButton() {
 
   return (
     <>
-      <LoadingButton
+      <button
+        className="btn hide-collapsed btn-default btn-md gl-button"
         onClick={runPipeline}
-        loading={isLoading}
-        variant="outlined"
-        size="small"
+        disabled={isLoading}
       >
-        Run Pipeline
-      </LoadingButton>
+        <span className="gl-button-text">Run pipeline</span>
+      </button>
       <Snackbar
         open={success}
         autoHideDuration={6000}

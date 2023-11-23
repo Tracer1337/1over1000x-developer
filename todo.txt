@@ -1,0 +1,1 @@
+Use chrome.extension.getURL for spotlight command (Then it may work on Mac)
