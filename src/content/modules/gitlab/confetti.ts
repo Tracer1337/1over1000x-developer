@@ -15,14 +15,13 @@ function render() {
 }
 
 function applyConfettiHandler(element: HTMLInputElement) {
-  element.addEventListener(
-    'change',
-    () =>
-      element.checked &&
+  element.addEventListener('change', () => {
+    if (element.checked) {
       confettiAtElement(element, {
         startVelocity: 20,
-      }),
-  );
+      });
+    }
+  });
 }
 
 function confettiAtElement(element: Element, config: confetti.Options = {}) {

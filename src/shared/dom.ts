@@ -27,12 +27,12 @@ export async function waitForSelector<T extends HTMLElement>(
   return result;
 }
 
+const handledElements = new Set<Element>();
+
 export function shouldHandleElement(element: Element) {
-  if (element.getAttribute('is-handled')) {
-    return false;
-  }
-  element.setAttribute('is-handled', '1');
-  return true;
+  const hasElemement = handledElements.has(element);
+  handledElements.add(element);
+  return !hasElemement;
 }
 
 export function resetHandledElementMarkers() {
