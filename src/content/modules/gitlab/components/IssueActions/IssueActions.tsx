@@ -7,10 +7,10 @@ export function IssueActions() {
 
   return (
     <>
-      <li role="presentation" className="gl-dropdown-item">
+      <li role="presentation" className="gl-new-dropdown-item">
         <TabGroupButton onClick={closeMenu} />
       </li>
-      <li role="presentation" className="gl-dropdown-item">
+      <li role="presentation" className="gl-new-dropdown-item">
         <StatusMessageButton onClick={closeMenu} />
       </li>
     </>

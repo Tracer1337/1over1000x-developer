@@ -7,15 +7,15 @@ export function TabGroupButton({ onClick }: { onClick: () => void }) {
     <button
       role="menuitem"
       type="button"
-      className="dropdown-item"
+      className="gl-new-dropdown-item-content"
       onClick={() => {
         createTabGroup();
         onClick();
       }}
     >
-      <div className="gl-dropdown-item-text-wrapper">
-        <p className="gl-dropdown-item-text-primary">Create tab group</p>
-      </div>
+      <span className="gl-new-dropdown-item-text-wrapper">
+        Create tab group
+      </span>
     </button>
   );
 }

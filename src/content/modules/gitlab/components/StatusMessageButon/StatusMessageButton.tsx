@@ -8,13 +8,13 @@ export function StatusMessageButton({ onClick }: { onClick: () => void }) {
       <button
         role="menuitem"
         type="button"
-        className="dropdown-item"
+        className="gl-new-dropdown-item-content"
         onClick={() => copyStatusMessage().then(() => onClick())}
         disabled={!canCopyStatusMessage}
       >
-        <div className="gl-dropdown-item-text-wrapper">
-          <p className="gl-dropdown-item-text-primary">Copy status message</p>
-        </div>
+        <span className="gl-new-dropdown-item-text-wrapper">
+          Copy status message
+        </span>
       </button>
     </>
   );
