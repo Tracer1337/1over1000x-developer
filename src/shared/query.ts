@@ -1,8 +1,4 @@
-const ISSUE_STATUS_LABELS = new Set([
-  'ready for code review',
-  'ready for QA',
-  'ready for merge',
-]);
+import { GITLAB_STATUS, GITLAB_STATUS_LIST } from './gitlab';
 
 /**
  * Format for query names: host.page.selector
@@ -29,7 +25,8 @@ const queries = {
       )
         .map((element) => element.textContent?.trim())
         .filter((label): label is string => !!label)
-        .find((label) => ISSUE_STATUS_LABELS.has(label)) ?? null
+        .find((label) => GITLAB_STATUS_LIST.includes(label as GITLAB_STATUS)) ??
+      null
     );
   },
   ['gitlab.issue.mr-url']: () => {

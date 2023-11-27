@@ -1,14 +1,8 @@
-import { useState } from 'react';
-import { useMutationObserver } from 'shared/dom';
+import { useIssueStatus } from 'shared/gitlab';
 import query from 'shared/query';
 
 export function useStatusMessage() {
-  const [canCopyStatusMessage, setCanCopyStatusMessage] = useState(false);
-
-  useMutationObserver(
-    () => setCanCopyStatusMessage(query('gitlab.issue.status') !== null),
-    query('gitlab.issue.status-container'),
-  );
+  const issueStatus = useIssueStatus();
 
   const copyStatusMessage = async () => {
     const statusMessage = createStatusMessage();
@@ -31,5 +25,5 @@ export function useStatusMessage() {
     return `[#${issueId}](${issueUrl}) \`${issueTitle}\` ${issueStatus}`;
   };
 
-  return [canCopyStatusMessage, copyStatusMessage] as const;
+  return [issueStatus !== null, copyStatusMessage] as const;
 }

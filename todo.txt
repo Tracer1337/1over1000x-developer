@@ -1,1 +1,0 @@
-Issue weiterschieben Button (nächstes Label im Flow) + Zurück in Progress Button

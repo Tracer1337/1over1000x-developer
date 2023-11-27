@@ -1,6 +1,6 @@
-import { createElement, useEffect, useMemo, useState } from 'react';
+import { createElement, useEffect, useState } from 'react';
 import { Button } from '@mui/material';
-import { GitLabApi, GitLabProject } from 'shared/gitlab';
+import { useCurrentGitLabProject, useGitLabApi } from 'shared/gitlab';
 import { useDebouncedEffect } from 'shared/dom';
 import { SpotlightResult } from 'spotlight/components/Results/types';
 import {
@@ -80,32 +80,12 @@ export function useGitlabIssueResults(): SpotlightResult[] {
     },
   } = spotlight;
 
-  const [project, setProject] = useState<GitLabProject>();
   const [issuesBySearch, setIssuesBySearch] = useState<SpotlightResult[]>([]);
   const [showAll, setShowAll] = useState(false);
 
-  const api = useMemo(() => {
-    if (!config.host || !config.token) {
-      return;
-    }
-    return new GitLabApi(config.host, config.token);
-  }, [config]);
+  const project = useCurrentGitLabProject();
 
-  useEffect(() => {
-    if (!api || !config.project) {
-      return;
-    }
-
-    api.projects
-      .all()
-      .then((projects) =>
-        setProject(
-          projects.find(
-            (project) => '/' + project.path_with_namespace === config.project,
-          ),
-        ),
-      );
-  }, [api, config]);
+  const api = useGitLabApi();
 
   useDebouncedEffect(
     () => {

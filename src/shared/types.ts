@@ -30,7 +30,7 @@ export const moduleDefs = [
       token: PasswordSchema.nullable()
         .default(null)
         .describe(
-          'Personal Access Token // Your Token for interacting with the GitLab API (read_api)',
+          'Personal Access Token // Your Token for interacting with the GitLab API (permission: api)',
         ),
     }),
   },
