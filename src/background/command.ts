@@ -12,6 +12,6 @@ async function handleSpotlightCommand() {
     width: 450,
     height: 600,
     type: 'popup',
-    url: 'chrome-extension://dhldkgjggdacbkhlpkmmipfmhaboanep/spotlight.html',
+    url: chrome.runtime.getURL('/spotlight.html'),
   });
 }
