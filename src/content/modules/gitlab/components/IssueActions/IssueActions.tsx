@@ -29,12 +29,14 @@ export function IssueActions() {
           <IssueStatusButton onClick={closeMenu} status={nextIssueStatus} />
         </li>
       )}
-      <li role="presentation" className="gl-new-dropdown-item">
-        <IssueStatusButton
-          onClick={closeMenu}
-          status={GITLAB_STATUS.IN_PROGRESS}
-        />
-      </li>
+      {nextIssueStatus !== GITLAB_STATUS.IN_PROGRESS && (
+        <li role="presentation" className="gl-new-dropdown-item">
+          <IssueStatusButton
+            onClick={closeMenu}
+            status={GITLAB_STATUS.IN_PROGRESS}
+          />
+        </li>
+      )}
     </>
   );
 }

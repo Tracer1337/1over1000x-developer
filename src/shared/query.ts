@@ -49,6 +49,10 @@ const queries = {
       'textarea[name="issue[description]"]',
     );
   },
+  ['gitlab.issue.current-user']: (): { id: number } | null => {
+    const data = document.querySelector('.js-sidebar-options')?.textContent;
+    return data ? JSON.parse(data).currentUser : null;
+  },
   ['gitlab.mr-overview.thread-file-menu']: (file: Element) => {
     return file.querySelector('.more-actions ul');
   },

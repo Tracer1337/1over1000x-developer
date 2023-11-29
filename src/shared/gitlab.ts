@@ -38,14 +38,15 @@ export class GitLabApi {
     params = {},
     init?: RequestInit,
   ): Promise<T> {
-    const query =
-      Object.keys(params).length > 0 ? `?${qs.stringify(params)}` : '';
-    return fetch(`${this.url}${path}${query}`, {
-      headers: {
-        'PRIVATE-TOKEN': this.token,
+    return fetch(
+      `${this.url}${path}?${qs.stringify(params, { indices: false })}`,
+      {
+        headers: {
+          'PRIVATE-TOKEN': this.token,
+        },
+        ...init,
       },
-      ...init,
-    }).then((res) => res.json());
+    ).then((res) => res.json());
   }
 }
 
@@ -83,20 +84,18 @@ class GitLabProjects {
     );
   }
 
-  public async setIssueStatus(
+  public async updateIssue(
     projectId: number,
     issueId: number,
-    status: string,
+    params: {
+      add_labels?: string;
+      assignee_ids?: number[] | 0;
+    },
     init?: RequestInit,
   ) {
-    const labels = await this.labels(projectId);
-    const statusLabel = labels.find(({ name }) => name.indexOf(status) !== -1);
-    if (!statusLabel) {
-      throw new Error(`No label found for status: ${status}`);
-    }
     return this.api.request<void>(
-      `/projects/${projectId}/issues/${issueId}?add_labels=${statusLabel.name}`,
-      {},
+      `/projects/${projectId}/issues/${issueId}`,
+      params,
       { method: 'PUT', ...init },
     );
   }
@@ -132,10 +131,49 @@ export const GITLAB_STATUS_LIST = [
   GITLAB_STATUS.IN_MERGING,
 ];
 
+export const GITLAB_USER_ASSIGNED_STATUS_LIST = [
+  GITLAB_STATUS.IN_PROGRESS,
+  GITLAB_STATUS.IN_CODE_REVIEW,
+  GITLAB_STATUS.IN_QA,
+  GITLAB_STATUS.IN_MERGING,
+];
+
 export function findNextIssueStatus(status: string) {
   return GITLAB_STATUS_LIST.find(
     (_value, index) => GITLAB_STATUS_LIST[index - 1] === status,
   );
+}
+
+export async function applyIssueStatus({
+  api,
+  issueId,
+  projectId,
+  status,
+  currentUser,
+}: {
+  api: GitLabApi;
+  issueId: number;
+  projectId: number;
+  status: GITLAB_STATUS;
+  currentUser: { id: number };
+}) {
+  const labels = await api.projects.labels(projectId);
+  const statusLabel = labels.find(({ name }) => name.indexOf(status) !== -1);
+
+  if (!statusLabel) {
+    throw new Error(`No label found for status: ${status}`);
+  }
+
+  const assignee_ids = GITLAB_USER_ASSIGNED_STATUS_LIST.includes(
+    status as GITLAB_STATUS,
+  )
+    ? [currentUser.id]
+    : 0;
+
+  api.projects.updateIssue(projectId, issueId, {
+    add_labels: statusLabel.name,
+    assignee_ids,
+  });
 }
 
 export function useGitLabApi() {

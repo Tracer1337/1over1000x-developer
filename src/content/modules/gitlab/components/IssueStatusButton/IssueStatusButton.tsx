@@ -1,24 +1,29 @@
-import { useCurrentGitLabProject, useGitLabApi } from 'shared/gitlab';
+import { useMemo } from 'react';
+import {
+  GITLAB_STATUS,
+  applyIssueStatus,
+  useCurrentGitLabProject,
+  useGitLabApi,
+} from 'shared/gitlab';
 import query from 'shared/query';
 
 export function IssueStatusButton({
   status,
   onClick,
 }: {
-  status: string;
+  status: GITLAB_STATUS;
   onClick: () => void;
 }) {
   const api = useGitLabApi();
 
   const project = useCurrentGitLabProject();
 
-  const applyIssueStatus = () => {
-    const issueId = query('gitlab.issue.id');
-    if (!api || !project || !issueId) {
-      return;
-    }
-    api.projects.setIssueStatus(project.id, issueId, status);
-  };
+  const issueId = useMemo(() => query('gitlab.issue.id'), []);
+  const currentUser = useMemo(() => query('gitlab.issue.current-user'), []);
+
+  if (!api || !project || !issueId || !currentUser) {
+    return;
+  }
 
   return (
     <button
@@ -26,7 +31,13 @@ export function IssueStatusButton({
       type="button"
       className="gl-new-dropdown-item-content"
       onClick={() => {
-        applyIssueStatus();
+        applyIssueStatus({
+          api,
+          issueId,
+          projectId: project.id,
+          currentUser,
+          status,
+        });
         onClick();
       }}
     >
