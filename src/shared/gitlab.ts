@@ -34,6 +34,7 @@ export function getGitLabProjectUrl(url: string) {
 
 enum GITLAB_API_CACHE_KEYS {
   PROJECTS,
+  LABELS,
 }
 
 export class GitLabApi {
@@ -41,6 +42,7 @@ export class GitLabApi {
 
   private readonly cache: Partial<{
     [GITLAB_API_CACHE_KEYS.PROJECTS]: Promise<GitLabProject[]>;
+    [GITLAB_API_CACHE_KEYS.LABELS]: Promise<GitLabLabel[]>;
   }> = {};
 
   private readonly url: string;
@@ -87,6 +89,7 @@ export type GitLabIssue = {
 export type GitLabLabel = {
   id: number;
   name: string;
+  color: string;
 };
 
 class GitLabProjects {
@@ -127,10 +130,12 @@ class GitLabProjects {
   }
 
   public labels(projectId: number, init?: RequestInit) {
-    return this.api.request<GitLabLabel[]>(
-      `/projects/${projectId}/labels`,
-      {},
-      init,
+    return this.api.cached(GITLAB_API_CACHE_KEYS.LABELS, () =>
+      this.api.request<GitLabLabel[]>(
+        `/projects/${projectId}/labels`,
+        {},
+        init,
+      ),
     );
   }
 }
@@ -168,38 +173,6 @@ export function findNextIssueStatus(status: string) {
   return GITLAB_STATUS_LIST.find(
     (_value, index) => GITLAB_STATUS_LIST[index - 1] === status,
   );
-}
-
-export async function applyIssueStatus({
-  api,
-  issueId,
-  projectId,
-  status,
-  currentUser,
-}: {
-  api: GitLabApi;
-  issueId: number;
-  projectId: number;
-  status: GITLAB_STATUS;
-  currentUser: { id: number };
-}) {
-  const labels = await api.projects.labels(projectId);
-  const statusLabel = labels.find(({ name }) => name.includes(status));
-
-  if (!statusLabel) {
-    throw new Error(`No label found for status: ${status}`);
-  }
-
-  const assignee_ids = GITLAB_USER_ASSIGNED_STATUS_LIST.includes(
-    status as GITLAB_STATUS,
-  )
-    ? [currentUser.id]
-    : 0;
-
-  api.projects.updateIssue(projectId, issueId, {
-    add_labels: statusLabel.name,
-    assignee_ids,
-  });
 }
 
 const GitLabApiContext = createContext<GitLabApi | null>(null);
@@ -291,4 +264,34 @@ export function useIssueStatus() {
   }, [issueStatus]);
 
   return issueStatus;
+}
+
+export function useStatusLabel({
+  status,
+  api,
+}: {
+  status: GITLAB_STATUS;
+  api: GitLabApi;
+}) {
+  const [label, setLabel] = useState<GitLabLabel | null>(null);
+
+  const project = useCurrentGitLabProject({ api });
+
+  useEffect(() => {
+    if (!project) {
+      return;
+    }
+
+    api.projects.labels(project.id).then((labels) => {
+      const statusLabel = labels.find(({ name }) => name.includes(status));
+
+      if (!statusLabel) {
+        throw new Error(`No label found for status: ${status}`);
+      }
+
+      setLabel(statusLabel);
+    });
+  }, [status, api, project]);
+
+  return label;
 }

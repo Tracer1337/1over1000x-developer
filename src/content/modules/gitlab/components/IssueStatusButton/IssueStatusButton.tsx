@@ -1,11 +1,13 @@
 import { useMemo } from 'react';
 import {
   GITLAB_STATUS,
-  applyIssueStatus,
+  GITLAB_USER_ASSIGNED_STATUS_LIST,
   useCurrentGitLabProject,
   useGitLabApiContext,
+  useStatusLabel,
 } from 'shared/gitlab';
 import query from 'shared/query';
+import GitLabLabelChip from '../GitLabLabelChip';
 
 export function IssueStatusButton({
   status,
@@ -21,9 +23,24 @@ export function IssueStatusButton({
   const issueId = useMemo(() => query('gitlab.issue.id'), []);
   const currentUser = useMemo(() => query('gitlab.issue.current-user'), []);
 
-  if (!api || !project || !issueId || !currentUser) {
+  const label = useStatusLabel({ status, api });
+
+  if (!api || !project || !issueId || !currentUser || !label) {
     return;
   }
+
+  const applyIssueStatus = () => {
+    const assignee_ids = GITLAB_USER_ASSIGNED_STATUS_LIST.includes(
+      status as GITLAB_STATUS,
+    )
+      ? [currentUser.id]
+      : 0;
+
+    api.projects.updateIssue(project.id, issueId, {
+      add_labels: label.name,
+      assignee_ids,
+    });
+  };
 
   return (
     <button
@@ -31,17 +48,13 @@ export function IssueStatusButton({
       type="button"
       className="gl-new-dropdown-item-content"
       onClick={() => {
-        applyIssueStatus({
-          api,
-          issueId,
-          projectId: project.id,
-          currentUser,
-          status,
-        });
+        applyIssueStatus();
         onClick();
       }}
     >
-      <span className="gl-new-dropdown-item-text-wrapper">{status}</span>
+      <span className="gl-new-dropdown-item-text-wrapper">
+        <GitLabLabelChip label={label} />
+      </span>
     </button>
   );
 }
