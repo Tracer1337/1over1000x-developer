@@ -83,9 +83,9 @@ export function useGitlabIssueResults(): SpotlightResult[] {
   const [issuesBySearch, setIssuesBySearch] = useState<SpotlightResult[]>([]);
   const [showAll, setShowAll] = useState(false);
 
-  const project = useCurrentGitLabProject();
-
   const api = useGitLabApi();
+
+  const project = useCurrentGitLabProject({ api });
 
   useDebouncedEffect(
     () => {

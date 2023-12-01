@@ -3,7 +3,7 @@ import {
   GITLAB_STATUS,
   applyIssueStatus,
   useCurrentGitLabProject,
-  useGitLabApi,
+  useGitLabApiContext,
 } from 'shared/gitlab';
 import query from 'shared/query';
 
@@ -14,9 +14,9 @@ export function IssueStatusButton({
   status: GITLAB_STATUS;
   onClick: () => void;
 }) {
-  const api = useGitLabApi();
+  const api = useGitLabApiContext();
 
-  const project = useCurrentGitLabProject();
+  const project = useCurrentGitLabProject({ api });
 
   const issueId = useMemo(() => query('gitlab.issue.id'), []);
   const currentUser = useMemo(() => query('gitlab.issue.current-user'), []);

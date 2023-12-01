@@ -4,6 +4,7 @@ import TabGroupButton from '../TabGroupButton';
 import IssueStatusButton from '../IssueStatusButton';
 import {
   GITLAB_STATUS,
+  GitLabApiContextProvider,
   findNextIssueStatus,
   useIssueStatus,
 } from 'shared/gitlab';
@@ -17,7 +18,7 @@ export function IssueActions() {
     issueStatus !== null ? findNextIssueStatus(issueStatus) : null;
 
   return (
-    <>
+    <GitLabApiContextProvider>
       <li role="presentation" className="gl-new-dropdown-item">
         <TabGroupButton onClick={closeMenu} />
       </li>
@@ -37,6 +38,6 @@ export function IssueActions() {
           />
         </li>
       )}
-    </>
+    </GitLabApiContextProvider>
   );
 }

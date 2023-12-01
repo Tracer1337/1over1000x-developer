@@ -1,5 +1,13 @@
 import qs from 'qs';
-import { useEffect, useMemo, useState } from 'react';
+import {
+  PropsWithChildren,
+  createContext,
+  createElement,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useSettings } from './settings';
 import { useMutationObserver } from './dom';
 import query from './query';
@@ -24,8 +32,16 @@ export function getGitLabProjectUrl(url: string) {
   return url.split('-')[0];
 }
 
+enum GITLAB_API_CACHE_KEYS {
+  PROJECTS,
+}
+
 export class GitLabApi {
   public readonly projects = new GitLabProjects(this);
+
+  private readonly cache: Partial<{
+    [GITLAB_API_CACHE_KEYS.PROJECTS]: Promise<GitLabProject[]>;
+  }> = {};
 
   private readonly url: string;
 
@@ -48,6 +64,14 @@ export class GitLabApi {
       },
     ).then((res) => res.json());
   }
+
+  public cached<K extends GITLAB_API_CACHE_KEYS>(
+    key: K,
+    fetcher: () => GitLabApi['cache'][K],
+  ) {
+    this.cache[key] = this.cache[key] ?? fetcher();
+    return this.cache[key]!;
+  }
 }
 
 export type GitLabProject = {
@@ -69,7 +93,9 @@ class GitLabProjects {
   constructor(private readonly api: GitLabApi) {}
 
   public all(init?: RequestInit) {
-    return this.api.request<GitLabProject[]>('/projects', {}, init);
+    return this.api.cached(GITLAB_API_CACHE_KEYS.PROJECTS, () =>
+      this.api.request<GitLabProject[]>('/projects', {}, init),
+    );
   }
 
   public issues(
@@ -158,7 +184,7 @@ export async function applyIssueStatus({
   currentUser: { id: number };
 }) {
   const labels = await api.projects.labels(projectId);
-  const statusLabel = labels.find(({ name }) => name.indexOf(status) !== -1);
+  const statusLabel = labels.find(({ name }) => name.includes(status));
 
   if (!statusLabel) {
     throw new Error(`No label found for status: ${status}`);
@@ -176,6 +202,27 @@ export async function applyIssueStatus({
   });
 }
 
+const GitLabApiContext = createContext<GitLabApi | null>(null);
+
+export function GitLabApiContextProvider({ children }: PropsWithChildren<{}>) {
+  const api = useGitLabApi();
+  return !api
+    ? null
+    : createElement(GitLabApiContext.Provider, { value: api }, children);
+}
+
+export function useGitLabApiContext() {
+  const api = useContext(GitLabApiContext);
+
+  if (!api) {
+    throw new Error(
+      'useGitLabApiContext has to be called inside a GitLabApiContextProvider',
+    );
+  }
+
+  return api;
+}
+
 export function useGitLabApi() {
   const [settings] = useSettings();
 
@@ -187,7 +234,7 @@ export function useGitLabApi() {
 
   const api = useMemo(() => {
     if (!config.host || !config.token) {
-      return;
+      return null;
     }
     return new GitLabApi(config.host, config.token);
   }, [config]);
@@ -195,7 +242,7 @@ export function useGitLabApi() {
   return api;
 }
 
-export function useCurrentGitLabProject() {
+export function useCurrentGitLabProject({ api }: { api: GitLabApi | null }) {
   const [settings] = useSettings();
 
   const {
@@ -203,8 +250,6 @@ export function useCurrentGitLabProject() {
       gitlab: { config },
     },
   } = settings;
-
-  const api = useGitLabApi();
 
   const [project, setProject] = useState<GitLabProject>();
 
