@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import createCache from '@emotion/cache';
 import { CacheProvider } from '@emotion/react';
-import { createTheme, ThemeProvider } from '@mui/material';
+import { createTheme, SxProps, ThemeProvider } from '@mui/material';
 import { createPortal } from 'react-dom';
 import { useLocation } from 'wouter';
 import {
@@ -61,9 +61,15 @@ export function getOrCreateContainer(
   return container;
 }
 
-/**
- * TODO: Refactor to HOC
- */
+export function mergeSxProps(...sxProps: (SxProps | undefined)[]) {
+  return sxProps
+    .reduce(
+      (merged, sx) => merged.concat(...(Array.isArray(sx) ? sx : [sx])),
+      [] as SxProps[],
+    )
+    .flat();
+}
+
 export function withShadowRoot(
   container: HTMLElement,
   children: React.ReactNode,
