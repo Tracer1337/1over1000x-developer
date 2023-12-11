@@ -1,6 +1,20 @@
 import { z } from 'zod';
 import { GitHubIcon, GitLabIcon } from './icons';
 import { PasswordSchema } from './schema';
+import { RouteHandler } from './bridge';
+
+export type ExtensionModule = {
+  key: string;
+  label: string;
+  icon: React.FC;
+  toggle: boolean;
+  config: z.AnyZodObject;
+  content: RouteHandler[];
+  menu: {
+    key: string;
+    action: (event: chrome.contextMenus.OnClickData) => void;
+  }[];
+};
 
 export type Module = (typeof moduleDefs)[number]['key'];
 

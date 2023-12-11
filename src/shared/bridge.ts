@@ -135,7 +135,7 @@ export function sendExtensionMessage<T extends Event['type']>(
   return forwarders;
 }
 
-type RouteHandler = {
+export type RouteHandler = {
   path: RegExp;
   callback: () => void | (() => void);
 };
