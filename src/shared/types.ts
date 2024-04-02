@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { GitHubIcon, GitLabIcon } from './icons';
-import { PasswordSchema } from './schema';
+import { GitHubIcon, GitLabIcon, TheveaIcon } from './icons';
+import { MultilineSchema, PasswordSchema } from './schema';
 
 export type Module = (typeof moduleDefs)[number]['key'];
 
@@ -39,6 +39,16 @@ export const moduleDefs = [
     label: 'GitHub',
     icon: GitHubIcon,
     config: z.void(),
+  },
+  {
+    key: 'thevea',
+    label: 'Thevea',
+    icon: TheveaIcon,
+    config: z.object({
+      accounts: MultilineSchema.nullable().describe(
+        'Accounts // Thevea Accounts im Format: Name;E-Mail-Adresse;Passwort<newline>',
+      ),
+    }),
   },
 ] as const;
 

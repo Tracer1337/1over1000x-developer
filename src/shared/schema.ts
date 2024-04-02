@@ -6,7 +6,11 @@ import {
   useDescription,
   createUniqueFieldSchema,
 } from '@ts-react/form';
-import { TextField as MuiTextField, Stack } from '@mui/material';
+import {
+  TextField as MuiTextField,
+  Stack,
+  TextareaAutosize,
+} from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 
 export function getDefaultValues<Schema extends z.AnyZodObject>(
@@ -28,9 +32,15 @@ export function isZodObject(schema: {
 
 export const PasswordSchema = createUniqueFieldSchema(z.string(), 'password');
 
+export const MultilineSchema = createUniqueFieldSchema(z.string(), 'multiline');
+
 export const SchemaForm = createTsForm(
   [
     [z.string(), TextField],
+    [
+      MultilineSchema,
+      () => createElement(TextField, { isMultilineField: true }),
+    ],
     [PasswordSchema, () => createElement(TextField, { isPasswordField: true })],
   ] as const,
   {
@@ -67,7 +77,7 @@ function SchemaFormContainer({
   );
 }
 
-function TextField({ isPasswordField = false }) {
+function TextField({ isPasswordField = false, isMultilineField = false }) {
   const { field, error } = useTsController<string>();
   const description = useDescription();
 
@@ -78,5 +88,6 @@ function TextField({ isPasswordField = false }) {
     error: !!error?.errorMessage,
     helperText: error?.errorMessage,
     type: isPasswordField ? 'password' : 'text',
+    multiline: isMultilineField,
   });
 }

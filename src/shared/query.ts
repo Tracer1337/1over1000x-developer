@@ -90,6 +90,19 @@ const queries = {
   ['github.file.container']: () => {
     return document.querySelector('#repos-sticky-header + div > section');
   },
+  ['thevea.login.email']: () => {
+    return document.querySelector<HTMLInputElement>(
+      'input[placeholder="E-Mail-Adresse"]',
+    );
+  },
+  ['thevea.login.password']: () => {
+    return document.querySelector<HTMLInputElement>(
+      'input[placeholder="Passwort"]',
+    );
+  },
+  ['thevea.login.submit']: () => {
+    return document.querySelector<HTMLButtonElement>('form button');
+  },
 };
 
 function query<K extends keyof typeof queries>(

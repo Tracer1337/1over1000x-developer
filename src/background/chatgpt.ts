@@ -1,4 +1,4 @@
-import { Event } from 'shared/bridge';
+import type { Event } from 'shared/bridge';
 
 export async function openChatGPT(
   event: Extract<Event, { type: 'chatgpt.open' }>,
