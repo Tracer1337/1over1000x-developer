@@ -23,22 +23,3 @@ export function GitHubIcon() {
     </svg>
   );
 }
-
-export function TheveaIcon() {
-  return (
-    <svg
-      enableBackground="new 0 0 64 64"
-      viewBox="0 0 64 64"
-      width="24"
-      height="24"
-    >
-      <path
-        d="M32.1 1.7C32.5.5 36.3 0 39.2 0c2.6 0 5.8.2 4.8 3L24.7 58.7c-.4.8-1.5 1.2-2.5 1.2-3.9 0-7.3-.2-7.9-1.2L.2 20.6c-.9-2.5 2.1-3 3.4-3 3.7 0 8.2.2 8.9 2.1l6.6 21.5c.5 1.4.6 3 .8 4.3.2-1.3.3-2.8.8-4.3L32.1 1.7z"
-        fillRule="evenodd"
-        clipRule="evenodd"
-        fill="rgba(0, 0, 0, 0.54)"
-        transform="translate(10 2)"
-      />
-    </svg>
-  );
-}

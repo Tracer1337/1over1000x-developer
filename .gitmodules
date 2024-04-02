@@ -1,0 +1,3 @@
+[submodule "src/thevea"]
+	path = src/thevea
+	url = https://github.com/Tracer1337/chrome-extension-thevea.git

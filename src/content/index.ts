@@ -9,7 +9,7 @@ import { loadForm, saveForm } from 'shared/form';
 import setupGitlabModule from 'content/modules/gitlab';
 import setupGithubModule from 'content/modules/github';
 import setupCaptureModule from 'content/modules/capture';
-import setupTheveaModule from 'content/modules/thevea';
+import setupTheveaModule from 'thevea/content';
 
 const moduleSetup: Record<Module, () => void> = {
   gitlab: setupGitlabModule,
