@@ -15,8 +15,11 @@ import {
 } from './capture';
 import { handleCommand } from './command';
 import { openChatGPT } from './chatgpt';
+import setupTheveaBackground from 'thevea/background';
 
 chatGPTPolyfill();
+
+setupTheveaBackground();
 
 chrome.runtime.onInstalled.addListener(createContextMenu);
 

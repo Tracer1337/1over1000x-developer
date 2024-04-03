@@ -8,6 +8,7 @@ export enum StorageKeys {
   USER_STORY = 'user_story',
   FORMS = 'forms',
   CAPTURE = 'capture',
+  THEVEA_STATUS = 'thevea_status',
 }
 
 export type Settings = {
@@ -39,6 +40,10 @@ export type UserStory = {
   } | null;
 };
 
+export type TheveaStatus = {
+  available: boolean;
+};
+
 export type Storage = {
   [StorageKeys.SETTINGS]: Settings;
   [StorageKeys.USER_STORY]: UserStory;
@@ -48,6 +53,7 @@ export type Storage = {
   [StorageKeys.CAPTURE]: {
     state: 'idle' | 'running' | 'loading';
   };
+  [StorageKeys.THEVEA_STATUS]: TheveaStatus;
 };
 
 export async function loadStorageValue<Key extends StorageKeys>(
