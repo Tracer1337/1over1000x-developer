@@ -51,11 +51,11 @@ export class GitLabApi {
     this.url = `https://${host}/api/v4`;
   }
 
-  public async request<T>(
+  public async request(
     path: string,
     params = {},
     init?: RequestInit,
-  ): Promise<T> {
+  ): Promise<Response> {
     return fetch(
       `${this.url}${path}?${qs.stringify(params, { indices: false })}`,
       {
@@ -64,7 +64,15 @@ export class GitLabApi {
         },
         ...init,
       },
-    ).then((res) => res.json());
+    );
+  }
+
+  public async requestJSON<T>(
+    path: string,
+    params?: {},
+    init?: RequestInit,
+  ): Promise<T> {
+    return this.request(path, params, init).then((res) => res.json());
   }
 
   public cached<K extends GITLAB_API_CACHE_KEYS>(
@@ -73,6 +81,27 @@ export class GitLabApi {
   ) {
     this.cache[key] = this.cache[key] ?? fetcher();
     return this.cache[key]!;
+  }
+
+  public async collectPagination<T>(
+    request: (params?: {}, init?: RequestInit) => Promise<Response>,
+  ): Promise<T[]> {
+    const result: T[] = [];
+
+    let page = 1;
+    let totalPages = 1;
+
+    do {
+      const response = await request({ page, per_page: 100 });
+
+      const data = await response.json();
+      result.push(...data);
+
+      totalPages = parseInt(response.headers.get('X-Total-Pages') ?? '1');
+      page = parseInt(response.headers.get('X-Next-Page') ?? '1');
+    } while (page <= totalPages);
+
+    return result;
   }
 }
 
@@ -97,7 +126,7 @@ class GitLabProjects {
 
   public all(init?: RequestInit) {
     return this.api.cached(GITLAB_API_CACHE_KEYS.PROJECTS, () =>
-      this.api.request<GitLabProject[]>('/projects', {}, init),
+      this.api.requestJSON<GitLabProject[]>('/projects', {}, init),
     );
   }
 
@@ -106,7 +135,7 @@ class GitLabProjects {
     params?: { search?: string },
     init?: RequestInit,
   ) {
-    return this.api.request<GitLabIssue[]>(
+    return this.api.requestJSON<GitLabIssue[]>(
       `/projects/${projectId}/issues`,
       params,
       init,
@@ -122,7 +151,7 @@ class GitLabProjects {
     },
     init?: RequestInit,
   ) {
-    return this.api.request<void>(
+    return this.api.requestJSON<void>(
       `/projects/${projectId}/issues/${issueId}`,
       params,
       { method: 'PUT', ...init },
@@ -131,10 +160,11 @@ class GitLabProjects {
 
   public labels(projectId: number, init?: RequestInit) {
     return this.api.cached(GITLAB_API_CACHE_KEYS.LABELS, () =>
-      this.api.request<GitLabLabel[]>(
-        `/projects/${projectId}/labels`,
-        {},
-        init,
+      this.api.collectPagination<GitLabLabel>((params, paginationInit) =>
+        this.api.request(`/projects/${projectId}/labels`, params, {
+          ...init,
+          ...paginationInit,
+        }),
       ),
     );
   }
