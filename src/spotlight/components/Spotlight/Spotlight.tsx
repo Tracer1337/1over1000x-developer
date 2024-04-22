@@ -7,6 +7,7 @@ import { useKeyboardControls } from './hooks/useKeyboardControls';
 import { useInputFocus } from './hooks/useInputFocus';
 import { SpotlightProvider } from './context';
 import Results from '../Results';
+import { GitLabApiContextProvider } from 'shared/gitlab';
 
 export function Spotlight({ onClose }: { onClose: () => void }) {
   const [settings] = useSettings();
@@ -30,19 +31,21 @@ export function Spotlight({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <SpotlightProvider value={{ input, settings, onClose, focus, action }}>
-      <Stack gap={2}>
-        <TextField
-          placeholder="Quick actions (append > for commands)"
-          value={input}
-          onChange={(event) => setInput(event.currentTarget.value)}
-          sx={{ background: 'white' }}
-          fullWidth
-          autoComplete="off"
-          ref={inputRef}
-        />
-        <Results />
-      </Stack>
-    </SpotlightProvider>
+    <GitLabApiContextProvider>
+      <SpotlightProvider value={{ input, settings, onClose, focus, action }}>
+        <Stack gap={2}>
+          <TextField
+            placeholder="Quick actions (append > for commands)"
+            value={input}
+            onChange={(event) => setInput(event.currentTarget.value)}
+            sx={{ background: 'white' }}
+            fullWidth
+            autoComplete="off"
+            ref={inputRef}
+          />
+          <Results />
+        </Stack>
+      </SpotlightProvider>
+    </GitLabApiContextProvider>
   );
 }

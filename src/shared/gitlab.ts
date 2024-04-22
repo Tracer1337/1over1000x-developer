@@ -38,7 +38,7 @@ enum GITLAB_API_CACHE_KEYS {
 }
 
 export class GitLabApi {
-  public readonly projects = new GitLabProjects(this);
+  public readonly projects = new GitLabProjectAPI(this);
 
   private readonly cache: Partial<{
     [GITLAB_API_CACHE_KEYS.PROJECTS]: Promise<GitLabProject[]>;
@@ -121,7 +121,20 @@ export type GitLabLabel = {
   color: string;
 };
 
-class GitLabProjects {
+export type GitLabResourceLabelEvent = {
+  id: number;
+  user: {
+    id: number;
+  };
+  resource_id: number;
+  label: {
+    id: number;
+    name: string;
+  };
+  action: 'add' | 'remove';
+};
+
+class GitLabProjectAPI {
   constructor(private readonly api: GitLabApi) {}
 
   public all(init?: RequestInit) {
@@ -166,6 +179,24 @@ class GitLabProjects {
           ...paginationInit,
         }),
       ),
+    );
+  }
+
+  public resourceLabelEvents(
+    projectId: number,
+    issueId: number,
+    init?: RequestInit,
+  ) {
+    return this.api.collectPagination<GitLabResourceLabelEvent>(
+      (params, paginationInit) =>
+        this.api.request(
+          `/projects/${projectId}/issues/${issueId}/resource_label_events`,
+          params,
+          {
+            ...init,
+            ...paginationInit,
+          },
+        ),
     );
   }
 }
@@ -226,7 +257,7 @@ export function useGitLabApiContext() {
   return api;
 }
 
-export function useGitLabApi() {
+function useGitLabApi() {
   const [settings] = useSettings();
 
   const {
@@ -245,7 +276,9 @@ export function useGitLabApi() {
   return api;
 }
 
-export function useCurrentGitLabProject({ api }: { api: GitLabApi | null }) {
+export function useCurrentGitLabProject() {
+  const api = useGitLabApiContext();
+
   const [settings] = useSettings();
 
   const {
@@ -296,16 +329,12 @@ export function useIssueStatus() {
   return issueStatus;
 }
 
-export function useStatusLabel({
-  status,
-  api,
-}: {
-  status: GITLAB_STATUS;
-  api: GitLabApi;
-}) {
+export function useStatusLabel({ status }: { status: GITLAB_STATUS }) {
+  const api = useGitLabApiContext();
+
   const [label, setLabel] = useState<GitLabLabel | null>(null);
 
-  const project = useCurrentGitLabProject({ api });
+  const project = useCurrentGitLabProject();
 
   useEffect(() => {
     if (!project) {
@@ -313,7 +342,7 @@ export function useStatusLabel({
     }
 
     api.projects.labels(project.id).then((labels) => {
-      const statusLabel = labels.find(({ name }) => name.includes(status));
+      const statusLabel = labels.find(({ name }) => name.endsWith(status));
 
       if (!statusLabel) {
         throw new Error(`No label found for status: ${status}`);
@@ -324,4 +353,32 @@ export function useStatusLabel({
   }, [status, api, project]);
 
   return label;
+}
+
+export function useIssueDeveloper() {
+  const api = useGitLabApiContext();
+
+  const [userId, setUserId] = useState<number | null>(null);
+
+  const project = useCurrentGitLabProject();
+
+  const issueId = useMemo(() => query('gitlab.issue.id'), []);
+
+  useEffect(() => {
+    if (!project || !issueId) {
+      return;
+    }
+
+    api.projects.resourceLabelEvents(project.id, issueId).then((events) => {
+      const codeReviewEvent = events.find(
+        (event) =>
+          event.action === 'add' &&
+          event.label.name.endsWith(GITLAB_STATUS.READY_FOR_CODE_REVIEW),
+      );
+
+      setUserId(codeReviewEvent ? codeReviewEvent.user.id : -1);
+    });
+  }, [issueId, api, project]);
+
+  return userId;
 }
