@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import thevea from 'thevea';
+import designer from 'designer';
 import { GitHubIcon, GitLabIcon } from './icons';
 import { PasswordSchema } from './schema';
 
@@ -42,6 +43,7 @@ export const moduleDefs = [
     config: z.void(),
   },
   thevea,
+  designer,
 ] as const;
 
 export type Command = (typeof commandDefs)[number]['key'];

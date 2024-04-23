@@ -7,10 +7,12 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
-import views from 'popup/views';
+import { usePopupViews } from 'popup/views';
 
 export function Navigation() {
   const [, setLocation] = useLocation();
+
+  const views = usePopupViews();
 
   return (
     <List>

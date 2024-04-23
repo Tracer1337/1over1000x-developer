@@ -3,14 +3,16 @@ import { useLocation, Redirect } from 'wouter';
 import { Box, Stack, Typography } from '@mui/material';
 import PushPinIcon from '@mui/icons-material/PushPin';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import views from 'popup/views';
 import { useSavedLocation } from 'shared/dom';
 import { StorageKeys } from 'shared/storage';
+import { usePopupViews } from 'popup/views';
 
 export function ViewRenderer() {
   const [location, setLocation] = useLocation();
   const { saveLocation, isSavedLocation, clearSavedLocation } =
     useSavedLocation(StorageKeys.POPUP_LOCATION);
+
+  const views = usePopupViews();
 
   const view = views.find((view) => view.path === location);
 

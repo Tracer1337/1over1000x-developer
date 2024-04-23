@@ -10,11 +10,13 @@ import setupGitlabModule from 'content/modules/gitlab';
 import setupGithubModule from 'content/modules/github';
 import setupCaptureModule from 'content/modules/capture';
 import setupTheveaModule from 'thevea/content';
+import setupDesignerModule from 'designer/content';
 
 const moduleSetup: Record<Module, () => void> = {
   gitlab: setupGitlabModule,
   github: setupGithubModule,
   thevea: setupTheveaModule,
+  designer: setupDesignerModule,
 };
 
 addExtensionListener('navigation.change', runRouteHandlers);
