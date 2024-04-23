@@ -6,11 +6,7 @@ import {
   useDescription,
   createUniqueFieldSchema,
 } from '@ts-react/form';
-import {
-  TextField as MuiTextField,
-  Stack,
-  TextareaAutosize,
-} from '@mui/material';
+import { TextField as MuiTextField, Stack } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 
 export function getDefaultValues<Schema extends z.AnyZodObject>(

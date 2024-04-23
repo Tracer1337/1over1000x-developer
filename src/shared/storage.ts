@@ -8,7 +8,6 @@ export enum StorageKeys {
   USER_STORY = 'user_story',
   FORMS = 'forms',
   CAPTURE = 'capture',
-  THEVEA_STATUS = 'thevea_status',
 }
 
 export type Settings = {
@@ -40,11 +39,7 @@ export type UserStory = {
   } | null;
 };
 
-export type TheveaStatus = {
-  available: boolean;
-};
-
-export type Storage = {
+export interface Storage {
   [StorageKeys.SETTINGS]: Settings;
   [StorageKeys.USER_STORY]: UserStory;
   [StorageKeys.TAB_GROUPS]: TabGroup[];
@@ -53,17 +48,16 @@ export type Storage = {
   [StorageKeys.CAPTURE]: {
     state: 'idle' | 'running' | 'loading';
   };
-  [StorageKeys.THEVEA_STATUS]: TheveaStatus;
-};
+}
 
-export async function loadStorageValue<Key extends StorageKeys>(
+export async function loadStorageValue<Key extends keyof Storage>(
   key: Key,
 ): Promise<Storage[Key] | null> {
   const json = (await chrome.storage.local.get(key))[key];
   return json ? JSON.parse(json) : null;
 }
 
-export async function saveStorageValue<Key extends StorageKeys>(
+export async function saveStorageValue<Key extends keyof Storage>(
   key: Key,
   value: Storage[Key] | null,
 ) {
@@ -72,7 +66,7 @@ export async function saveStorageValue<Key extends StorageKeys>(
   });
 }
 
-export function addStorageValueListener<Key extends StorageKeys>(
+export function addStorageValueListener<Key extends keyof Storage>(
   key: Key,
   callback: (value: Storage[Key]) => void,
 ) {
@@ -90,7 +84,7 @@ export function addStorageValueListener<Key extends StorageKeys>(
   };
 }
 
-export function useStorageValue<Key extends StorageKeys>(key: Key) {
+export function useStorageValue<Key extends keyof Storage>(key: Key) {
   const [value, setValue] = useState<Storage[Key] | null>(null);
 
   useEffect(() => {
