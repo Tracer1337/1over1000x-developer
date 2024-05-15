@@ -1,18 +1,28 @@
 import { createRoot } from 'react-dom/client';
 import type { DesignerFeatureSetupFunction } from '.';
-import DesignerGuides from './components/DesignerGuides';
 import { createElement } from 'react';
 import { getOrCreateContainer } from 'shared/dom';
+import ElementDesigner from './components/ElementDesigner';
+import { ElementDesignerContext } from './components/ElementDesigner/context';
 
-export const setupDesignerGuides: DesignerFeatureSetupFunction = () => {
+export const setupElementDesigner: DesignerFeatureSetupFunction = () => {
   let currentTarget: HTMLElement | null = null;
   let lockedTarget: HTMLElement | null = null;
 
-  const root = createRoot(getOrCreateContainer('designer-guides'));
+  const root = createRoot(getOrCreateContainer('element-designer'));
 
   const updateComponent = () => {
     root.render(
-      createElement(DesignerGuides, { target: lockedTarget ?? currentTarget }),
+      createElement(
+        ElementDesignerContext.Provider,
+        {
+          value: {
+            target: lockedTarget ?? currentTarget,
+            width: 1.5,
+          },
+        },
+        createElement(ElementDesigner),
+      ),
     );
   };
 

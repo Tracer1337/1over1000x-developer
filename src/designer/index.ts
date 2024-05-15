@@ -5,12 +5,14 @@ import DesignerPopup from './popup';
 export type DesignerStorage = {
   features: {
     guides: boolean;
+    measure: boolean;
   };
 };
 
 export const designerStorageDefaultValue: DesignerStorage = {
   features: {
     guides: false,
+    measure: false,
   },
 };
 

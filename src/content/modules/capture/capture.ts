@@ -10,18 +10,29 @@ import ClickIndicator from './components/ClickIndicator';
 
 export function setup() {
   loadStorageValue(StorageKeys.CAPTURE).then(handleCaptureValueChange);
-  addStorageValueListener(StorageKeys.CAPTURE, handleCaptureValueChange);
+
+  const removeStorageValueListener = addStorageValueListener(
+    StorageKeys.CAPTURE,
+    handleCaptureValueChange,
+  );
+
+  return () => {
+    removeStorageValueListener();
+    document.removeEventListener('mousedown', handleMouseDown);
+  };
 }
 
 function handleCaptureValueChange(value: Storage[StorageKeys.CAPTURE] | null) {
   if (!value) {
     return;
   }
+
   if (value.state === 'running') {
     document.addEventListener('mousedown', handleMouseDown);
-  } else {
-    document.removeEventListener('mousedown', handleMouseDown);
+    return;
   }
+
+  document.removeEventListener('mousedown', handleMouseDown);
 }
 
 function handleMouseDown(event: MouseEvent) {

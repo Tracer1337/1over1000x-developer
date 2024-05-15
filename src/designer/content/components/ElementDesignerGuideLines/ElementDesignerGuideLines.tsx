@@ -1,14 +1,23 @@
 import { Box } from '@mui/material';
 import { purple } from '@mui/material/colors';
+import { useContext, useMemo } from 'react';
+import { ElementDesignerContext } from '../ElementDesigner/context';
 
-export function DesignerGuideLines({
-  rect: { left, top, width, height },
-  width: lineWidth,
-}: {
-  rect: DOMRect;
-  width: number;
-}) {
-  const borderStyle = `${lineWidth}px dashed ${purple[300]}`;
+export function ElementDesignerGuideLines() {
+  const context = useContext(ElementDesignerContext);
+
+  const rect = useMemo(
+    () => context.target?.getBoundingClientRect(),
+    [context.target],
+  );
+
+  if (!rect) {
+    return;
+  }
+
+  const { top, left, width, height } = rect;
+
+  const borderStyle = `${context.width}px dashed ${purple[300]}`;
 
   return (
     <>

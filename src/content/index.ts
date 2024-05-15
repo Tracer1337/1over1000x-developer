@@ -4,33 +4,45 @@ import {
   runRouteHandlers,
 } from 'shared/bridge';
 import { Module, moduleDefs } from 'shared/types';
-import { loadSettings } from 'shared/settings';
+import { addSettingsListener, loadSettings } from 'shared/settings';
 import { loadForm, saveForm } from 'shared/form';
 import setupGitlabModule from 'content/modules/gitlab';
 import setupGithubModule from 'content/modules/github';
 import setupCaptureModule from 'content/modules/capture';
 import setupTheveaModule from 'thevea/content';
 import setupDesignerModule from 'designer/content';
+import { Settings } from 'shared/storage';
 
-const moduleSetup: Record<Module, () => void> = {
+const moduleSetupFunctions: Record<Module, () => (() => void) | void> = {
   gitlab: setupGitlabModule,
   github: setupGithubModule,
   thevea: setupTheveaModule,
   designer: setupDesignerModule,
 };
 
+const moduleDestroyHandlers: Partial<Record<Module, (() => void) | void>> = {};
+
 addExtensionListener('navigation.change', runRouteHandlers);
 addExtensionListener('page-info.request', emitPageInfo);
 addExtensionListener('form.save', saveForm);
 addExtensionListener('form.load', (event) => loadForm(event.data));
 
-async function setup() {
-  const settings = await loadSettings();
-  moduleDefs
-    .filter((module) => settings.modules[module.key].enabled)
-    .map((module) => moduleSetup[module.key]());
-  setupCaptureModule();
+function setup() {
+  loadSettings().then(handleSettings);
+  addSettingsListener(handleSettings);
   runRouteHandlers();
+  setupCaptureModule();
+}
+
+function handleSettings(settings: Settings) {
+  moduleDefs.forEach((module) => {
+    if (settings.modules[module.key].enabled) {
+      moduleDestroyHandlers[module.key] = moduleSetupFunctions[module.key]();
+    } else {
+      moduleDestroyHandlers[module.key]?.();
+      delete moduleDestroyHandlers[module.key];
+    }
+  });
 }
 
 setup();

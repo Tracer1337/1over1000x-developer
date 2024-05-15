@@ -3,6 +3,7 @@ import { getDefaultValues, isZodObject } from './schema';
 import {
   Settings,
   StorageKeys,
+  addStorageValueListener,
   loadStorageValue,
   saveStorageValue,
   useStorageValue,
@@ -55,6 +56,12 @@ function createSettingsObject(values: { [key: string]: any }): Settings {
 export async function loadSettings() {
   const storage = await loadStorageValue(StorageKeys.SETTINGS);
   return createSettingsObject(storage ?? {});
+}
+
+export async function addSettingsListener(callback: (value: Settings) => void) {
+  return addStorageValueListener(StorageKeys.SETTINGS, (storage) =>
+    callback(createSettingsObject(storage ?? {})),
+  );
 }
 
 export async function saveSettings(settings: Settings) {

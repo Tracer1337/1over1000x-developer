@@ -5,6 +5,7 @@ import {
   ListItemText,
   Switch,
 } from '@mui/material';
+import Grid3x3 from '@mui/icons-material/Grid3x3';
 import StraightenIcon from '@mui/icons-material/Straighten';
 import { useToggleFeature } from './hooks/useToggleFeature';
 import { useStorageValue } from 'shared/storage';
@@ -24,13 +25,24 @@ export function DesignerFeatureList() {
     <List sx={{ mx: -2 }}>
       <ListItem>
         <ListItemIcon sx={{ minWidth: 48 }}>
-          <StraightenIcon />
+          <Grid3x3 />
         </ListItemIcon>
         <ListItemText primary="Guides" />
         <Switch
           edge="end"
           onChange={() => toggleFeature('guides')}
           checked={designerStorage.features.guides}
+        />
+      </ListItem>
+      <ListItem>
+        <ListItemIcon sx={{ minWidth: 48 }}>
+          <StraightenIcon />
+        </ListItemIcon>
+        <ListItemText primary="Measure" />
+        <Switch
+          edge="end"
+          onChange={() => toggleFeature('measure')}
+          checked={designerStorage.features.measure}
         />
       </ListItem>
     </List>
