@@ -30,10 +30,10 @@ function handleStorageValue(value: DesignerStorage | null) {
     return;
   }
 
+  destroyElementDesigner?.();
+
   if (elementDesignerFeatuers.some((feature) => value.features[feature])) {
     destroyElementDesigner = setupElementDesigner();
-  } else {
-    destroyElementDesigner?.();
   }
 }
 
