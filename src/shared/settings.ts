@@ -14,7 +14,6 @@ function getDefaultSettings(): Settings {
   return {
     chatGPTApiKey: null,
     captureFormat: 'webm',
-    captureFramerate: 15,
     modules: Object.fromEntries(
       moduleDefs.map(({ key, config }) => [
         key,
@@ -35,8 +34,6 @@ function createSettingsObject(values: { [key: string]: any }): Settings {
   return {
     chatGPTApiKey: values.chatGPTApiKey ?? defaultSettings.chatGPTApiKey,
     captureFormat: values.captureFormat ?? defaultSettings.captureFormat,
-    captureFramerate:
-      values.captureFramerate ?? defaultSettings.captureFramerate,
     modules: Object.fromEntries(
       moduleDefs.map(({ key }) => [
         key,

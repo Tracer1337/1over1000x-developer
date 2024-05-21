@@ -25,11 +25,20 @@ export async function startScreenCapture() {
   await saveStorageValue(StorageKeys.CAPTURE, { state: 'idle' });
 }
 
+let destroyLoadingAnimation: (() => void) | null = null;
+
 export async function handleCaptureValueChange(
   value: Storage[StorageKeys.CAPTURE],
 ) {
+  destroyLoadingAnimation?.();
+  destroyLoadingAnimation = null;
+
   if (value.state === 'running') {
     await chrome.action.setIcon({ path: '/assets/stop-icon.png' });
+  }
+
+  if (value.state === 'loading') {
+    destroyLoadingAnimation = startLoadingAnimation();
   }
 
   if (value.state === 'idle') {
@@ -118,6 +127,31 @@ async function updateActionTimer(time: number) {
 
 async function clearActionTimer() {
   await chrome.action.setBadgeText({ text: '' });
+}
+
+function startLoadingAnimation() {
+  const getFramePath = (i: number) =>
+    `/assets/loading-animation/tile${i.toString().padStart(3, '0')}.png`;
+
+  let isRunning = true;
+  let currentFrame = 0;
+
+  const animate = () => {
+    if (!isRunning) {
+      return;
+    }
+    chrome.action.setIcon({
+      path: getFramePath(currentFrame++ % 12),
+    });
+    setTimeout(animate, 80);
+  };
+
+  animate();
+
+  return () => {
+    isRunning = false;
+    resetIcon();
+  };
 }
 
 async function assertNoRunningScreenCapture() {

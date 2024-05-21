@@ -13,7 +13,6 @@ export enum StorageKeys {
 export type Settings = {
   chatGPTApiKey: string | null;
   captureFormat: CaptureFormat;
-  captureFramerate: number;
   modules: {
     [K in (typeof moduleDefs)[number]['key']]: ModuleConfig<K>;
   };

@@ -4,18 +4,19 @@ import { Event, sendExtensionMessage } from 'shared/bridge';
 import { Settings, StorageKeys } from 'shared/storage';
 import { CaptureFormat } from 'shared/types';
 
+const CAPTURE_FRAMERATE = 15;
+const CAPTURE_RESOLUTION = 1080;
+
 let recorder: MediaRecorder | null;
 let data: Blob[] = [];
 let startTime: number;
 let endTime: number;
 
-const videoFormatters: Record<
-  CaptureFormat,
-  (video: Blob, settings: Settings) => Promise<string>
-> = {
-  webm: convertToWebm,
-  gif: convertToGIF,
-};
+const videoFormatters: Record<CaptureFormat, (video: Blob) => Promise<string>> =
+  {
+    webm: convertToWebm,
+    gif: convertToGIF,
+  };
 
 export async function startRecording({
   streamId,
@@ -34,8 +35,8 @@ export async function startRecording({
         chromeMediaSourceId: streamId,
         ...(settings.captureFormat === 'gif'
           ? {
-              maxFrameRate: settings.captureFramerate,
-              minFrameRate: settings.captureFramerate,
+              maxFrameRate: CAPTURE_FRAMERATE,
+              minFrameRate: CAPTURE_FRAMERATE,
             }
           : {}),
       },
@@ -73,7 +74,7 @@ async function processVideo(video: Blob, settings: Settings) {
   sendExtensionMessage('storage.save', {
     [StorageKeys.CAPTURE]: { state: 'loading' },
   });
-  const url = await videoFormatters[settings.captureFormat](video, settings);
+  const url = await videoFormatters[settings.captureFormat](video);
   sendExtensionMessage('capture.transmit-recording', { url });
 }
 
@@ -81,12 +82,12 @@ async function convertToWebm(video: Blob) {
   return URL.createObjectURL(new Blob([video], { type: 'video/webm' }));
 }
 
-async function convertToGIF(video: Blob, settings: Settings) {
+async function convertToGIF(video: Blob) {
   return new Promise<string>(async (resolve) => {
     const {
       frames,
       dimensions: { width, height },
-    } = await extractFrames(video, settings);
+    } = await extractFrames(video);
 
     const gif = new GifEncoder({ width, height });
 
@@ -95,22 +96,24 @@ async function convertToGIF(video: Blob, settings: Settings) {
     });
 
     for (let i = 0; i < frames.length; i++) {
-      gif.addFrame(frames[i], 1000 / settings.captureFramerate);
+      gif.addFrame(frames[i], 1000 / CAPTURE_FRAMERATE);
     }
 
     gif.render();
   });
 }
 
-async function extractFrames(video: Blob, settings: Settings) {
+async function extractFrames(video: Blob) {
   const dimensions = await getVideoDimensions(video);
 
   const ffmpeg = await setupFFmpeg(video);
   await ffmpeg.exec([
     '-i',
     'input.webm',
+    '-vf',
+    `scale=-1:${dimensions.height}`,
     '-r',
-    settings.captureFramerate.toString(),
+    CAPTURE_FRAMERATE.toString(),
     '-f',
     'image2',
     'output_%03d.png',
@@ -160,7 +163,13 @@ function getVideoDimensions(video: Blob) {
     const element = document.createElement('video');
     element.src = URL.createObjectURL(video);
     element.addEventListener('loadedmetadata', () => {
-      resolve({ width: element.videoWidth, height: element.videoHeight });
+      const aspectRatio = element.videoWidth / element.videoHeight;
+      const width = Math.min(
+        element.videoWidth,
+        CAPTURE_RESOLUTION * aspectRatio,
+      );
+      const height = Math.min(element.videoHeight, CAPTURE_RESOLUTION);
+      resolve({ width, height });
       URL.revokeObjectURL(element.src);
     });
   });
