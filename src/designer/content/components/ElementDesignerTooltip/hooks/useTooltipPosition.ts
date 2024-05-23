@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { ElementDesignerContext } from '../../ElementDesigner/context';
 
 export type TooltipPosition = {
   x: number;
@@ -13,9 +14,9 @@ export function useTooltipPosition() {
     dir: 'top left',
   });
 
-  useEffect(() => {
-    let locked = false;
+  const { locked } = useContext(ElementDesignerContext);
 
+  useEffect(() => {
     const getDirection = (x: number, y: number): TooltipPosition['dir'] => {
       const mx = window.innerWidth / 2;
       const my = window.innerHeight / 2;
@@ -47,20 +48,12 @@ export function useTooltipPosition() {
       });
     };
 
-    const handleClick = (event: MouseEvent) => {
-      if (event.ctrlKey) {
-        locked = !locked;
-      }
-    };
-
     document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('click', handleClick);
 
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('click', handleClick);
     };
-  }, [setPosition]);
+  }, [setPosition, locked]);
 
   return position;
 }
