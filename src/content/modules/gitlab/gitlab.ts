@@ -1,7 +1,6 @@
 import { registerRouteHandler } from 'shared/bridge';
 import { setupPipelineEnhancements } from './pipeline';
 import { setupConfetti } from './confetti';
-import { setupSuggestionHelper } from './suggestion';
 import { setupIssueActions } from './issue';
 import { setupFileHelper } from './file';
 
@@ -14,10 +13,6 @@ export function setup() {
   registerRouteHandler({
     path: RegExp(`${projectPath}/(merge_requests|issues)/\\d+`),
     callback: setupConfetti,
-  });
-  registerRouteHandler({
-    path: RegExp(`${projectPath}/merge_requests/[^/]*/diffs`),
-    callback: setupSuggestionHelper,
   });
   registerRouteHandler({
     path: RegExp(`${projectPath}/merge_requests/[^/]*(/diffs)?$`),

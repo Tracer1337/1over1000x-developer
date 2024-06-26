@@ -1,1 +1,10 @@
-Pomodoro Timer
+Thevea Releasetest-Issue Generator
+  * Nachrichten + Anhänge aus Mattermost auswählen
+  * Issue-Content in Popup generieren + Anzeigen
+  * Über Button direkt Issue anlegen + Content einfügen
+
+Services mit Annotations an Methoden für Execution-Context (Content, Background, Offscreen)
+
+Globaler Extension-Icon Service
+
+Angular-Komponente über Hover herausfinden
