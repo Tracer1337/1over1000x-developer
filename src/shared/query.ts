@@ -82,14 +82,6 @@ const queries = {
   ['gitlab.mr-diff.file-actions-sibling']: (file: Element) => {
     return file.querySelector('ul[role="menu"] .gl-dropdown-item:nth-child(3)');
   },
-  ['github.file.content']: () => {
-    return (
-      document.querySelector('#read-only-cursor-text-area')?.textContent ?? null
-    );
-  },
-  ['github.file.container']: () => {
-    return document.querySelector('#repos-sticky-header + div > section');
-  },
 };
 
 function query<K extends keyof typeof queries>(

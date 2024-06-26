@@ -7,7 +7,6 @@ import { Module, moduleDefs } from 'shared/types';
 import { addSettingsListener, loadSettings } from 'shared/settings';
 import { loadForm, saveForm } from 'shared/form';
 import setupGitlabModule from 'content/modules/gitlab';
-import setupGithubModule from 'content/modules/github';
 import setupCaptureModule from 'content/modules/capture';
 import setupTheveaModule from 'thevea/content';
 import setupDesignerModule from 'designer/content';
@@ -15,7 +14,6 @@ import { Settings } from 'shared/storage';
 
 const moduleSetupFunctions: Record<Module, () => (() => void) | void> = {
   gitlab: setupGitlabModule,
-  github: setupGithubModule,
   thevea: setupTheveaModule,
   designer: setupDesignerModule,
 };

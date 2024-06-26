@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import thevea from 'thevea';
 import designer from 'designer';
-import { GitHubIcon, GitLabIcon } from './icons';
+import { GitLabIcon } from './icons';
 import { PasswordSchema } from './schema';
 
 export type Module = (typeof moduleDefs)[number]['key'];
@@ -35,12 +35,6 @@ export const moduleDefs = [
           'Personal Access Token // Your Token for interacting with the GitLab API (permission: api)',
         ),
     }),
-  },
-  {
-    key: 'github',
-    label: 'GitHub',
-    icon: GitHubIcon,
-    config: z.void(),
   },
   thevea,
   designer,
