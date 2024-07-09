@@ -8,7 +8,7 @@ const queries = {
     return document.querySelector('h1')?.textContent ?? null;
   },
   ['gitlab.issue.id']: () => {
-    const match = location.pathname.match(/\d+$/)?.[0];
+    const match = location.pathname.match(/issues\/(\d+)/)?.[1];
     return match ? parseInt(match) : null;
   },
   ['gitlab.issue.status-container']: () => {
